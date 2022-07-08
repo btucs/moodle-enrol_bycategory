@@ -420,7 +420,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
                 $categorylink = html_writer::link(
                     new moodle_url('/course/index.php', ['categoryid' => $categoryid]),
-                    $category->name,
+                    $category->name
                 );
 
                 if ($instance->customint5) {
