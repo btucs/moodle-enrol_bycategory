@@ -814,7 +814,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         // If send welcome email option is set to no reply or if none of the previous options have
         // returned a contact send welcome message as noreplyuser.
-        if ($sendoption == ENROL_SEND_EMAIL_FROM_NOREPLY || $sendoption == ENROL_SEND_EMAIL_FROM_KEYHOLDER || empty($contact)) {
+        if ($sendoption == ENROL_SEND_EMAIL_FROM_NOREPLY || $sendoption == ENROL_SEND_EMAIL_FROM_KEY_HOLDER || empty($contact)) {
             $contact = core_user::get_noreply_user();
         }
 

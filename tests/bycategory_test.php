@@ -31,7 +31,7 @@ global $CFG;
 require_once($CFG->dirroot.'/enrol/bycategory/lib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 
-class bycategory_test extends advanced_testcase {
+class bycategory_test extends \advanced_testcase {
 
     /**
      * @author 2010 Eugene Venter enrol_paypal
@@ -98,7 +98,7 @@ class bycategory_test extends advanced_testcase {
 
         $plugin = enrol_get_plugin('bycategory');
 
-        $trace = new null_progress_trace();
+        $trace = new \null_progress_trace();
 
         // Just make sure the sync does not throw any errors when nothing to do.
         $plugin->sync($trace, null);
@@ -115,7 +115,7 @@ class bycategory_test extends advanced_testcase {
         $this->assertNotEmpty($manualplugin);
         $now = time();
 
-        $trace = new progress_trace_buffer(new text_progress_trace(), false);
+        $trace = new \progress_trace_buffer(new \text_progress_trace(), false);
         $this->enable_plugin();
 
         // Prepare some data.
@@ -138,9 +138,9 @@ class bycategory_test extends advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
         $course3 = $this->getDataGenerator()->create_course();
-        $context1 = context_course::instance($course1->id);
-        $context2 = context_course::instance($course2->id);
-        $context3 = context_course::instance($course3->id);
+        $context1 = \context_course::instance($course1->id);
+        $context2 = \context_course::instance($course2->id);
+        $context3 = \context_course::instance($course3->id);
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
@@ -246,7 +246,7 @@ class bycategory_test extends advanced_testcase {
 
         $now = time();
 
-        $trace = new null_progress_trace();
+        $trace = new \null_progress_trace();
         $this->enable_plugin();
 
         // Prepare some data.
@@ -266,9 +266,9 @@ class bycategory_test extends advanced_testcase {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
         $course3 = $this->getDataGenerator()->create_course();
-        $context1 = context_course::instance($course1->id);
-        $context2 = context_course::instance($course2->id);
-        $context3 = context_course::instance($course3->id);
+        $context1 = \context_course::instance($course1->id);
+        $context2 = \context_course::instance($course2->id);
+        $context3 = \context_course::instance($course3->id);
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
@@ -373,7 +373,7 @@ class bycategory_test extends advanced_testcase {
         $now = time();
         $admin = get_admin();
 
-        $trace = new null_progress_trace();
+        $trace = new \null_progress_trace();
 
         // Note: hopefully nobody executes the unit tests the last second before midnight...
 
@@ -735,10 +735,10 @@ class bycategory_test extends advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user(['lastname' => 'Victoria']);
         $user3 = $this->getDataGenerator()->create_user(['lastname' => 'Burch']);
         $user4 = $this->getDataGenerator()->create_user(['lastname' => 'Cartman']);
-        $noreplyuser = core_user::get_noreply_user();
+        $noreplyuser = \core_user::get_noreply_user();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $context = context_course::instance($course1->id);
+        $context = \context_course::instance($course1->id);
 
         // Get editing teacher role.
         $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
@@ -816,7 +816,7 @@ class bycategory_test extends advanced_testcase {
         // Login as the teacher.
         $this->setUser($teacher);
         require_once($CFG->dirroot . '/enrol/locallib.php');
-        $manager = new course_enrolment_manager($PAGE, $course);
+        $manager = new \course_enrolment_manager($PAGE, $course);
         $userenrolments = $manager->get_user_enrolments($student->id);
         $this->assertCount(1, $userenrolments);
 
