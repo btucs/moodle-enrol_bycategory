@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/bycategory/lib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
+require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
 
 class bycategory_test extends \advanced_testcase {
 
@@ -672,11 +673,23 @@ class bycategory_test extends \advanced_testcase {
         // User passed course in required category, but it was too long time ago.
         $this->assertFalse($plugin->show_enrolme_link($instance5));
 
-        $instance5->customint5 = 60 * 60 * 24 * 12;
+        $instance5->customint5 = 60 * 60 * 24 * 11;
         $DB->update_record('enrol', $instance5);
 
         // User passed course in required category and is within the timelimit.
         $this->assertTrue($plugin->show_enrolme_link($instance5));
+
+        $instance5->enrolstartdate = time() - (86400 * 2);
+        $instance5->customint5 = 60 * 60 * 24 * 10;
+        $instance5->customint7 = 1;
+        $DB->update_record('enrol', $instance5);
+        // User can still enrol, because counting starts from enrolstartdate
+        $this->assertTrue($plugin->show_enrolme_link($instance5));
+
+        $instance5->customint7 = 0;
+        $DB->update_record('enrol', $instance5);
+        // User can't enrol, because counting starts from now
+        $this->assertFalse($plugin->show_enrolme_link($instance5));
     }
 
     /**

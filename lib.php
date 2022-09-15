@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
+
 // The base class 'enrol_plugin' can be found at lib/enrollib.php. Override
 // methods as necessary.
 
@@ -70,12 +72,23 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
         $categories = \core_course_category::make_categories_list();
+        // Specifying no category makes it work like normal self enrol.
+        // Categories start with index 1 so it's safe to add a 0 entry.
+        array_unshift($categories, get_string('nocategory', 'enrol_bycategory'));
+
         $mform->addElement('select', 'customint1', get_string('category', 'enrol_bycategory'), $categories);
         $mform->addHelpButton('customint1', 'category', 'enrol_bycategory');
 
-        $options = array('optional' => true, 'defaultunit' => 86400);
+        $options = array('optional' => true, 'defaultunit' => DAYSECS, 'units' => array(DAYSECS, WEEKSECS));
         $mform->addElement('duration', 'customint5', get_string('completionperiod', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customint5', 'completionperiod', 'enrol_bycategory');
+
+        $options = array(
+            0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
+            1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
+        );
+        $mform->addElement('select', 'customint7', get_string('enrolperiodcountfrom', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customint7', 'enrolperiodcountfrom', 'enrol_bycategory');
 
         $options = $this->get_status_options();
         $mform->addElement('select', 'status', get_string('status', 'enrol_bycategory'), $options);
@@ -166,6 +179,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $validstatus = array_keys($this->get_status_options());
         $validnewenrols = array_keys($this->get_newenrols_options());
+        $validperiodstarts = array_keys($this->get_period_start_options());
 
         $context = context_course::instance($instance->courseid);
         $validroles = array_keys($this->extend_assignable_roles($context, $instance->roleid));
@@ -182,6 +196,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint4' => PARAM_INT,
             'customint5' => PARAM_INT,
             'customint6' => $validnewenrols,
+            'customint7' => PARAM_INT,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,
@@ -278,6 +293,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $fields['customint4']      = $this->get_config('sendcoursewelcomemessage');
         $fields['customint5']      = 0; // Max time since completing last course in target category.
         $fields['customint6']      = $this->get_config('newenrols');
+        $fields['customint7']      = 0; // Count completion from 0: now or 1: enrol start time.
 
         return $fields;
     }
@@ -388,13 +404,16 @@ class enrol_bycategory_plugin extends enrol_plugin {
             // Has successfully finished course in specified category.
             $categoryid = $instance->customint1;
             $timesincecompletion = '';
+            // If time since completion is set.
             if ($instance->customint5 > 0) {
-                $startdate = $instance->enrolstartdate;
-                if ($startdate == 0) {
-                    // If enrolstartdate was not set, use course start date.
-                    $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
-                    $startdate = $course->startdate;
+                // ... by default count back from now.
+                $startdate = start_of_day_timestamp(time());
+
+                // ... otherwise use enrolstartdate if configuration says so.
+                if($instance->customint7 === 1 && $instance->enrolstartdate) {
+                    $startdate = start_of_day_timestamp($instance->enrolstartdate);
                 }
+
                 $timelimit = $startdate - $instance->customint5;
                 $timesincecompletion = ' AND cc.timecompleted > ' . $timelimit;
             }
@@ -928,6 +947,20 @@ class enrol_bycategory_plugin extends enrol_plugin {
      */
     protected function get_newenrols_options() {
         $options = array(1 => get_string('yes'), 0 => get_string('no'));
+        return $options;
+    }
+
+    /**
+     * Return an array of valid options for customint7 (counting start time for enrolment period) property
+     *
+     * @return array
+     */
+    protected function get_period_start_options() {
+        $options = array(
+            0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
+            1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
+        );
+
         return $options;
     }
 

@@ -129,6 +129,21 @@ if ($ADMIN->fulltree) {
     );
 
     $options = array(
+        0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
+        1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
+    );
+
+    $settings->add(
+        new admin_setting_configselect(
+            'enrol_bycategory/enrolperiodcountfrom',
+            get_string('enrolperiodcountfrom', 'enrol_bycategory'),
+            get_string('enrolperiodcountfrom_help', 'enrol_bycategory'),
+            0,
+            $options
+        )
+    );
+
+    $options = array(
         0 => get_string('no'),
         1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
         2 => get_string('expirynotifyall', 'enrol_bycategory')

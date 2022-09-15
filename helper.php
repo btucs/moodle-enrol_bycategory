@@ -15,27 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Empty enrol_bycategory form.
+ * The enrol plugin bycategory is defined here.
  *
- * Useful to mimic valid enrol instances UI when the enrolment instance is not available.
- *
- * @package enrol_bycategory
- * @copyright 2015 David Monllaó
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     enrol_bycategory
+ * @copyright   2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+function start_of_day_timestamp($timestamp) {
 
-class enrol_bycategory_empty_form extends moodleform {
+  $startofday = new DateTime();
+  $startofday->setTimestamp($timestamp);
+  $startofday->setTime(0, 0, 0, 0);
 
-    /**
-     * Form definition.
-     * @return void
-     */
-    public function definition() {
-        $this->_form->addElement('header', 'selfheader', $this->_customdata->header);
-        $this->_form->addElement('static', 'info', '', $this->_customdata->info);
-    }
+  return $startofday->getTimestamp();
 }

@@ -33,6 +33,7 @@ class enrol_bycategory_enrol_form extends moodleform {
 
     /**
      * Overriding this function to get unique form id for multiple bycategory enrolments.
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @return string form identifier
      */
@@ -41,6 +42,10 @@ class enrol_bycategory_enrol_form extends moodleform {
         return $formid;
     }
 
+    /**
+     * Form definition
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     */
     public function definition() {
         global $USER, $OUTPUT, $CFG;
         $mform = $this->_form;
@@ -62,6 +67,18 @@ class enrol_bycategory_enrol_form extends moodleform {
         $mform->setDefault('instance', $instance->id);
     }
 
+    /**
+     * Dummy stub method - override if you needed to perform some extra validation.
+     * If there are errors return array of errors ("fieldname"=>"error message"),
+     * otherwise true if ok.
+     *
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
     public function validation($data, $files) {
         global $DB, $CFG;
 
