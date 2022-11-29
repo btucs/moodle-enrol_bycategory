@@ -20,40 +20,25 @@
  * @package    enrol_bycategory
  * @category   phpunit
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
- *             2012 Petr Skoda {@link http://skodak.org}
+ *             based on work by 2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace enrol_bycategory;
+
+use enrol_bycategory_phpunit_util;
+use enrol_bycategory_waitlist;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot.'/enrol/bycategory/lib.php');
-require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
+require_once(__DIR__ . '/util.php');
 
+/**
+ * @covers enrol_bycategory_plugin
+ */
 class bycategory_test extends \advanced_testcase {
-
-    /**
-     * @author 2010 Eugene Venter enrol_paypal
-     */
-    protected function enable_plugin() {
-        $enabled = enrol_get_plugins(true);
-        $enabled['bycategory'] = true;
-        $enabled = array_keys($enabled);
-        set_config('enrol_plugins_enabled', implode(',', $enabled));
-    }
-
-    /**
-     * @author 2010 Eugene Venter enrol_paypal
-     */
-    protected function disable_plugin() {
-        $enabled = enrol_get_plugins(true);
-        unset($enabled['bycategory']);
-        $enabled = array_keys($enabled);
-        set_config('enrol_plugins_enabled', implode(',', $enabled));
-    }
-
     /**
      * @see https://moodle.org/mod/forum/discuss.php?d=318186#p1275913
      * @author 2015 Darko Miletić
@@ -96,7 +81,7 @@ class bycategory_test extends \advanced_testcase {
 
     public function test_sync_nothing() {
         global $SITE;
-
+        /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
 
         $trace = new \null_progress_trace();
@@ -109,7 +94,7 @@ class bycategory_test extends \advanced_testcase {
     public function test_longtimnosee() {
         global $DB, $CFG;
         $this->resetAfterTest();
-
+        /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $manualplugin = enrol_get_plugin('manual');
 
@@ -117,7 +102,7 @@ class bycategory_test extends \advanced_testcase {
         $now = time();
 
         $trace = new \progress_trace_buffer(new \text_progress_trace(), false);
-        $this->enable_plugin();
+        enrol_bycategory_phpunit_util::enable_plugin();
 
         // Prepare some data.
 
@@ -241,6 +226,7 @@ class bycategory_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
 
+        /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $manualplugin = enrol_get_plugin('manual');
         $this->assertNotEmpty($manualplugin);
@@ -248,7 +234,7 @@ class bycategory_test extends \advanced_testcase {
         $now = time();
 
         $trace = new \null_progress_trace();
-        $this->enable_plugin();
+       enrol_bycategory_phpunit_util::enable_plugin();
 
         // Prepare some data.
 
@@ -366,7 +352,7 @@ class bycategory_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
 
-        $this->enable_plugin();
+       enrol_bycategory_phpunit_util::enable_plugin();
         /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         /** @var $manualplugin enrol_manual_plugin */
@@ -536,12 +522,106 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(6, $sink->count());
     }
 
+    public function test_send_waitlist_notifications() {
+        global $DB, $CFG;
+        $this->resetAfterTest();
+        $this->preventResetByRollback(); // Messaging does not like transactions...
+
+       enrol_bycategory_phpunit_util::enable_plugin();
+        /** @var $plugin enrol_bycategory_plugin */
+
+        $plugin = enrol_get_plugin('bycategory');
+        $trace = new \null_progress_trace();
+
+        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
+        $user2 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser2'));
+        $user3 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser3'));
+        $user4 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser4'));
+        $user5 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser5'));
+        $user6 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
+        $user7 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
+        $user8 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
+
+        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
+        $course2 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse2'));
+        $course3 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse3'));
+
+        $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
+
+        //$maninstance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1->customint8 = 1; // Enable waiting list.
+        $instance1->customint3 = 1; // Max enrolled.
+        $instance1->customint6 = 1; // New enrols allowed.
+        $instance1->status     = ENROL_INSTANCE_ENABLED;
+        $DB->update_record('enrol', $instance1);
+
+        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance2->customint8 = 1; // Enable waiting list.
+        $instance2->customint3 = 1; // Max enrolled.
+        $instance2->customint6 = 1; // New enrols allowed.
+        $instance2->status     = ENROL_INSTANCE_ENABLED;
+        $DB->update_record('enrol', $instance2);
+
+        $now = time();
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user4->id, $now);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user2->id, $now + 1);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user6->id, $now + 2);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user3->id, $now + 3, 5);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user7->id, $now + 4, 4);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user5->id, $now + 5);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance1->id, $user8->id, $now + 6);
+
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance2->id, $user7->id, $now);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance2->id, $user6->id, $now + 1);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance2->id, $user1->id, $now + 2);
+
+        $sink = $this->redirectMessages();
+
+        $plugin->send_waitlist_notifications($trace);
+        $this->assertEquals(0, $sink->count());
+
+        set_config('secret', 'banana', 'enrol_bycategory');
+        $plugin->send_waitlist_notifications($trace);
+        $messages = $sink->get_messages();
+        $this->assertEquals(8, $sink->count());
+
+        $this->assertEquals($user4->id, $messages[0]->useridto);
+        $this->assertEquals($user2->id, $messages[1]->useridto);
+        $this->assertEquals($user6->id, $messages[2]->useridto);
+        $this->assertEquals($user7->id, $messages[3]->useridto);
+        $this->assertEquals($user5->id, $messages[4]->useridto);
+
+        $this->assertEquals($user7->id, $messages[5]->useridto);
+        $this->assertEquals($user6->id, $messages[6]->useridto);
+        $this->assertEquals($user1->id, $messages[7]->useridto);
+
+        // Make sure that notifications are not repeated.
+        $sink->clear();
+
+        $plugin->send_waitlist_notifications($trace);
+        $messages = $sink->get_messages();
+        $this->assertEquals(8, $sink->count());
+
+        $this->assertEquals($user4->id, $messages[0]->useridto);
+        $this->assertEquals($user2->id, $messages[1]->useridto);
+        $this->assertEquals($user6->id, $messages[2]->useridto);
+        $this->assertEquals($user5->id, $messages[3]->useridto);
+        $this->assertEquals($user8->id, $messages[4]->useridto);
+
+        $this->assertEquals($user7->id, $messages[5]->useridto);
+        $this->assertEquals($user6->id, $messages[6]->useridto);
+        $this->assertEquals($user1->id, $messages[7]->useridto);
+
+        $sink->clear();
+    }
+
     public function test_show_enrolme_link() {
         global $DB, $CFG;
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
 
-        $this->enable_plugin();
+       enrol_bycategory_phpunit_util::enable_plugin();
 
         /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
@@ -563,6 +643,8 @@ class bycategory_test extends \advanced_testcase {
         $course9 = $this->getDataGenerator()->create_course();
         $course10 = $this->getDataGenerator()->create_course();
         $course11 = $this->getDataGenerator()->create_course();
+        $course12 = $this->getDataGenerator()->create_course();
+        $course13 = $this->getDataGenerator()->create_course();
 
         // New enrolments are allowed and enrolment instance is enabled.
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
@@ -623,7 +705,7 @@ class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance10);
         $plugin->update_status($instance10, ENROL_INSTANCE_ENABLED);
 
-        // Maximum enrolments reached.
+        // Maximum enrolments reached, waitlist not enabled
         $instance11 = $DB->get_record('enrol', array('courseid' => $course10->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance11->customint6 = 1;
         $instance11->customint3 = 1;
@@ -638,6 +720,27 @@ class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance12);
         $plugin->update_status($instance12, ENROL_INSTANCE_ENABLED);
 
+        // Maximum enrolments reached, waitlist enabled
+        $instance13 = $DB->get_record('enrol', array('courseid' => $course12->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance13->customint6 = 1;
+        $instance13->customint3 = 1;
+        $instance13->customint8 = 1;
+        $DB->update_record('enrol', $instance13);
+        $plugin->update_status($instance13, ENROL_INSTANCE_ENABLED);
+        $plugin->enrol_user($instance13, $user2->id, $studentrole->id);
+
+        // Empty space in course, but users on waitlist
+        // Maximum enrolments reached, waitlist enabled
+        $instance14 = $DB->get_record('enrol', array('courseid' => $course13->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance14->customint6 = 1;
+        $instance14->customint3 = 1;
+        $instance14->customint8 = 1;
+        $DB->update_record('enrol', $instance14);
+        $plugin->update_status($instance14, ENROL_INSTANCE_ENABLED);
+        $plugin->enrol_user($instance14, $user2->id, $studentrole->id);
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance14->id, $user1->id, time());
+        $plugin->unenrol_user($instance14, $user2->id);
+
         $this->setUser($user1);
         $this->assertTrue($plugin->show_enrolme_link($instance1));
         $this->assertFalse($plugin->show_enrolme_link($instance2));
@@ -649,6 +752,8 @@ class bycategory_test extends \advanced_testcase {
         $this->assertFalse($plugin->show_enrolme_link($instance10));
         $this->assertFalse($plugin->show_enrolme_link($instance11));
         $this->assertTrue($plugin->show_enrolme_link($instance12));
+        $this->assertFalse($plugin->show_enrolme_link($instance13));
+        $this->assertFalse($plugin->show_enrolme_link($instance14));
 
         // User didn't pass course in required category.
         $this->assertFalse($plugin->show_enrolme_link($instance5));
@@ -657,7 +762,7 @@ class bycategory_test extends \advanced_testcase {
         $finishedcourse->category = $category1->id;
         $DB->update_record('course', $finishedcourse);
         $this->getDataGenerator()->enrol_user($user1->id, $finishedcourse->id, $studentrole->id);
-        $completion = $DB->insert_record('course_completions', array(
+        $DB->insert_record('course_completions', array(
             'userid' => $user1->id,
             'course' => $finishedcourse->id,
             'timecompleted' => time() - 60 * 60 * 24 * 11, // ... two weeks .
@@ -700,7 +805,7 @@ class bycategory_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback();
 
-        $this->enable_plugin();
+       enrol_bycategory_phpunit_util::enable_plugin();
 
         $plugin = enrol_get_plugin('bycategory');
 
@@ -758,7 +863,8 @@ class bycategory_test extends \advanced_testcase {
         $this->assertNotEmpty($editingteacherrole);
 
         // Enable self enrolment plugin and set to send email from course contact.
-        $this->enable_plugin();
+       enrol_bycategory_phpunit_util::enable_plugin();
+        /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $instance1 = $this->add_enrol_instance($plugin, $course1);
         $instance1->customint6 = 1;

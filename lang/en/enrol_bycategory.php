@@ -45,9 +45,12 @@ The following placeholders may be included in the message:
 $string['completionperiod'] = 'Timelimit since completion';
 $string['completionperiod_help'] = 'Allowed duration since completing a course in the configured category.';
 $string['defaultrole'] = 'Default role assignment';
-$string['defaultrole_desc'] = 'Select role which should be assigned to users during self enrolment';
+$string['defaultrole_desc'] = 'Select role which should be assigned to users during self enrolment.';
 $string['deleteselectedusers'] = 'Delete selected user enrolments';
 $string['editselectedusers'] = 'Edit selected user enrolments';
+$string['enablewaitlist'] = 'Enable waiting list';
+$string['enablewaitlist_help'] = 'When waiting list is enabled users will be added to a waiting list after max enrolled user limit has been reached.';
+$string['enrolchancemissed'] = 'Sorry, the spot is already taken. Please try again next time.';
 $string['enrolenddate'] = 'End date';
 $string['enrolenddate_help'] = 'If enabled, users can enrol themselves until this date only.';
 $string['enrolenddaterror'] = 'Enrolment end date cannot be earlier than start date';
@@ -61,6 +64,8 @@ $string['enrolperiodcountfromnow'] = 'current time';
 $string['enrolperiodcountfromenrollstart'] = 'enrol start date';
 $string['enrolstartdate'] = 'Start date';
 $string['enrolstartdate_help'] = 'If enabled, users can enrol themselves from this date onward only.';
+$string['enrolwaitlistuser'] = 'Enrol "{$a->user}" into "{$a->course}"';
+$string['enrolwaitlistuserconfirm'] = 'Do you really want to manually enrol "{$a->user}" into "{$a->course}"?';
 $string['expiredaction'] = 'Enrolment expiry action';
 $string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';
 $string['expirymessageenrollersubject'] = 'By Category enrolment expiry notification';
@@ -77,20 +82,29 @@ This is a notification that your enrolment in the course \'{$a->course}\' is due
 If you need help, please contact {$a->enroller}.';
 $string['expirynotifyall'] = 'Teacher and enrolled user';
 $string['expirynotifyenroller'] = 'Teacher only';
+$string['joinwaitlist'] = 'Join waiting list';
+$string['joinwaitlistmessage'] = 'You can join the waiting list and will be informed every day when a slot becomes available.';
+$string['leavewaitlist'] = 'Leave waiting list';
 $string['longtimenosee'] = 'Unenrol inactive after';
 $string['longtimenosee_help'] = 'If users haven\'t accessed a course for a long time, then they are automatically unenrolled. This parameter specifies that time limit.';
 $string['maxenrolled'] = 'Max enrolled users';
 $string['maxenrolled_help'] = 'Specifies the maximum number of users that can self enrol. 0 means no limit.';
 $string['maxenrolledreached'] = 'Maximum number of users allowed to self-enrol was already reached.';
 $string['messageprovider:expiry_notification'] = 'By Category enrolment expiry notifications';
+$string['messageprovider:waitlist_notification'] = 'By Category enrolment waiting list notifications';
 $string['newenrols'] = 'Allow new enrolments';
 $string['newenrols_desc'] = 'Allow users to self enrol into new courses by default.';
 $string['newenrols_help'] = 'This setting determines whether a user can enrol into this course.';
 $string['nocategory'] = 'no category limitation';
 $string['nocourseincategory'] = 'To be able to enrol you have to complete a course from the "{$a}" category';
 $string['nocourseincategorysince'] = 'To be able to enrol you have to complete a course from the "{$a}" category or your last course completion in that category is too much in the past.';
+$string['notifiedcount'] = 'Notified without reaction';
+$string['onwaitlistsince'] = 'On waiting list since';
 $string['pluginname'] = 'Enrol by Category';
 $string['pluginname_desc'] = 'The By Category enrolment plugin allows users participage in a course which requires an ealier successful participation in a course in a specific category. Internally the enrolment is done via the manual enrolment plugin which has to be enabled in the same course.';
+$string['privacy:metadata'] = 'The By Category enrolment plugin does not store any personal data.';
+$string['removewaitlistuser'] = 'Remove user from waiting list';
+$string['removewaitlistuserconfirm'] = 'Do you really want to remove "{$a->user}" from the waiting list of "{$a->course}"?';
 $string['role'] = 'Default assigned role';
 $string['bycategory:config'] = 'Configure By Category enrol instances';
 $string['bycategory:enrolself'] = 'Self enrol in course';
@@ -98,21 +112,55 @@ $string['bycategory:passcategory'] = 'Appear as a eligible participant';
 $string['bycategory:manage'] = 'Manage enrolled users';
 $string['bycategory:unenrol'] = 'Unenrol users from course';
 $string['bycategory:unenrolself'] = 'Unenrol self from the course';
+$string['secret'] = 'secret';
+$string['secretmissing'] = 'Token Secret is not configured';
+$string['secret_desc'] = 'Passphrase for JWT signature';
 $string['sendcoursewelcomemessage'] = 'Send course welcome message';
 $string['sendcoursewelcomemessage_help'] = 'When a user enrols in the course, they may be sent a welcome message email. If sent from the course contact (by default the teacher), and more than one user has this role, the email is sent from the first user to be assigned the role.';
 $string['sendexpirynotificationstask'] = "By Category enrolment send expiry notifications task";
+$string['sendwaitlistnotificationstask'] = "By Category enrolment send waitlist notifications task";
 $string['status'] = 'Allow enrolment';
 $string['status_desc'] = 'Enable By Category enrolment method in new courses.';
 $string['status_help'] = 'If disabled, this By Category enrolment method is disabled, since all existing By Category enrolments are suspended and new users cannot enrol by category.';
+$string['successfullyenroled'] = '';
 $string['syncenrolmentstask'] = 'Synchronise By Category enrolments task';
+$string['tokeninvalid'] = 'The provided token is not valid or expired. Please click the link in your email or make sure that you have copied it completly before inserting it into the browser. If your email is older than 24 hours then the token is expired.';
 $string['unenrol'] = 'Unenrol user';
 $string['unenrolselfconfirm'] = 'Do you really want to unenrol yourself from course "{$a}"?';
 $string['unenroluser'] = 'Do you really want to unenrol "{$a->user}" from course "{$a->course}"?';
 $string['unenrolusers'] = 'Unenrol users';
+$string['usernotonwaitlist'] = 'You are not on the waiting list of this course.';
+$string['waitlist'] = 'Waiting List';
+$string['waitlist_info_message'] = 'You are currently on the waiting list.
+
+If a space becomes available you will be informed via e-mail and will be able to enrol into this course.
+Be aware that other persons may be informed as well, so be quick.
+The e-mail is sent  daily, if space is available.
+
+Your current position on the waiting list is: {$a->waitlistposition}.
+If you don\'t like to wait any longer, you can use the following button to leave the waiting list.
+';
+$string['waitlist_users'] = 'Users on waiting list';
+$string['waitlistnotifycount'] = 'Number of users to notify about an available slot';
+$string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';
+$string['waitlistnotifylimit'] = 'Amount of times a user is beeing notified at most';
+$string['waitlistnotifylimit_help'] = 'Users are on a specific waiting list are only notified a specific amount of times until they are ignored.';
+$string['waitlist_notification_body'] = 'Hello {$a->userfullname},
+a spot in course {$a->coursename} is available.
+
+Click the following link to enrol yourself if the spot is still available.
+{$a->confirmenrolurl}
+
+This email is sent to up to {$a->notifyamount} other participants as well, so be quick to secure the spot.
+
+If you are not interested to join course "{$a->coursename}" anymore, click the following link remove yourself from the waiting list.
+{$a->leavewaitlisturl}
+';
+$string['waitlist_notification_subject'] = 'There\'s a spot available in course "{$a->coursename}"';
 $string['welcometocourse'] = 'Welcome to {$a}';
 $string['welcometocoursetext'] = 'Welcome to {$a->coursename}!
 
 If you have not done so already, you should edit your profile page so that we can learn more about you:
 
   {$a->profileurl}';
-$string['privacy:metadata'] = 'The By Category enrolment plugin does not store any personal data.';
+$string['wrongtokenuser'] = 'This token was meant for another user. Please wait until you receive your Email.';

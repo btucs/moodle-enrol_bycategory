@@ -19,11 +19,21 @@
  *
  * @package    enrol_bycategory
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
- *             2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $messageproviders = array (
-    'expiry_notification' => array(),
+    'expiry_notification' => array(
+        'defaults' => array(
+            'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
+            'email' => MESSAGE_FORCED
+        )
+    ),
+    'waitlist_notification' => array(
+        'defaults' => array(
+            'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
+            'email' => MESSAGE_FORCED
+        )
+    ),
 );

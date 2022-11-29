@@ -22,12 +22,31 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\message\message;
+use ParagonIE\Paseto\Keys\Version3\SymmetricKey;
+use ParagonIE\Paseto\Protocol\Version3;
+use ParagonIE\Paseto\Builder;
+use ParagonIE\Paseto\Purpose;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
+require_once(__DIR__ . '/vendor/autoload.php');
 
-// The base class 'enrol_plugin' can be found at lib/enrollib.php. Override
-// methods as necessary.
+
+/**
+ * Extend fontawesome mapping list for custom key
+ * @return array Map of key to fontawesome classes
+ */
+function enrol_bycategory_get_fontawesome_icon_map() {
+    $iconmapping = [
+        'enrol_bycategory:t/waitlist' => 'fa-list',
+        'enrol_bycategory:t/remove' => 'fa-trash',
+        'enrol_bycategory:t/enrol' => 'fa-user-plus',
+    ];
+
+    return $iconmapping;
+}
 
 /**
  * Class enrol_bycategory_plugin.
@@ -49,7 +68,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
     /**
      * Adds form elements to add/edit instance form.
-     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+     *          based on work by 2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @since Moodle 3.1.
      * @param object $instance Enrol instance or null if does not exist yet.
@@ -71,10 +91,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
-        $categories = \core_course_category::make_categories_list();
-        // Specifying no category makes it work like normal self enrol.
-        // Categories start with index 1 so it's safe to add a 0 entry.
-        array_unshift($categories, get_string('nocategory', 'enrol_bycategory'));
+        $categories = $this->get_categories();
 
         $mform->addElement('select', 'customint1', get_string('category', 'enrol_bycategory'), $categories);
         $mform->addHelpButton('customint1', 'category', 'enrol_bycategory');
@@ -133,6 +150,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addHelpButton('customint3', 'maxenrolled', 'enrol_bycategory');
         $mform->setType('customint3', PARAM_INT);
 
+        $options = $this->get_enablewaitlist_options();
+        $mform->addElement('select', 'customint8', get_string('enablewaitlist', 'enrol_bycategory'), $options);
+        $mform->setDefault('customint8', 0);
+        $mform->addHelpButton('customint8', 'enablewaitlist', 'enrol_bycategory');
+
         $mform->addElement('select', 'customint4', get_string('sendcoursewelcomemessage', 'enrol_bycategory'),
                 enrol_send_welcome_email_options());
         $mform->addHelpButton('customint4', 'sendcoursewelcomemessage', 'enrol_bycategory');
@@ -183,9 +205,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $context = context_course::instance($instance->courseid);
         $validroles = array_keys($this->extend_assignable_roles($context, $instance->roleid));
-        $validcategories = array_keys(\core_course_category::make_categories_list());
+        $validcategories = array_keys($this->get_categories());
         $validexpirynotify = array_keys($this->get_expirynotify_options());
         $validlongtimenosee = array_keys($this->get_longtimenosee_options());
+        $validwaitlist = array_keys($this->get_enablewaitlist_options());
         $tovalidate = array(
             'enrolstartdate' => PARAM_INT,
             'enrolenddate' => PARAM_INT,
@@ -197,6 +220,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint5' => PARAM_INT,
             'customint6' => $validnewenrols,
             'customint7' => PARAM_INT,
+            'customint8' => $validwaitlist,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,
@@ -267,7 +291,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
     /**
      * Returns defaults for new instances.
-     * @author  2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+     *          based on work by 2010 Petr Skoda {@link http://skodak.org} enrol_self
      *
      * @return array
      */
@@ -281,19 +306,20 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
 
         $fields = array();
-        $fields['status']          = $this->get_config('status');
-        $fields['roleid']          = $this->get_config('roleid');
-        $fields['enrolperiod']     = $this->get_config('enrolperiod');
-        $fields['expirynotify']    = $expirynotify;
-        $fields['notifyall']       = $notifyall;
-        $fields['expirythreshold'] = $this->get_config('expirythreshold');
-        $fields['customint1']      = 0; // ... categoryId.
-        $fields['customint2']      = $this->get_config('longtimenosee');
-        $fields['customint3']      = $this->get_config('maxenrolled');
-        $fields['customint4']      = $this->get_config('sendcoursewelcomemessage');
-        $fields['customint5']      = 0; // Max time since completing last course in target category.
-        $fields['customint6']      = $this->get_config('newenrols');
-        $fields['customint7']      = 0; // Count completion from 0: now or 1: enrol start time.
+        $fields['status']               = $this->get_config('status');
+        $fields['roleid']               = $this->get_config('roleid');
+        $fields['enrolperiod']          = $this->get_config('enrolperiod');
+        $fields['expirynotify']         = $expirynotify;
+        $fields['notifyall']            = $notifyall;
+        $fields['expirythreshold']      = $this->get_config('expirythreshold');
+        $fields['customint1']           = 0; // ... categoryId.
+        $fields['customint2']           = $this->get_config('longtimenosee');
+        $fields['customint3']           = $this->get_config('maxenrolled');
+        $fields['customint4']           = $this->get_config('sendcoursewelcomemessage');
+        $fields['customint5']           = 0; // Max time since completing last course in target category.
+        $fields['customint6']           = $this->get_config('newenrols');
+        $fields['customint7']           = 0; // Count completion from 0: now or 1: enrol start time.
+        $fields['customint8']           = $this->get_config('enablewaitlist'); // enable waiting list 0: disabled, 1: enabled
 
         return $fields;
     }
@@ -301,7 +327,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
     /**
      * Creates course enrol form, checks if form submitted
      * and enrols user if necessary. It can also redirect.
-     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+     *          based on work by 2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @param stdClass $instance
      * @return string html text, usually a form in a text box
@@ -309,17 +336,39 @@ class enrol_bycategory_plugin extends enrol_plugin {
     public function enrol_page_hook(stdClass $instance) {
         global $CFG, $OUTPUT, $USER;
 
-        require_once("$CFG->dirroot/enrol/bycategory/locallib.php");
-
         $enrolstatus = $this->can_self_enrol($instance);
+        $waitlist = new enrol_bycategory_waitlist($instance->id);
 
-        if (true === $enrolstatus) {
+        $isonwaitlist = $waitlist->is_on_waitlist($USER->id);
+        $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
+        if(true === $isonwaitlist) {
+            redirect($waitlisturl);
+        }
+
+        $count = $waitlist->get_count();
+        // Direct enrolment is only allowed if waitlist is empty
+        if (true === $enrolstatus && $count === 0) {
             // This user can self enrol using this instance.
             $form = new enrol_bycategory_enrol_form(null, $instance);
             $instanceid = optional_param('instance', 0, PARAM_INT);
             if ($instance->id == $instanceid) {
                 if ($data = $form->get_data()) {
                     $this->enrol_self($instance, $data);
+                }
+            }
+        } elseif (
+            $instance->customint8 == 1 && (
+                true === $enrolstatus ||
+                $enrolstatus === get_string('maxenrolledreached', 'enrol_bycategory')
+            )
+        ) {
+            $form = new enrol_bycategory_waitlist_form($instance);
+            $instanceid = optional_param('instance', 0, PARAM_INT);
+            // $instance->id is string
+            if($instance->id == $instanceid) {
+                if($data = $form->get_data()) {
+                    $waitlist->add_user($data->user);
+                    redirect($waitlisturl);
                 }
             }
         } else {
@@ -343,8 +392,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
     /**
      * Checks if user can self enrol.
-     * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
-     *          2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @param stdClass $instance enrolment instance
      * @param bool $checkuserenrolment if true will check if user enrolment is inactive.
@@ -352,7 +399,24 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return bool|string true if successful, else error message or false.
      */
     public function can_self_enrol(stdClass $instance, $checkuserenrolment = true) {
-        global $CFG, $DB, $OUTPUT, $USER;
+        global $USER, $OUTPUT, $DB;
+
+        if ($checkuserenrolment) {
+            if (isguestuser()) {
+                // Can not enrol guest.
+                return get_string('noguestaccess', 'enrol') . $OUTPUT->continue_button(get_login_url());
+            }
+            // Check if user is already enroled.
+            if ($DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
+                return get_string('canntenrol', 'enrol_bycategory');
+            }
+        }
+
+        $waitlist = new enrol_bycategory_waitlist($instance->id);
+
+        return $waitlist->can_enrol($instance, $USER->id);
+
+        /*global $CFG, $DB, $OUTPUT, $USER;
 
         if ($checkuserenrolment) {
             if (isguestuser()) {
@@ -391,15 +455,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
             return get_string('canntenrol', 'enrol_bycategory');
         }
 
-        if ($instance->customint3 > 0) {
-            // Max enrol limit specified.
-            $count = $DB->count_records('user_enrolments', array('enrolid' => $instance->id));
-            if ($count >= $instance->customint3) {
-                // Bad luck, no more self enrolments here.
-                return get_string('maxenrolledreached', 'enrol_bycategory');
-            }
-        }
-
         if ($instance->customint1 > 0) {
             // Has successfully finished course in specified category.
             $categoryid = $instance->customint1;
@@ -409,8 +464,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 // ... by default count back from now.
                 $startdate = start_of_day_timestamp(time());
 
-                // ... otherwise use enrolstartdate if configuration says so.
-                if($instance->customint7 === 1 && $instance->enrolstartdate) {
+                if($instance->customint7 == 1 && $instance->enrolstartdate) {
                     $startdate = start_of_day_timestamp($instance->enrolstartdate);
                 }
 
@@ -451,7 +505,26 @@ class enrol_bycategory_plugin extends enrol_plugin {
             }
         }
 
-        return true;
+        if ($instance->customint3 > 0) {
+            // Max enrol limit specified.
+            $count = $DB->count_records('user_enrolments', array('enrolid' => $instance->id));
+            if ($count >= $instance->customint3) {
+                // Bad luck, no more self enrolments here.
+                return get_string('maxenrolledreached', 'enrol_bycategory');
+            }
+
+            // Empty spaces available and waiting list is enabled
+            if(1 == $instance->customint8) {
+                $waitlist = new enrol_bycategory_waitlist($instance->id);
+                $waitlistcount = $waitlist->get_count();
+                if($waitlistcount > 0) {
+                    // Users on the waiting list have to be enroled first before self enrolment becomes available again
+                    return get_string('maxenrolledreached', 'enrol_bycategory');
+                }
+            }
+        }
+
+        return true;*/
     }
 
     /**
@@ -527,25 +600,18 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
-     * enrol user to course
+     * enrol current user to course
      * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
      *          2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @param stdClass $instance enrolment instance
      * @param stdClass $data data needed for enrolment.
-     * @return bool|array true if enroled else eddor code and messege
+     * @return bool|array true if enroled else error code and messege
      */
     public function enrol_self(stdClass $instance, $data = null) {
         global $DB, $USER, $CFG;
 
-        $timestart = time();
-        if ($instance->enrolperiod) {
-            $timeend = $timestart + $instance->enrolperiod;
-        } else {
-            $timeend = 0;
-        }
-
-        $this->enrol_user($instance, $USER->id, $instance->roleid, $timestart, $timeend);
+        $enrolresult = $this->enrol_user_manually($instance, $USER->id);
 
         \core\notification::success(get_string('youenrolledincourse', 'enrol'));
 
@@ -553,6 +619,27 @@ class enrol_bycategory_plugin extends enrol_plugin {
         if ($instance->customint4 != ENROL_DO_NOT_SEND_EMAIL) {
             $this->email_welcome_message($instance, $USER);
         }
+
+        return $enrolresult;
+    }
+
+    /**
+     * enrol a user to course
+     * @param stdClass $instance enrolment instance
+     * @param int $userid
+     * @return bool|array true if enroled else error code and message
+     */
+    public function enrol_user_manually(stdClass $instance, $userid) {
+        $timestart = time();
+        if ($instance->enrolperiod) {
+            $timeend = $timestart + $instance->enrolperiod;
+        } else {
+            $timeend = 0;
+        }
+
+        $this->enrol_user($instance, $userid, $instance->roleid, $timestart, $timeend);
+
+        return true;
     }
 
     /**
@@ -799,6 +886,146 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
+     * Inform users of the waitlist about vacancies
+     *
+     * @param progress_trace $trace
+     */
+    public function send_waitlist_notifications($trace) {
+        global $DB;
+
+        $name = $this->get_name();
+        if(!enrol_is_enabled(($name))) {
+            $trace->finished();
+            return;
+        }
+
+        // Unfortunately this may take a long time, it should not be interrupted,
+        // otherwise users get duplicate notification.
+
+        core_php_time_limit::raise();
+        raise_memory_limit(MEMORY_HUGE);
+
+        $trace->output('Processing '.$name.' waitlist notifications...');
+
+        $secret = get_config('enrol_bycategory', 'secret');
+        if($secret == false) {
+            $trace->output('JWT secret is missing');
+            $trace->finished();
+
+            return;
+        }
+
+        $courseswithspace = enrol_bycategory_waitlist::select_courses_with_available_space();
+        if(count($courseswithspace) === 0) {
+            $trace->output('...notification processing finished.');
+            $trace->finished();
+
+            return;
+        }
+
+        $waitlistentries = enrol_bycategory_waitlist::select_users_from_waitlist_for_notification(array_keys($courseswithspace));
+
+        $count = count($waitlistentries);
+        $trace->output('preparing to notifify '.$count.' users.' );
+
+        $userfrom = core_user::get_noreply_user();
+
+        if($count > 0) {
+            foreach($waitlistentries as $waitlistentry) {
+
+                $token = $this->create_jwt($secret, [
+                    'instanceid' => $waitlistentry->instanceid,
+                    'userid' => $waitlistentry->userid
+                ]);
+
+                $course = $courseswithspace[$waitlistentry->instanceid];
+                $user = $DB->get_record('user', ['id' => $waitlistentry->userid]);
+                $oldforcelang = force_current_language($user->lang);
+
+                $usernotifycount = get_config('enrol_bycategory', 'waitlistnotifycount');
+                if($usernotifycount === false) {
+                    $usernotifycount = 5;
+                }
+
+                $a = new stdClass();
+                $a->coursename = format_string($course->fullname, true, array());
+                $a->confirmenrolurl = (string)new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
+                $a->leavewaitlisturl = (string)new moodle_url('/course/view.php', ['id' => $course->id]);
+                $a->userfullname = fullname($user, true);
+                $a->notifyamount = $usernotifycount - 1;
+
+                $subject = get_string('waitlist_notification_subject', 'enrol_bycategory', $a);
+                $body = get_string('waitlist_notification_body', 'enrol_bycategory', $a);
+
+                $message = new message();
+                $message->component = 'enrol_bycategory';
+                $message->name = 'waitlist_notification';
+                $message->userfrom = $userfrom;
+                $message->userto = $user;
+                $message->subject = $subject;
+                $message->fullmessage = $body;
+                $message->fullmessageformat = FORMAT_MARKDOWN;
+                $message->fullmessagehtml = markdown_to_html($body);
+                $message->smallmessage = $subject;
+                $message->contexturlname = $a->coursename;
+                $message->contexturl = $a->confirmenrolurl;
+                $message->notification = 1; // This is only set to 0 for personal messages between users
+
+                $messageid = message_send($message);
+                if($messageid) {
+                    $trace->output("notifying user $user->id that there is a spot available in $course->id.");
+                } else {
+                    $trace->output("error notifying user $user->id that there is a spot available in $course->id.");
+                }
+
+                force_current_language($oldforcelang);
+            }
+
+            enrol_bycategory_waitlist::increase_notified(array_keys($waitlistentries));
+        }
+
+        $trace->output('...notification processing finished.');
+        $trace->finished();
+    }
+
+    /**
+     * Returns edit icons for the page with list of instances
+     * @param stdClass $instance
+     * @return array
+     */
+    public function get_action_icons(stdClass $instance) {
+        global $OUTPUT;
+
+        $waitlisticon = '';
+        if($instance->customint8 == 1) {
+            $linkparams = array('enrolid' => $instance->id);
+            $waitlistlink = new moodle_url('/enrol/bycategory/waitlist.php', $linkparams);
+            $waitlisticon = $OUTPUT->action_icon(
+                $waitlistlink,
+                new pix_icon(
+                    't/waitlist',
+                    get_string('waitlist', 'enrol_bycategory'),
+                    'enrol_bycategory',
+                    array('class' => 'iconsmall fa fa-fw')
+                )
+            );
+        } else {
+            $waitlisticon = $OUTPUT->pix_icon(
+                't/waitlist',
+                get_string('waitlist', 'enrol_bycategory'),
+                'enrol_bycategory',
+                array('class' => 'iconsmall fa fa-fw dimmed_text')
+            );
+        }
+
+        $icons = parent::get_action_icons($instance);
+
+        array_unshift($icons, $waitlisticon);
+
+        return $icons;
+    }
+
+    /**
      * Get the "from" contact which the email will be sent from.
      * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
@@ -951,6 +1178,15 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
+     * Return an array of valid options for the enablewaitlist (customint8) property
+     * @return array
+     */
+    protected function get_enablewaitlist_options() {
+        $options = array(1 => get_string('yes'), 0 => get_string('no'));
+        return $options;
+    }
+
+    /**
      * Return an array of valid options for customint7 (counting start time for enrolment period) property
      *
      * @return array
@@ -1000,5 +1236,40 @@ class enrol_bycategory_plugin extends enrol_plugin {
                          14 * 3600 * 24 => get_string('numdays', '', 14),
                          7 * 3600 * 24 => get_string('numdays', '', 7));
         return $options;
+    }
+
+    /**
+     * Create a JWT to send to the users on the waiting list to inform them about an empty spot.
+     *
+     * @param string $secret Passphrase for encrypting the JWT
+     * @param array $claims Map of claims to include into the JWT
+     * @return Builder
+     */
+    protected function create_jwt($secret, $claims = []) {
+        $sharedkey = new SymmetricKey($secret);
+        $token = (new Builder())
+            ->setKey($sharedkey)
+            ->setVersion(new Version3())
+            ->setPurpose(Purpose::local())
+            ->setIssuedAt()
+            ->setExpiration(
+                (new DateTime())->add(new DateInterval('PT24H'))
+            )
+            ->setNotBefore()
+            ->setClaims($claims)
+        ;
+
+        return $token;
+    }
+
+    private function get_categories() {
+
+        $categories = \core_course_category::make_categories_list();
+        // Specifying no category makes it work like normal self enrol.
+        // Categories start with index 1 so it's safe to add a 0 entry.
+        // array_unshift doesn't work, because it re-indexes the array.
+        $categories = [0 => get_string('nocategory', 'enrol_bycategory')] + $categories;
+
+        return $categories;
     }
 }

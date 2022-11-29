@@ -214,4 +214,42 @@ if ($ADMIN->fulltree) {
             enrol_send_welcome_email_options()
         )
     );
+
+    $options = array(0 => get_string('no'), 1 => get_string('yes'));
+    $settings->add(
+        new admin_setting_configselect(
+            'enrol_bycategory/enablewaitlist',
+            get_string('enablewaitlist', 'enrol_bycategory'),
+            get_string('enablewaitlist_help', 'enrol_bycategory'),
+            0,
+            $options
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'enrol_bycategory/waitlistnotifycount',
+            get_string('waitlistnotifycount', 'enrol_bycategory'),
+            get_string('waitlistnotifycount_help', 'enrol_bycategory'),
+            5,
+            PARAM_INT
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'enrol_bycategory/waitlistnotifylimit',
+            get_string('waitlistnotifylimit', 'enrol_bycategory'),
+            get_string('waitlistnotifylimit_help', 'enrol_bycategory'),
+            5,
+            PARAM_INT
+        )
+    );
+
+    $settings->add(new admin_setting_configtext(
+        'enrol_bycategory/secret',
+        get_string('secret', 'enrol_bycategory'),
+        get_string('secret_desc', 'enrol_bycategory'),
+        ''
+    ));
 }

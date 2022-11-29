@@ -16,8 +16,8 @@
 
 /**
  * Task definition for enrol_bycategory.
- * @author    Farhan Karmali <farhan6318@gmail.com>
- * @copyright Farhan Karmali
+ * @copyright 2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+ *            based on work by Farhan Karmali <farhan6318@gmail.com>
  * @package   enrol_bycategory
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,6 +44,16 @@ $tasks = array(
         'month' => '*',
         'dayofweek' => '*',
         'disabled' => 0
+    ),
+    array(
+        'classname' => '\enrol_bycategory\task\send_waitlist_notifications',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '14',
+        'day'  => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+        'disabked' => 0
     )
 );
 
