@@ -245,11 +245,4 @@ if ($ADMIN->fulltree) {
             PARAM_INT
         )
     );
-
-    $settings->add(new admin_setting_configtext(
-        'enrol_bycategory/secret',
-        get_string('secret', 'enrol_bycategory'),
-        get_string('secret_desc', 'enrol_bycategory'),
-        ''
-    ));
 }

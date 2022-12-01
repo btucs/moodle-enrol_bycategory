@@ -122,7 +122,6 @@ $string['sendwaitlistnotificationstask'] = "By Category enrolment send waitlist 
 $string['status'] = 'Allow enrolment';
 $string['status_desc'] = 'Enable By Category enrolment method in new courses.';
 $string['status_help'] = 'If disabled, this By Category enrolment method is disabled, since all existing By Category enrolments are suspended and new users cannot enrol by category.';
-$string['successfullyenroled'] = '';
 $string['syncenrolmentstask'] = 'Synchronise By Category enrolments task';
 $string['tokeninvalid'] = 'The provided token is not valid or expired. Please click the link in your email or make sure that you have copied it completly before inserting it into the browser. If your email is older than 24 hours then the token is expired.';
 $string['unenrol'] = 'Unenrol user';

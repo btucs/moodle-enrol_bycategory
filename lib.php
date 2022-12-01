@@ -23,16 +23,10 @@
  */
 
 use core\message\message;
-use ParagonIE\Paseto\Keys\Version3\SymmetricKey;
-use ParagonIE\Paseto\Protocol\Version3;
-use ParagonIE\Paseto\Builder;
-use ParagonIE\Paseto\Purpose;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
-require_once(__DIR__ . '/vendor/autoload.php');
-
 
 /**
  * Extend fontawesome mapping list for custom key
@@ -891,7 +885,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @param progress_trace $trace
      */
     public function send_waitlist_notifications($trace) {
-        global $DB;
+        global $DB, $USER;
 
         $name = $this->get_name();
         if(!enrol_is_enabled(($name))) {
@@ -907,14 +901,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $trace->output('Processing '.$name.' waitlist notifications...');
 
-        $secret = get_config('enrol_bycategory', 'secret');
-        if($secret == false) {
-            $trace->output('JWT secret is missing');
-            $trace->finished();
-
-            return;
-        }
-
         $courseswithspace = enrol_bycategory_waitlist::select_courses_with_available_space();
         if(count($courseswithspace) === 0) {
             $trace->output('...notification processing finished.');
@@ -929,14 +915,20 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $trace->output('preparing to notifify '.$count.' users.' );
 
         $userfrom = core_user::get_noreply_user();
+        $now = time();
 
         if($count > 0) {
             foreach($waitlistentries as $waitlistentry) {
 
-                $token = $this->create_jwt($secret, [
-                    'instanceid' => $waitlistentry->instanceid,
-                    'userid' => $waitlistentry->userid
-                ]);
+                $token = $this->create_token();
+                $DB->insert_record('enrol_bycategory_token', [
+                    'token' => $token,
+                    'waitlistid' => $waitlistentry->id,
+                    'userid' => $waitlistentry->userid,
+                    'usermodified' => $USER->id,
+                    'timecreated' => $now,
+                    'timemodified' => $now,
+                ], false, false);
 
                 $course = $courseswithspace[$waitlistentry->instanceid];
                 $user = $DB->get_record('user', ['id' => $waitlistentry->userid]);
@@ -1239,27 +1231,12 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
-     * Create a JWT to send to the users on the waiting list to inform them about an empty spot.
+     * Return a random token string
      *
-     * @param string $secret Passphrase for encrypting the JWT
-     * @param array $claims Map of claims to include into the JWT
-     * @return Builder
+     * @return string
      */
-    protected function create_jwt($secret, $claims = []) {
-        $sharedkey = new SymmetricKey($secret);
-        $token = (new Builder())
-            ->setKey($sharedkey)
-            ->setVersion(new Version3())
-            ->setPurpose(Purpose::local())
-            ->setIssuedAt()
-            ->setExpiration(
-                (new DateTime())->add(new DateInterval('PT24H'))
-            )
-            ->setNotBefore()
-            ->setClaims($claims)
-        ;
-
-        return $token;
+    private function create_token() {
+        return bin2hex(random_bytes(32));
     }
 
     private function get_categories() {

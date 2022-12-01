@@ -579,10 +579,6 @@ class bycategory_test extends \advanced_testcase {
         $sink = $this->redirectMessages();
 
         $plugin->send_waitlist_notifications($trace);
-        $this->assertEquals(0, $sink->count());
-
-        set_config('secret', 'banana', 'enrol_bycategory');
-        $plugin->send_waitlist_notifications($trace);
         $messages = $sink->get_messages();
         $this->assertEquals(8, $sink->count());
 

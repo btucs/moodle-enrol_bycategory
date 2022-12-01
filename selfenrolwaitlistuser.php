@@ -23,40 +23,22 @@
  */
 
 use core\output\notification;
-use ParagonIE\Paseto\Exception\PasetoException;
-use ParagonIE\Paseto\Keys\Version3\SymmetricKey;
-use ParagonIE\Paseto\Parser;
-use ParagonIE\Paseto\ProtocolCollection;
-use ParagonIE\Paseto\Rules\ValidAt;
-use ParagonIE\Paseto\Purpose;
 
 require_once(__DIR__ . '/../../config.php');
-require_once(__DIR__ . '/vendor/autoload.php');
 
 defined('MOODLE_INTERNAL') || die();
 
 require_login();
 $token = required_param('token', PARAM_TEXT);
-$secret = get_config('enrol_bycategory', 'secret');
 $dashboardurl = new moodle_url('/my');
-if($secret == false) {
-    redirect($dashboardurl, get_string('secretmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
-}
+$tokentablename = 'enrol_bycategory_token';
 
-$parser = create_parser($secret);
-
-$tokendata = null;
-try {
-    $tokendata = $parser->parse($token);
-} catch (PasetoException $ex) {
-    redirect($dashboardurl, get_string('tokeninvalid', 'enrol_bycategory'), null, notification::NOTIFY_ERROR, true);
-}
-
-$instanceid = $tokendata->get('instanceid');
+$tokenrecord = $DB->get_record($tokentablename, ['token' => $token], '*', MUST_EXIST);
+$waitlistrecord = $DB->get_record('enrol_bycategory_waitlist', ['id' => $tokenrecord->waitlistid], '*', MUST_EXIST);
+$userid = $waitlistrecord->userid;
+$instanceid = $waitlistrecord->instanceid;
 $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instanceid]);
-
 $waitlist = new enrol_bycategory_waitlist($instanceid);
-$userid = $tokendata->get('userid');
 
 // Token is not for the current user.
 if ($userid !== $USER->id) {
@@ -66,6 +48,15 @@ if ($userid !== $USER->id) {
 if ($waitlist->is_on_waitlist($userid) === false) {
     redirect($waitlisturl, get_string('usernotonwaitlist', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
 }
+
+// Check if token is valid
+$ONEDAY = 86400; // 24 * 60 * 60
+$now = time();
+if($tokenrecord->timecreated + $ONEDAY < $now) {
+    redirect($waitlisturl, get_string('tokeninvalid', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
+}
+
+delete_expired_tokens($now);
 
 $instance = $DB->get_record('enrol', array('id' => $instanceid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
@@ -79,6 +70,7 @@ $canenrol = $waitlist->can_enrol($instance, $userid, true);
 // Sorry you missed your chance, try again next time
 if($canenrol !== true) {
     $waitlist->reset_notification_counter($user->id);
+    $DB->delete_records($tokentablename, ['id' => $tokenrecord->id]);
     redirect($waitlisturl, get_string('enrolchancemissed', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
 }
 
@@ -105,18 +97,18 @@ if($bycategoryinstance === null) {
 $enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id);
 if($enrolresult === true) {
     $waitlist->remove_user($user->id);
+    $DB->delete_records($tokentablename, ['id' => $tokenrecord->id]);
 }
 
-redirect($courseurl, get_string('youenrolledincourse'), null, notification::NOTIFY_SUCCESS);
+redirect($courseurl, get_string('youenrolledincourse', 'enrol'), null, notification::NOTIFY_SUCCESS);
 
-function create_parser($secret)
-{
-    $sharedkey = new SymmetricKey($secret);
-    $parser = (new Parser())
-        ->setKey($sharedkey)
-        ->addRule(new ValidAt())
-        ->setPurpose(Purpose::local())
-        ->setAllowedVersions(ProtocolCollection::v3());
+function delete_expired_tokens($time) {
+    global $DB;
 
-    return $parser;
+    $sql = "DELETE FROM {enrol_bycategory_token}
+             WHERE timecreated < :time";
+
+    $DB->execute($sql, [
+        'time' => $time - 86400,
+    ]);
 }

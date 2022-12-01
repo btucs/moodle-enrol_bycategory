@@ -390,8 +390,8 @@ class enrol_bycategory_waitlist {
 
         list($insql, $inparams) = $DB->get_in_or_equal($waitlistids, SQL_PARAMS_NAMED);
         $sql = "UPDATE {enrol_bycategory_waitlist}
-                  SET notified = notified + 1, timemodified = :now
-                WHERE id $insql";
+                   SET notified = notified + 1, timemodified = :now
+                 WHERE id $insql";
 
         $result = $DB->execute($sql, [
             'now' => time()
