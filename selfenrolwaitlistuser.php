@@ -81,12 +81,12 @@ if($enrol === null) {
     redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
 }
 
-$instances = enrol_get_instances($course->id, true);
+$enrolinstances = enrol_get_instances($course->id, true);
 $bycategoryinstance = null;
-foreach ($instances as $instance) {
-    if ($instance->enrol == $enrolmethod) {
-        $bycategoryinstance = $instance;
-        break;
+foreach ($enrolinstances as $enrolinstance) {
+    if ($enrolinstance->enrol === $enrolmethod && $enrolinstance->id === $instance->id) {
+    $bycategoryinstance = $enrolinstance;
+    break;
     }
 }
 
