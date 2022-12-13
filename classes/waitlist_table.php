@@ -54,7 +54,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
     $this->pageable(true);
     $this->sortable(true, 'lastname', SORT_ASC);
 
-    $where = [];
+    $where = 'ebw.instanceid = :instanceid';
 
     $this->set_sql('', '', $where, $params);
 
