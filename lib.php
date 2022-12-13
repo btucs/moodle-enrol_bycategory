@@ -409,116 +409,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $waitlist = new enrol_bycategory_waitlist($instance->id);
 
         return $waitlist->can_enrol($instance, $USER->id);
-
-        /*global $CFG, $DB, $OUTPUT, $USER;
-
-        if ($checkuserenrolment) {
-            if (isguestuser()) {
-                // Can not enrol guest.
-                return get_string('noguestaccess', 'enrol') . $OUTPUT->continue_button(get_login_url());
-            }
-            // Check if user is already enroled.
-            if ($DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
-                return get_string('canntenrol', 'enrol_bycategory');
-            }
-        }
-
-        if ($instance->status != ENROL_INSTANCE_ENABLED) {
-            return get_string('canntenrol', 'enrol_bycategory');
-        }
-
-        // Check if user has the capability to enrol in this context.
-        if (!has_capability('enrol/bycategory:enrolself', context_course::instance($instance->courseid))) {
-            return get_string('canntenrol', 'enrol_bycategory');
-        }
-
-        if ($instance->enrolstartdate != 0 and $instance->enrolstartdate > time()) {
-            return get_string('canntenrolearly', 'enrol_bycategory', userdate($instance->enrolstartdate));
-        }
-
-        if ($instance->enrolenddate != 0 and $instance->enrolenddate < time()) {
-            return get_string('canntenrollate', 'enrol_bycategory', userdate($instance->enrolenddate));
-        }
-
-        if (!$instance->customint6) {
-            // New enrols not allowed.
-            return get_string('canntenrol', 'enrol_bycategory');
-        }
-
-        if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
-            return get_string('canntenrol', 'enrol_bycategory');
-        }
-
-        if ($instance->customint1 > 0) {
-            // Has successfully finished course in specified category.
-            $categoryid = $instance->customint1;
-            $timesincecompletion = '';
-            // If time since completion is set.
-            if ($instance->customint5 > 0) {
-                // ... by default count back from now.
-                $startdate = start_of_day_timestamp(time());
-
-                if($instance->customint7 == 1 && $instance->enrolstartdate) {
-                    $startdate = start_of_day_timestamp($instance->enrolstartdate);
-                }
-
-                $timelimit = $startdate - $instance->customint5;
-                $timesincecompletion = ' AND cc.timecompleted > ' . $timelimit;
-            }
-
-            $sql = 'SELECT count(c.id) FROM {user} u
-                    JOIN {user_enrolments} ue on u.id = ue.userid
-                    JOIN {enrol} e ON e.id = ue.enrolid
-                    JOIN {course} c ON (e.courseid = c.id
-                        AND c.category = :categoryid)
-                    JOIN {course_completions} cc ON (cc.course = c.id
-                        AND cc.userid = u.id
-                        AND cc.timecompleted IS NOT NULL' . $timesincecompletion . ')
-                WHERE u.id = :userid';
-
-            $params = [
-                'userid' => $USER->id,
-                'categoryid' => $categoryid,
-            ];
-
-            $count = $DB->count_records_sql($sql, $params);
-            if ($count == 0) {
-                $category = \core_course_category::get($categoryid, MUST_EXIST, true, $USER->id);
-
-                $categorylink = html_writer::link(
-                    new moodle_url('/course/index.php', ['categoryid' => $categoryid]),
-                    $category->name
-                );
-
-                if ($instance->customint5) {
-                    // No course completed in specified category since time x.
-                    return get_string('nocourseincategorysince', 'enrol_bycategory', $categorylink);
-                }
-                // No course completed in specified category without timelimit.
-                return get_string('nocourseincategory', 'enrol_bycategory', $categorylink);
-            }
-        }
-
-        if ($instance->customint3 > 0) {
-            // Max enrol limit specified.
-            $count = $DB->count_records('user_enrolments', array('enrolid' => $instance->id));
-            if ($count >= $instance->customint3) {
-                // Bad luck, no more self enrolments here.
-                return get_string('maxenrolledreached', 'enrol_bycategory');
-            }
-
-            // Empty spaces available and waiting list is enabled
-            if(1 == $instance->customint8) {
-                $waitlist = new enrol_bycategory_waitlist($instance->id);
-                $waitlistcount = $waitlist->get_count();
-                if($waitlistcount > 0) {
-                    // Users on the waiting list have to be enroled first before self enrolment becomes available again
-                    return get_string('maxenrolledreached', 'enrol_bycategory');
-                }
-            }
-        }
-
-        return true;*/
     }
 
     /**
@@ -948,6 +838,13 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
                 $subject = get_string('waitlist_notification_subject', 'enrol_bycategory', $a);
                 $body = get_string('waitlist_notification_body', 'enrol_bycategory', $a);
+                $markdownbody = str_replace([
+                    $a->confirmenrolurl,
+                    $a->leavewaitlisturl,
+                ], [
+                    "[$a->confirmenrolurl]($a->confirmenrolurl)",
+                    "[$a->leavewaitlisturl]($a->leavewaitlisturl)",
+                ], $body);
 
                 $message = new message();
                 $message->component = 'enrol_bycategory';
@@ -956,8 +853,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $message->userto = $user;
                 $message->subject = $subject;
                 $message->fullmessage = $body;
-                $message->fullmessageformat = FORMAT_MARKDOWN;
-                $message->fullmessagehtml = markdown_to_html($body);
+                $message->fullmessageformat = FORMAT_PLAIN;
+                $message->fullmessagehtml = markdown_to_html($markdownbody);
                 $message->smallmessage = $subject;
                 $message->contexturlname = $a->coursename;
                 $message->contexturl = $a->confirmenrolurl;
