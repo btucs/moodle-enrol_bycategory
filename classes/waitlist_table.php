@@ -25,7 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/tablelib.php");
 
-class enrol_bycategory_waitlist_table extends table_sql {
+class enrol_bycategory_waitlist_table extends table_sql
+{
 
     private $course;
 
@@ -36,16 +37,22 @@ class enrol_bycategory_waitlist_table extends table_sql {
 
         $this->course = $course;
 
-        $columns = ['firstname', 'lastname', 'email', 'timecreated', 'notified', 'actions'];
+        $columns = ['select', 'firstname', 'lastname', 'email', 'timecreated', 'notified', 'actions'];
         $this->define_columns($columns);
 
+        $checkboxattrs = [
+            'title' => get_string('selectall'),
+            'data-action' => 'enrol_bycategory/selectall',
+        ];
+
         $headers = [
+            html_writer::checkbox('selectall', 1, false, null, $checkboxattrs),
             get_string('firstname'),
             get_string('lastname'),
             get_string('email'),
             get_string('onwaitlistsince', 'enrol_bycategory'),
             get_string('notifiedcount', 'enrol_bycategory'),
-            ''
+            '',
         ];
         $this->define_headers($headers);
 
@@ -53,15 +60,18 @@ class enrol_bycategory_waitlist_table extends table_sql {
         $this->column_class('actions', 'text-nowrap');
         $this->pageable(true);
         $this->sortable(true, 'lastname', SORT_ASC);
+        $this->no_sorting('select', 'actions');
 
         $where = 'ebw.instanceid = :instanceid';
 
         $this->set_sql('', '', $where, $params);
 
         $PAGE->requires->js_call_amd('enrol_bycategory/confirm', 'init');
+        $PAGE->requires->js_call_amd('enrol_bycategory/select-all', 'init');
     }
 
-    public function query_db($pagesize, $useinitialsbar = true) {
+    public function query_db($pagesize, $useinitialsbar = true)
+    {
         global $DB;
 
         $sort = $this->get_sql_sort();
@@ -88,6 +98,21 @@ class enrol_bycategory_waitlist_table extends table_sql {
         } else {
             $this->rawdata = $DB->get_records_sql($sql, $this->sql->params);
         }
+    }
+
+    /**
+     * The select column.
+     *
+     * @param stdClass $row the row data.
+     * @return string;
+     * @throws \moodle_exception
+     * @throws \coding_exception
+     */
+    public function col_select($row) {
+
+        return \html_writer::checkbox('userids[]', $row->id, false, '', [
+            'class' => 'selectuserids'
+        ]);
     }
 
     public function col_timecreated($row) {
@@ -152,5 +177,25 @@ class enrol_bycategory_waitlist_table extends table_sql {
         );
 
         return implode('&nbsp', $actions);
+    }
+
+    /**
+     * Override the table's wrap_html_finish method in order to render the bulk actions and
+     * records per page options.
+     */
+    public function wrap_html_finish() {
+        global $OUTPUT, $DB;
+
+        $sql = "SELECT id FROM {course}
+                 WHERE visible = '1' AND (enddate = 0 OR enddate > :enddate)";
+
+        $activecourses = $DB->get_records_sql($sql, [
+            'enddate' => time(),
+        ]);
+
+        $data = new stdClass();
+        $data->options = array_values(enrol_get_my_courses(null, 'c.fullname', 0, array_keys($activecourses), true));
+
+        echo $OUTPUT->render_from_template('enrol_bycategory/waitlist_bulk_actions', $data);
     }
 }

@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['bulkenrol'] = 'Enrol selected into';
 $string['canntenrol'] = 'Enrolment is disabled or inactive';
 $string['canntenrolearly'] = 'You cannot enrol yet; enrolment starts on {$a}.';
 $string['canntenrollate'] = 'You cannot enrol any more, since enrolment ended on {$a}.';
@@ -44,6 +45,7 @@ The following placeholders may be included in the message:
 * User fullname {$a->fullname}';
 $string['completionperiod'] = 'Timelimit since completion';
 $string['completionperiod_help'] = 'Allowed duration since completing a course in the configured category.';
+$string['courseid'] = 'Course ID';
 $string['defaultrole'] = 'Default role assignment';
 $string['defaultrole_desc'] = 'Select role which should be assigned to users during self enrolment.';
 $string['deleteselectedusers'] = 'Delete selected user enrolments';
