@@ -130,11 +130,15 @@ $string['unenroluser'] = 'Do you really want to unenrol "{$a->user}" from course
 $string['unenrolusers'] = 'Unenrol users';
 $string['usernotonwaitlist'] = 'You are not on the waiting list of this course.';
 $string['waitlist'] = 'Waiting List';
-$string['waitlist_info_message'] = 'You are currently on the waiting list.
+$string['waitlist_blocked_message'] = 'You have been notified 5 times about an available slot without reacting.
 
-If a space becomes available you will be informed via e-mail and will be able to enrol into this course.
+You will not receive any more notifications.
+
+If you are still interested in joining this course, please leave the waiting list and join again.
+This will allow you to receive notifications again, but will also place you at the end of the waiting list.';
+$string['waitlist_info_message'] = 'If a slot becomes available you will be informed via e-mail and will be able to enrol into this course.
 Be aware that other persons may be informed as well, so be quick.
-The e-mail is sent  daily, if space is available.
+The e-mail is sent daily, if at least one slot is available.
 
 Your current position on the waiting list is: {$a->waitlistposition}.
 If you don\'t like to wait any longer, you can use the following button to leave the waiting list.
@@ -163,3 +167,4 @@ If you have not done so already, you should edit your profile page so that we ca
 
   {$a->profileurl}';
 $string['wrongtokenuser'] = 'This token was meant for another user. Please wait until you receive your Email.';
+$string['youareonthewaitlist'] = 'You are currently on the waiting list.';

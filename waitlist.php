@@ -92,18 +92,27 @@ function show_user_view($waitlist, $course, $instance) {
   }
 
   $form = new enrol_bycategory_leave_waitlist_form($instance);
+  $waitlistposition = $waitlist->get_user_position($USER->id);
+  $waitlistinfo = '';
+  if($waitlistposition !== -1) {
+    $waitlistinfo = get_string(
+      'waitlist_position_message',
+      'enrol_bycategory',
+      ['waitlistposition' => $waitlistposition]
+    );
+  } else {
+    $waitlistinfo = get_string(
+      'waitlist_blocked_message',
+      'enrol_bycategory',
+    );
+  }
 
   $templatecontext = [
-    'waitlistinfo' => text_to_html(
-      get_string('waitlist_info_message', 'enrol_bycategory', [
-        'waitlistposition' => $waitlist->get_user_position($USER->id),
-      ]),
-      false,
-      false,
-      true
-    ),
+    'waitlistinfo' => text_to_html($waitlistinfo, false, false, true),
     'form' => $form->render(),
   ];
+
+
 
   echo $OUTPUT->header();
   echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
