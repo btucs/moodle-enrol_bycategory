@@ -21,11 +21,7 @@
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-function xmldb_enrol_bycategory_upgrade($oldversion)
-{
+function xmldb_enrol_bycategory_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();

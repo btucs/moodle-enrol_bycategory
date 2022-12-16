@@ -38,14 +38,12 @@ require_once($CFG->dirroot . '/enrol/bycategory/helper.php');
 /**
  * @covers enrol_bycategory_waitlist
  */
-class waitlist_test extends \advanced_testcase
-{
+class waitlist_test extends \advanced_testcase {
 
     private $tablename = 'enrol_bycategory_waitlist';
     private $instanceid = 1;
 
-    public function test_get_count()
-    {
+    public function test_get_count() {
         global $DB;
 
         $this->resetAfterTest();
@@ -74,12 +72,9 @@ class waitlist_test extends \advanced_testcase
         ], false, false);
 
         $this->assertEquals($waitlist->get_count(), 1);
-
-        // Don't count users which do
     }
 
-    public function test_add_user()
-    {
+    public function test_add_user() {
         global $DB;
 
         $this->resetAfterTest();
@@ -101,8 +96,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertTrue($exits);
     }
 
-    public function test_remove_user()
-    {
+    public function test_remove_user() {
         global $DB;
 
         $this->resetAfterTest();
@@ -135,8 +129,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertEquals($count, 1);
     }
 
-    public function test_remove_users()
-    {
+    public function test_remove_users() {
         global $DB;
 
         $this->resetAfterTest();
@@ -181,8 +174,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertTrue($user2exists);
     }
 
-    public function test_is_on_waitlist()
-    {
+    public function test_is_on_waitlist() {
         global $DB;
 
         $this->resetAfterTest();
@@ -205,8 +197,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertTrue($isonwaitlist);
     }
 
-    public function test_get_user_position()
-    {
+    public function test_get_user_position() {
         global $DB;
 
         $this->resetAfterTest();
@@ -224,7 +215,6 @@ class waitlist_test extends \advanced_testcase
             'timemodified' => $now
         ], false, false);
 
-
         $DB->insert_record($this->tablename, [
             'userid' => $user2id,
             'instanceid' => $this->instanceid,
@@ -232,7 +222,6 @@ class waitlist_test extends \advanced_testcase
             'timecreated' => $now + 1,
             'timemodified' => $now + 1
         ], false, false);
-
 
         $DB->insert_record($this->tablename, [
             'userid' => $user3id,
@@ -251,8 +240,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertEquals($waitlist->get_user_position($user2id), 1);
     }
 
-    public function test_can_enrol()
-    {
+    public function test_can_enrol() {
         global $DB, $CFG, $OUTPUT;
         $this->resetAfterTest();
         $this->preventResetByRollback();
@@ -296,8 +284,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertSame($expectederrorstring, $plugin->can_self_enrol($instance1, true));
     }
 
-    public function test_select_courses_with_available_space()
-    {
+    public function test_select_courses_with_available_space() {
 
         global $DB;
         $this->resetAfterTest();
@@ -315,7 +302,6 @@ class waitlist_test extends \advanced_testcase
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
 
-        //$maninstance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
@@ -340,26 +326,25 @@ class waitlist_test extends \advanced_testcase
         $result = enrol_bycategory_waitlist::select_courses_with_available_space();
         $this->assertEquals(3, count($result));
 
-        // When the course is full it should not show up
+        // When the course is full it should not show up.
         $plugin->enrol_user($instance3, $user1->id);
         $result = enrol_bycategory_waitlist::select_courses_with_available_space();
         $this->assertEquals(2, count($result));
 
-        // If enrols are disabled it should not show up
+        // If enrols are disabled it should not show up.
         $instance2->customint6 = 0;
         $DB->update_record('enrol', $instance2);
         $result = enrol_bycategory_waitlist::select_courses_with_available_space();
         $this->assertEquals(1, count($result));
 
-        // If enrol is disabled it should not show up
+        // If enrol is disabled it should not show up.
         $instance1->status = ENROL_INSTANCE_DISABLED;
         $DB->update_record('enrol', $instance1);
         $result = enrol_bycategory_waitlist::select_courses_with_available_space();
         $this->assertEquals(0, count($result));
     }
 
-    public function test_select_users_from_waitlist_for_notification()
-    {
+    public function test_select_users_from_waitlist_for_notification() {
         global $DB, $CFG;
         $this->resetAfterTest();
 
@@ -383,7 +368,6 @@ class waitlist_test extends \advanced_testcase
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
 
-        //$maninstance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
@@ -436,8 +420,7 @@ class waitlist_test extends \advanced_testcase
         $this->assertEquals($waitlistusers[7]->instanceid, $instance2->id);
     }
 
-    public function test_increase_notified()
-    {
+    public function test_increase_notified() {
         global $DB, $CFG;
         $this->resetAfterTest();
         enrol_bycategory_phpunit_util::enable_plugin();

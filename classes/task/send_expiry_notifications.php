@@ -23,7 +23,7 @@
  */
 
 namespace enrol_bycategory\task;
-defined('MOODLE_INTERNAL') || die();
+
 /**
  * Send expiry notifications task.
  *

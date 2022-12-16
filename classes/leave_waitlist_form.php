@@ -29,29 +29,28 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
 class enrol_bycategory_leave_waitlist_form extends moodleform {
-  protected $instance;
+    protected $instance;
 
-  public function __construct($customdata = null) {
-    parent::__construct('', $customdata);
-  }
+    public function __construct($customdata = null) {
+        parent::__construct('', $customdata);
+    }
 
-  public function definition() {
-    global $USER;
+    public function definition() {
+        global $USER;
 
-    $mform = $this->_form;
-    $instance = $this->_customdata;
-    $this->instance = $instance;
+        $mform = $this->_form;
+        $instance = $this->_customdata;
+        $this->instance = $instance;
 
-    $mform->addElement('hidden', 'enrolid');
-    $mform->setType('enrolid', PARAM_INT);
-    $mform->setDefault('enrolid', $instance->id);
+        $mform->addElement('hidden', 'enrolid');
+        $mform->setType('enrolid', PARAM_INT);
+        $mform->setDefault('enrolid', $instance->id);
 
-    $mform->addElement('hidden', 'user');
-    $mform->setType('user', PARAM_INT);
-    $mform->setDefault('user', $USER->id);
+        $mform->addElement('hidden', 'user');
+        $mform->setType('user', PARAM_INT);
+        $mform->setDefault('user', $USER->id);
 
-    //$this->add_action_buttons(false, get_string('leavewaitlist', 'enrol_bycategory'));
-    $mform->addElement('submit', 'leavewaitlist', get_string('leavewaitlist', 'enrol_bycategory'));
-    $mform->closeHeaderBefore('leavewaitlist');
-  }
+        $mform->addElement('submit', 'leavewaitlist', get_string('leavewaitlist', 'enrol_bycategory'));
+        $mform->closeHeaderBefore('leavewaitlist');
+    }
 }

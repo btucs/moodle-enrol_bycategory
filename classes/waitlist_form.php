@@ -34,41 +34,41 @@ class enrol_bycategory_waitlist_form extends moodleform {
     }
 
     protected function get_form_identifier() {
-      $formid = $this->_customdata->id.'_'.get_class($this);
-      return $formid;
+        $formid = $this->_customdata->id . '_' . get_class($this);
+        return $formid;
     }
 
     public function definition() {
-      global $USER;
+        global $USER;
 
-      $mform = $this->_form;
-      $instance = $this->_customdata;
-      $this->instance = $instance;
-      $plugin = enrol_get_plugin('bycategory');
+        $mform = $this->_form;
+        $instance = $this->_customdata;
+        $this->instance = $instance;
+        $plugin = enrol_get_plugin('bycategory');
 
-      $heading = $plugin->get_instance_name($instance);
-      $mform->addElement('header', 'selfheader', $heading);
+        $heading = $plugin->get_instance_name($instance);
+        $mform->addElement('header', 'selfheader', $heading);
 
-      $maxenrolledmessage = get_string('maxenrolledreached', 'enrol_bycategory');
-      $joinwaitlistmessage = get_string('joinwaitlistmessage', 'enrol_bycategory');
-      $message = <<<EOD
-        <p>$maxenrolledmessage</p>
-        <p>$joinwaitlistmessage</p>
-      EOD;
-      $mform->addElement('html', $message);
+        $maxenrolledmessage = get_string('maxenrolledreached', 'enrol_bycategory');
+        $joinwaitlistmessage = get_string('joinwaitlistmessage', 'enrol_bycategory');
+        $message = <<<EOD
+    <p>$maxenrolledmessage</p>
+    <p>$joinwaitlistmessage</p>
+EOD;
+        $mform->addElement('html', $message);
 
-      $this->add_action_buttons(false, get_string('joinwaitlist', 'enrol_bycategory'));
+        $this->add_action_buttons(false, get_string('joinwaitlist', 'enrol_bycategory'));
 
-      $mform->addElement('hidden', 'id');
-      $mform->setType('id', PARAM_INT);
-      $mform->setDefault('id', $instance->courseid);
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+        $mform->setDefault('id', $instance->courseid);
 
-      $mform->addElement('hidden', 'instance');
-      $mform->setType('instance', PARAM_INT);
-      $mform->setDefault('instance', $instance->id);
+        $mform->addElement('hidden', 'instance');
+        $mform->setType('instance', PARAM_INT);
+        $mform->setDefault('instance', $instance->id);
 
-      $mform->addElement('hidden', 'user');
-      $mform->setType('user', PARAM_INT);
-      $mform->setDefault('user', $USER->id);
+        $mform->addElement('hidden', 'user');
+        $mform->setType('user', PARAM_INT);
+        $mform->setDefault('user', $USER->id);
     }
 }

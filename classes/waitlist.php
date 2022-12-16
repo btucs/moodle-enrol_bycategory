@@ -21,9 +21,6 @@
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
 class enrol_bycategory_waitlist {
 
     private $tablename = 'enrol_bycategory_waitlist';
@@ -37,7 +34,7 @@ class enrol_bycategory_waitlist {
     public function __construct($instanceid) {
         global $DB;
 
-        if(empty($instanceid)) {
+        if (empty($instanceid)) {
             throw new coding_exception('$instanceid is empty');
         }
 
@@ -63,7 +60,7 @@ class enrol_bycategory_waitlist {
     public function remove_user($userid) {
         global $DB;
 
-        if(empty($userid)) {
+        if (empty($userid)) {
             throw new coding_exception('$userid is empty empty');
         }
 
@@ -77,7 +74,7 @@ class enrol_bycategory_waitlist {
     public function remove_users($userids) {
         global $DB;
 
-        if(false === is_array($userids) || 0 === count($userids)) {
+        if (false === is_array($userids) || 0 === count($userids)) {
             return;
         }
 
@@ -100,8 +97,8 @@ class enrol_bycategory_waitlist {
 
         $now = time();
 
-        if(empty($userid)) {
-          throw new coding_exception('$userid is empty');
+        if (empty($userid)) {
+            throw new coding_exception('$userid is empty');
         }
 
         return $DB->insert_record($this->tablename, [
@@ -121,7 +118,7 @@ class enrol_bycategory_waitlist {
     public function is_on_waitlist($userid) {
         global $DB;
 
-        if(empty($userid)) {
+        if (empty($userid)) {
             throw new coding_exception('$userid is empty');
         }
 
@@ -136,12 +133,12 @@ class enrol_bycategory_waitlist {
     public function get_user_position($userid) {
         global $DB;
 
-        if(empty($userid)) {
+        if (empty($userid)) {
             throw new coding_exception('$userid is empty');
         }
 
         $usernotifylimit = get_config('enrol_bycategory', 'waitlistnotifylimit');
-        if($usernotifylimit === false) {
+        if ($usernotifylimit === false) {
             $usernotifylimit = 5;
         }
 
@@ -173,11 +170,11 @@ class enrol_bycategory_waitlist {
     public function can_enrol(stdClass $instance = null, $userid = null, $ignorewaitlist = false) {
         global $CFG, $DB, $USER;
 
-        if($instance === null) {
+        if ($instance === null) {
             $instance = $DB->get_record('enrol', ['id' => $this->instanceid], '*', MUST_EXIST);
         }
 
-        if($userid === null) {
+        if ($userid === null) {
             $userid = $USER->id;
         }
 
@@ -190,7 +187,7 @@ class enrol_bycategory_waitlist {
             return get_string('canntenrol', 'enrol_bycategory');
         }
 
-        if ($instance->enrolstartdate != 0 and $instance->enrolstartdate > time()) {
+        if ($instance->enrolstartdate != 0 && $instance->enrolstartdate > time()) {
             return get_string('canntenrolearly', 'enrol_bycategory', userdate($instance->enrolstartdate));
         }
 
@@ -198,10 +195,9 @@ class enrol_bycategory_waitlist {
          * User can enrol if $ingorewaitlist is true even if the enrolment is already closed
          * or enrolment is not allowed.
          */
-        if($ignorewaitlist === false) {
+        if ($ignorewaitlist === false) {
 
-
-            if ($instance->enrolenddate != 0 and $instance->enrolenddate < time()) {
+            if ($instance->enrolenddate != 0 && $instance->enrolenddate < time()) {
                 return get_string('canntenrollate', 'enrol_bycategory', userdate($instance->enrolenddate));
             }
 
@@ -224,7 +220,7 @@ class enrol_bycategory_waitlist {
                 // ... by default count back from now.
                 $startdate = start_of_day_timestamp(time());
 
-                if($instance->customint7 == 1 && $instance->enrolstartdate) {
+                if ($instance->customint7 == 1 && $instance->enrolstartdate) {
                     $startdate = start_of_day_timestamp($instance->enrolstartdate);
                 }
 
@@ -273,12 +269,12 @@ class enrol_bycategory_waitlist {
                 return get_string('maxenrolledreached', 'enrol_bycategory');
             }
 
-            // Empty spaces available and waiting list is enabled
-            if(1 == $instance->customint8 && false === $ignorewaitlist) {
+            // Empty spaces available and waiting list is enabled.
+            if (1 == $instance->customint8 && false === $ignorewaitlist) {
                 $waitlist = new enrol_bycategory_waitlist($instance->id);
                 $waitlistcount = $waitlist->get_count();
-                if($waitlistcount > 0) {
-                    // Users on the waiting list have to be enroled first before self enrolment becomes available again
+                if ($waitlistcount > 0) {
+                    // Users on the waiting list have to be enroled first before self enrolment becomes available again.
                     return get_string('maxenrolledreached', 'enrol_bycategory');
                 }
             }
@@ -329,7 +325,7 @@ class enrol_bycategory_waitlist {
         $now = time();
         $params = [
             'pluginname' => 'bycategory',
-            // Has to be two different variables
+            // Has to be two different variables.
             'startbefore' => $now,
             'endafter' => $now,
             'status' => ENROL_INSTANCE_ENABLED,
@@ -351,12 +347,12 @@ class enrol_bycategory_waitlist {
         global $DB;
 
         $usernotifycount = get_config('enrol_bycategory', 'waitlistnotifycount');
-        if($usernotifycount === false) {
+        if ($usernotifycount === false) {
             $usernotifycount = 5;
         }
 
         $usernotifylimit = get_config('enrol_bycategory', 'waitlistnotifylimit');
-        if($usernotifylimit === false) {
+        if ($usernotifylimit === false) {
             $usernotifylimit = 5;
         }
 

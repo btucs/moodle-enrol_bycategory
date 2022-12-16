@@ -23,7 +23,7 @@
  */
 
 namespace enrol_bycategory\task;
-defined('MOODLE_INTERNAL') || die();
+
 /**
  * Send waitlist notifications task.
  *
@@ -33,22 +33,22 @@ defined('MOODLE_INTERNAL') || die();
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class send_waitlist_notifications extends \core\task\scheduled_task {
-  /**
+    /**
      * Name for this task.
      *
      * @return string
      */
     public function get_name() {
-      return get_string('sendwaitlistnotificationstask', 'enrol_bycategory');
-  }
+        return get_string('sendwaitlistnotificationstask', 'enrol_bycategory');
+    }
 
-  /**
-   * Run task for sending expiry notifications.
-   */
-  public function execute() {
-      /**@var enrol_bycategory_plugin */
-      $enrol = enrol_get_plugin('bycategory');
-      $trace = new \text_progress_trace();
-      $enrol->send_waitlist_notifications($trace);
-  }
+    /**
+     * Run task for sending expiry notifications.
+     */
+    public function execute() {
+        /** @var enrol_bycategory_plugin */
+        $enrol = enrol_get_plugin('bycategory');
+        $trace = new \text_progress_trace();
+        $enrol->send_waitlist_notifications($trace);
+    }
 }

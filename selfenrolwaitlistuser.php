@@ -49,10 +49,10 @@ if ($waitlist->is_on_waitlist($userid) === false) {
     redirect($waitlisturl, get_string('usernotonwaitlist', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
 }
 
-// Check if token is valid
-$ONEDAY = 86400; // 24 * 60 * 60
+// Check if token is valid.
+$oneday = 86400; // ... 24 * 60 * 60
 $now = time();
-if($tokenrecord->timecreated + $ONEDAY < $now) {
+if ($tokenrecord->timecreated + $oneday < $now) {
     redirect($waitlisturl, get_string('tokeninvalid', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
 }
 
@@ -67,8 +67,8 @@ $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
 $PAGE->set_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
 
 $canenrol = $waitlist->can_enrol($instance, $userid, true);
-// Sorry you missed your chance, try again next time
-if($canenrol !== true) {
+// Sorry you missed your chance, try again next time.
+if ($canenrol !== true) {
     $waitlist->reset_notification_counter($user->id);
     $DB->delete_records($tokentablename, ['id' => $tokenrecord->id]);
     redirect($waitlisturl, get_string('enrolchancemissed', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
@@ -77,7 +77,7 @@ if($canenrol !== true) {
 $enrolmethod = 'bycategory';
 /** @var enrol_bycategory_plugin */
 $enrol = enrol_get_plugin($enrolmethod);
-if($enrol === null) {
+if ($enrol === null) {
     redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
 }
 
@@ -85,17 +85,17 @@ $enrolinstances = enrol_get_instances($course->id, true);
 $bycategoryinstance = null;
 foreach ($enrolinstances as $enrolinstance) {
     if ($enrolinstance->enrol === $enrolmethod && $enrolinstance->id === $instance->id) {
-    $bycategoryinstance = $enrolinstance;
-    break;
+        $bycategoryinstance = $enrolinstance;
+        break;
     }
 }
 
-if($bycategoryinstance === null) {
+if ($bycategoryinstance === null) {
     redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
 }
 
 $enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id);
-if($enrolresult === true) {
+if ($enrolresult === true) {
     $waitlist->remove_user($user->id);
     $DB->delete_records($tokentablename, ['id' => $tokenrecord->id]);
 }

@@ -21,17 +21,15 @@
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
 use core\event\course_deleted;
 use core\event\user_enrolment_deleted;
 
 class enrol_bycategory_observers {
-  public static function course_deleted(course_deleted $event) {
-    $eventdata = $event->get_data();
-  }
+    public static function course_deleted(course_deleted $event) {
+        $eventdata = $event->get_data();
+    }
 
-  public static function user_enrolment_deleted(user_enrolment_deleted $event) {
-    $eventdata = $event->get_data();
-  }
+    public static function user_enrolment_deleted(user_enrolment_deleted $event) {
+        $eventdata = $event->get_data();
+    }
 }

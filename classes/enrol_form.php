@@ -27,68 +27,68 @@ defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
 class enrol_bycategory_enrol_form extends moodleform {
-  protected $instance;
-  protected $toomany = false;
+    protected $instance;
+    protected $toomany = false;
 
-  /**
-   * Overriding this function to get unique form id for multiple bycategory enrolments.
-   * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
-   *
-   * @return string form identifier
-   */
-  protected function get_form_identifier() {
-      $formid = $this->_customdata->id.'_'.get_class($this);
-      return $formid;
-  }
+    /**
+     * Overriding this function to get unique form id for multiple bycategory enrolments.
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     *
+     * @return string form identifier
+     */
+    protected function get_form_identifier() {
+        $formid = $this->_customdata->id . '_' . get_class($this);
+        return $formid;
+    }
 
-  /**
-   * Form definition
-   * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
-   */
-  public function definition() {
-      global $USER, $OUTPUT, $CFG;
-      $mform = $this->_form;
-      $instance = $this->_customdata;
-      $this->instance = $instance;
-      $plugin = enrol_get_plugin('bycategory');
+    /**
+     * Form definition
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     */
+    public function definition() {
+        global $USER, $OUTPUT, $CFG;
+        $mform = $this->_form;
+        $instance = $this->_customdata;
+        $this->instance = $instance;
+        $plugin = enrol_get_plugin('bycategory');
 
-      $heading = $plugin->get_instance_name($instance);
-      $mform->addElement('header', 'selfheader', $heading);
+        $heading = $plugin->get_instance_name($instance);
+        $mform->addElement('header', 'selfheader', $heading);
 
-      $this->add_action_buttons(false, get_string('enrolme', 'enrol_bycategory'));
+        $this->add_action_buttons(false, get_string('enrolme', 'enrol_bycategory'));
 
-      $mform->addElement('hidden', 'id');
-      $mform->setType('id', PARAM_INT);
-      $mform->setDefault('id', $instance->courseid);
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+        $mform->setDefault('id', $instance->courseid);
 
-      $mform->addElement('hidden', 'instance');
-      $mform->setType('instance', PARAM_INT);
-      $mform->setDefault('instance', $instance->id);
-  }
+        $mform->addElement('hidden', 'instance');
+        $mform->setType('instance', PARAM_INT);
+        $mform->setDefault('instance', $instance->id);
+    }
 
-  /**
-   * Dummy stub method - override if you needed to perform some extra validation.
-   * If there are errors return array of errors ("fieldname"=>"error message"),
-   * otherwise true if ok.
-   *
-   * Server side rules do not work for uploaded files, implement serverside rules here if needed.
-   * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
-   * @param array $data array of ("fieldname"=>value) of submitted data
-   * @param array $files array of uploaded files "element_name"=>tmp_file_path
-   * @return array of "element_name"=>"error_description" if there are errors,
-   *         or an empty array if everything is OK (true allowed for backwards compatibility too).
-   */
-  public function validation($data, $files) {
-      global $DB, $CFG;
+    /**
+     * Dummy stub method - override if you needed to perform some extra validation.
+     * If there are errors return array of errors ("fieldname"=>"error message"),
+     * otherwise true if ok.
+     *
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files) {
+        global $DB, $CFG;
 
-      $errors = parent::validation($data, $files);
-      $instance = $this->instance;
+        $errors = parent::validation($data, $files);
+        $instance = $this->instance;
 
-      if ($this->toomany) {
-          $errors['notice'] = get_string('error');
-          return $errors;
-      }
+        if ($this->toomany) {
+            $errors['notice'] = get_string('error');
+            return $errors;
+        }
 
-      return $errors;
-  }
+        return $errors;
+    }
 }

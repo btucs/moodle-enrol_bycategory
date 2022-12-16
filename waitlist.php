@@ -45,77 +45,75 @@ require_login();
 
 $waitlist = new enrol_bycategory_waitlist($enrolid);
 
-if(false === $hasmanagecapability) {
-  show_user_view($waitlist, $course, $instance);
+if (false === $hasmanagecapability) {
+    show_user_view($waitlist, $course, $instance);
 } else {
-  show_management_view($waitlist, $course, $instance);
+    show_management_view($waitlist, $course, $instance);
 }
 
 function show_management_view($waitlist, $course, $instance) {
-  global $OUTPUT;
+    global $OUTPUT;
 
-  $download = optional_param('download', '', PARAM_ALPHA);
-  $table = new enrol_bycategory_waitlist_table($course, ['instanceid' => $instance->id]);
-  $table->is_downloading(
-    $download,
-    get_string('waitlist_users', 'enrol_bycategory'),
-    get_string('waitlist_users', 'enrol_bycategory')
-  );
+    $download = optional_param('download', '', PARAM_ALPHA);
+    $table = new enrol_bycategory_waitlist_table($course, ['instanceid' => $instance->id]);
+    $table->is_downloading(
+        $download,
+        get_string('waitlist_users', 'enrol_bycategory'),
+        get_string('waitlist_users', 'enrol_bycategory')
+    );
 
-  if(!$table->is_downloading()) {
-    echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
-  }
+    if (!$table->is_downloading()) {
+        echo $OUTPUT->header();
+        echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
+    }
 
-  $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
-  $table->define_baseurl($url);
-  $table->out(25, true);
+    $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
+    $table->define_baseurl($url);
+    $table->out(25, true);
 
-  if(!$table->is_downloading()) {
-    echo $OUTPUT->footer();
-  }
+    if (!$table->is_downloading()) {
+        echo $OUTPUT->footer();
+    }
 }
 
 function show_user_view($waitlist, $course, $instance) {
-  global $USER, $OUTPUT;
+    global $USER, $OUTPUT;
 
-  $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
+    $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
 
-  if(!$waitlist->is_on_waitlist($USER->id)) {
-    redirect($courseurl);
-  } else {
-    $leavewaitlistexists = optional_param('leavewaitlist', null, PARAM_TEXT);
-    if($leavewaitlistexists !== null) {
-      $waitlist->remove_user($USER->id);
-      redirect($courseurl);
+    if (!$waitlist->is_on_waitlist($USER->id)) {
+        redirect($courseurl);
+    } else {
+        $leavewaitlistexists = optional_param('leavewaitlist', null, PARAM_TEXT);
+        if ($leavewaitlistexists !== null) {
+            $waitlist->remove_user($USER->id);
+            redirect($courseurl);
+        }
     }
-  }
 
-  $form = new enrol_bycategory_leave_waitlist_form($instance);
-  $waitlistposition = $waitlist->get_user_position($USER->id);
-  $waitlistinfo = '';
-  if($waitlistposition !== -1) {
-    $waitlistinfo = get_string(
-      'waitlist_position_message',
-      'enrol_bycategory',
-      ['waitlistposition' => $waitlistposition]
-    );
-  } else {
-    $waitlistinfo = get_string(
-      'waitlist_blocked_message',
-      'enrol_bycategory',
-    );
-  }
+    $form = new enrol_bycategory_leave_waitlist_form($instance);
+    $waitlistposition = $waitlist->get_user_position($USER->id);
+    $waitlistinfo = '';
+    if ($waitlistposition !== -1) {
+        $waitlistinfo = get_string(
+            'waitlist_position_message',
+            'enrol_bycategory',
+            ['waitlistposition' => $waitlistposition]
+        );
+    } else {
+        $waitlistinfo = get_string(
+            'waitlist_blocked_message',
+            'enrol_bycategory',
+        );
+    }
 
-  $templatecontext = [
-    'waitlistinfo' => text_to_html($waitlistinfo, false, false, true),
-    'form' => $form->render(),
-  ];
+    $templatecontext = [
+        'waitlistinfo' => text_to_html($waitlistinfo, false, false, true),
+        'form' => $form->render(),
+    ];
 
-
-
-  echo $OUTPUT->header();
-  echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
-  echo $OUTPUT->render_from_template('enrol_bycategory/waitlist', $templatecontext);
-  echo $OUTPUT->footer();
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
+    echo $OUTPUT->render_from_template('enrol_bycategory/waitlist', $templatecontext);
+    echo $OUTPUT->footer();
 }

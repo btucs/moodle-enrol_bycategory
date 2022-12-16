@@ -234,7 +234,7 @@ class bycategory_test extends \advanced_testcase {
         $now = time();
 
         $trace = new \null_progress_trace();
-       enrol_bycategory_phpunit_util::enable_plugin();
+        enrol_bycategory_phpunit_util::enable_plugin();
 
         // Prepare some data.
 
@@ -352,7 +352,7 @@ class bycategory_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
 
-       enrol_bycategory_phpunit_util::enable_plugin();
+        enrol_bycategory_phpunit_util::enable_plugin();
         /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         /** @var $manualplugin enrol_manual_plugin */
@@ -424,28 +424,29 @@ class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance4);
 
         $plugin->enrol_user($instance1, $user1->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1, ENROL_USER_SUSPENDED); // Suspended users are not notified.
-        $plugin->enrol_user($instance1, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 5);                       // Above threshold are not notified.
-        $plugin->enrol_user($instance1, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 3 + 60 * 60);             // Less than one day after threshold - should be notified.
-        $plugin->enrol_user($instance1, $user4->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 4 - 60 * 3);              // Less than one day after threshold - should be notified.
+        $plugin->enrol_user($instance1, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 5);                 // Above threshold are not notified.
+        $plugin->enrol_user($instance1, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 3 + 60 * 60);       // Less than one day after threshold - should be notified.
+        $plugin->enrol_user($instance1, $user4->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 4 - 60 * 3);        // Less than one day after threshold - should be notified.
         $plugin->enrol_user($instance1, $user5->id, $studentrole->id, 0, $now + 60 * 60);                          // Should have been already notified.
         $plugin->enrol_user($instance1, $user6->id, $studentrole->id, 0, $now - 60);                               // Already expired.
         $manualplugin->enrol_user($maninstance1, $user7->id, $editingteacherrole->id);
         $manualplugin->enrol_user($maninstance1, $user8->id, $managerrole->id);                                    // Highest role --> enroller.
 
         $plugin->enrol_user($instance2, $user1->id, $studentrole->id);
-        $plugin->enrol_user($instance2, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 + 60 * 3);                // Above threshold are not notified.
-        $plugin->enrol_user($instance2, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 - 60 * 60);               // Less than one day after threshold - should be notified.
+        $plugin->enrol_user($instance2, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 + 60 * 3);        // Above threshold are not notified.
+        $plugin->enrol_user($instance2, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 - 60 * 60);       // Less than one day after threshold - should be notified.
 
         $manualplugin->enrol_user($maninstance3, $user1->id, $editingteacherrole->id);
-        $plugin->enrol_user($instance3, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 + 60);                  // Above threshold are not notified.
-        $plugin->enrol_user($instance3, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 - 60 * 60);               // Less than one day after threshold - should be notified.
+        $plugin->enrol_user($instance3, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 + 60);            // Above threshold are not notified.
+        $plugin->enrol_user($instance3, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 - 60 * 60);       // Less than one day after threshold - should be notified.
 
         $manualplugin->enrol_user($maninstance4, $user4->id, $editingteacherrole->id);
         $plugin->enrol_user($instance4, $user5->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 + 60);
         $plugin->enrol_user($instance4, $user6->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 - 60 * 60);
 
-        // The notification is sent out in fixed order first individual users,
-        // then summary per course by enrolid, user lastname, etc.
+        /* The notification is sent out in fixed order first individual users,
+           then summary per course by enrolid, user lastname, etc.
+        */
         $this->assertGreaterThan($instance1->id, $instance2->id);
         $this->assertGreaterThan($instance2->id, $instance3->id);
 
@@ -527,9 +528,9 @@ class bycategory_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
 
-       enrol_bycategory_phpunit_util::enable_plugin();
-        /** @var $plugin enrol_bycategory_plugin */
+        enrol_bycategory_phpunit_util::enable_plugin();
 
+        /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $trace = new \null_progress_trace();
 
@@ -548,7 +549,6 @@ class bycategory_test extends \advanced_testcase {
 
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
 
-        //$maninstance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
@@ -617,7 +617,7 @@ class bycategory_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
 
-       enrol_bycategory_phpunit_util::enable_plugin();
+        enrol_bycategory_phpunit_util::enable_plugin();
 
         /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
@@ -701,7 +701,7 @@ class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance10);
         $plugin->update_status($instance10, ENROL_INSTANCE_ENABLED);
 
-        // Maximum enrolments reached, waitlist not enabled
+        // Maximum enrolments reached, waitlist not enabled.
         $instance11 = $DB->get_record('enrol', array('courseid' => $course10->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance11->customint6 = 1;
         $instance11->customint3 = 1;
@@ -716,7 +716,7 @@ class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance12);
         $plugin->update_status($instance12, ENROL_INSTANCE_ENABLED);
 
-        // Maximum enrolments reached, waitlist enabled
+        // Maximum enrolments reached, waitlist enabled.
         $instance13 = $DB->get_record('enrol', array('courseid' => $course12->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance13->customint6 = 1;
         $instance13->customint3 = 1;
@@ -725,8 +725,8 @@ class bycategory_test extends \advanced_testcase {
         $plugin->update_status($instance13, ENROL_INSTANCE_ENABLED);
         $plugin->enrol_user($instance13, $user2->id, $studentrole->id);
 
-        // Empty space in course, but users on waitlist
-        // Maximum enrolments reached, waitlist enabled
+        // Empty space in course, but users on waitlist.
+        // Maximum enrolments reached, waitlist enabled.
         $instance14 = $DB->get_record('enrol', array('courseid' => $course13->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance14->customint6 = 1;
         $instance14->customint3 = 1;
@@ -784,12 +784,12 @@ class bycategory_test extends \advanced_testcase {
         $instance5->customint5 = 60 * 60 * 24 * 10;
         $instance5->customint7 = 1;
         $DB->update_record('enrol', $instance5);
-        // User can still enrol, because counting starts from enrolstartdate
+        // User can still enrol, because counting starts from enrolstartdate.
         $this->assertTrue($plugin->show_enrolme_link($instance5));
 
         $instance5->customint7 = 0;
         $DB->update_record('enrol', $instance5);
-        // User can't enrol, because counting starts from now
+        // User can't enrol, because counting starts from now.
         $this->assertFalse($plugin->show_enrolme_link($instance5));
     }
 
@@ -801,7 +801,7 @@ class bycategory_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->preventResetByRollback();
 
-       enrol_bycategory_phpunit_util::enable_plugin();
+        enrol_bycategory_phpunit_util::enable_plugin();
 
         $plugin = enrol_get_plugin('bycategory');
 
@@ -859,7 +859,7 @@ class bycategory_test extends \advanced_testcase {
         $this->assertNotEmpty($editingteacherrole);
 
         // Enable self enrolment plugin and set to send email from course contact.
-       enrol_bycategory_phpunit_util::enable_plugin();
+        enrol_bycategory_phpunit_util::enable_plugin();
         /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $instance1 = $this->add_enrol_instance($plugin, $course1);

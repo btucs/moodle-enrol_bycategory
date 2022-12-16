@@ -41,18 +41,18 @@ require_capability('enrol/bycategory:manage', $context);
 
 $waitlist = new enrol_bycategory_waitlist($instance->id);
 $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $enrolid]);
-if($confirm && confirm_sesskey()) {
-  if($waitlist->is_on_waitlist($user->id)) {
-    $waitlist->remove_user($user->id);
-  }
+if ($confirm && confirm_sesskey()) {
+    if ($waitlist->is_on_waitlist($user->id)) {
+        $waitlist->remove_user($user->id);
+    }
 
-  redirect($waitlisturl);
+    redirect($waitlisturl);
 }
 
-$yesurl = new moodle_url($PAGE->url, ['confirm'=>1, 'sesskey'=>sesskey()]);
+$yesurl = new moodle_url($PAGE->url, ['confirm' => 1, 'sesskey' => sesskey()]);
 $message = get_string('removewaitlistuserconfirm', 'enrol_bycategory', [
-  'user' => fullname($user, true),
-  'course' => format_string($course->fullname),
+    'user' => fullname($user, true),
+    'course' => format_string($course->fullname),
 ]);
 
 $fullname = fullname($user);

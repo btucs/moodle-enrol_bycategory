@@ -43,41 +43,41 @@ require_capability('enrol/bycategory:manage', $context);
 
 $waitlist = new enrol_bycategory_waitlist($instance->id);
 $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $enrolid]);
-if($confirm && confirm_sesskey()) {
-  if($waitlist->is_on_waitlist($user->id)) {
-    $enrolmethod = 'bycategory';
-    /** @var enrol_bycategory_plugin */
-    $enrol = enrol_get_plugin($enrolmethod);
-    if($enrol === null) {
-      redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
+if ($confirm && confirm_sesskey()) {
+    if ($waitlist->is_on_waitlist($user->id)) {
+        $enrolmethod = 'bycategory';
+        /** @var enrol_bycategory_plugin */
+        $enrol = enrol_get_plugin($enrolmethod);
+        if ($enrol === null) {
+            redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
+        }
+
+        $enrolinstances = enrol_get_instances($course->id, true);
+        $bycategoryinstance = null;
+        foreach ($enrolinstances as $enrolinstance) {
+            if ($enrolinstance->enrol === $enrolmethod && $enrolinstance->id === $instance->id) {
+                $bycategoryinstance = $enrolinstance;
+                break;
+            }
+        }
+
+        if ($bycategoryinstance === null) {
+            redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
+        }
+
+        $enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id);
+        if ($enrolresult === true) {
+            $waitlist->remove_user($user->id);
+        }
     }
 
-    $enrolinstances = enrol_get_instances($course->id, true);
-    $bycategoryinstance = null;
-    foreach ($enrolinstances as $enrolinstance) {
-      if ($enrolinstance->enrol === $enrolmethod && $enrolinstance->id === $instance->id) {
-        $bycategoryinstance = $enrolinstance;
-        break;
-      }
-    }
-
-    if($bycategoryinstance === null) {
-      redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
-    }
-
-    $enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id);
-    if($enrolresult === true) {
-      $waitlist->remove_user($user->id);
-    }
-  }
-
-  redirect($waitlisturl);
+    redirect($waitlisturl);
 }
 
-$yesurl = new moodle_url($PAGE->url, ['confirm'=>1, 'sesskey'=>sesskey()]);
+$yesurl = new moodle_url($PAGE->url, ['confirm' => 1, 'sesskey' => sesskey()]);
 $message = get_string('enrolwaitlistuserconfirm', 'enrol_bycategory', [
-  'user' => fullname($user, true),
-  'course' => format_string($course->fullname),
+    'user' => fullname($user, true),
+    'course' => format_string($course->fullname),
 ]);
 
 $fullname = fullname($user);

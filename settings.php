@@ -27,11 +27,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    //--- general settings -----------------------------------------------------------------------------------
+    // General Settings.
     $settings->add(new admin_setting_heading('enrol_bycategory_settings', '', get_string('pluginname_desc', 'enrol_bycategory')));
 
-    // Note: let's reuse the ext sync constants and strings here, internally it is very similar,
-    //       it describes what should happend when users are not supposed to be enerolled any more.
+    /* Note: let's reuse the ext sync constants and strings here, internally it is very similar,
+             it describes what should happend when users are not supposed to be enerolled any more.
+    */
     $options = array(
         ENROL_EXT_REMOVED_KEEP           => get_string('extremovedkeep', 'enrol'),
         ENROL_EXT_REMOVED_SUSPENDNOROLES => get_string('extremovedsuspendnoroles', 'enrol'),
@@ -60,7 +61,7 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    //--- enrol instance defaults ----------------------------------------------------------------------------
+    // Enrol instance defaults.
     $settings->add(
         new admin_setting_heading(
             'enrol_bycategory_defaults',

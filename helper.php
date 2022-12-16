@@ -21,14 +21,10 @@
  * @copyright   2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
 function start_of_day_timestamp($timestamp) {
+    $startofday = new DateTime();
+    $startofday->setTimestamp($timestamp);
+    $startofday->setTime(0, 0, 0, 0);
 
-  $startofday = new DateTime();
-  $startofday->setTimestamp($timestamp);
-  $startofday->setTime(0, 0, 0, 0);
-
-  return $startofday->getTimestamp();
+    return $startofday->getTimestamp();
 }
