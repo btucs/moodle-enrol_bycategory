@@ -96,7 +96,7 @@ function show_user_view($waitlist, $course, $instance) {
     $waitlistinfo = '';
     if ($waitlistposition !== -1) {
         $waitlistinfo = get_string(
-            'waitlist_position_message',
+            'waitlist_info_message',
             'enrol_bycategory',
             ['waitlistposition' => $waitlistposition]
         );
