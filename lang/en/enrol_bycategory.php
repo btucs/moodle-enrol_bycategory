@@ -69,7 +69,7 @@ $string['enrolwaitlistuserconfirm'] = 'Do you really want to manually enrol "{$a
 $string['expiredaction'] = 'Enrolment expiry action';
 $string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';
 $string['expirymessageenrollersubject'] = 'By Category enrolment expiry notification';
-$string['expirymessageenrollerbody'] = 'By Category enrolment in the course \'{$a->course}\' will expire within the next {$a->threshold} for the following users:
+$string['expirymessageenrollerbody'] = 'By Category enrolment in the course "{$a->course}" will expire within the next {$a->threshold} for the following users:
 
 {$a->users}
 
@@ -77,7 +77,7 @@ To extend their enrolment, go to {$a->extendurl}';
 $string['expirymessageenrolledsubject'] = 'Enrolment expiry notification';
 $string['expirymessageenrolledbody'] = 'Dear {$a->user},
 
-This is a notification that your enrolment in the course \'{$a->course}\' is due to expire on {$a->timeend}.
+This is a notification that your enrolment in the course "{$a->course}" is due to expire on {$a->timeend}.
 
 If you need help, please contact {$a->enroller}.';
 $string['expirynotifyall'] = 'Teacher and enrolled user';
@@ -101,29 +101,25 @@ $string['nocourseincategorysince'] = 'To be able to enrol you have to complete a
 $string['notifiedcount'] = 'Notified without reaction';
 $string['onwaitlistsince'] = 'On waiting list since';
 $string['pluginname'] = 'Enrol by Category';
-$string['pluginname_desc'] = 'The By Category enrolment plugin allows users participage in a course which requires an ealier successful participation in a course in a specific category. Internally the enrolment is done via the manual enrolment plugin which has to be enabled in the same course.';
+$string['pluginname_desc'] = 'The By Category enrolment plugin allows users participate in a course which may require an ealier successful participation in a course in a specific category. Additionally the plugin offers waiting list functionality. Internally the enrolment is done via the manual enrolment plugin which has to be enabled in the same course.';
 $string['privacy:metadata'] = 'The By Category enrolment plugin does not store any personal data.';
 $string['removewaitlistuser'] = 'Remove user from waiting list';
 $string['removewaitlistuserconfirm'] = 'Do you really want to remove "{$a->user}" from the waiting list of "{$a->course}"?';
 $string['role'] = 'Default assigned role';
 $string['bycategory:config'] = 'Configure By Category enrol instances';
 $string['bycategory:enrolself'] = 'Self enrol in course';
-$string['bycategory:passcategory'] = 'Appear as a eligible participant';
 $string['bycategory:manage'] = 'Manage enrolled users';
 $string['bycategory:unenrol'] = 'Unenrol users from course';
 $string['bycategory:unenrolself'] = 'Unenrol self from the course';
-$string['secret'] = 'secret';
-$string['secretmissing'] = 'Token Secret is not configured';
-$string['secret_desc'] = 'Passphrase for JWT signature';
 $string['sendcoursewelcomemessage'] = 'Send course welcome message';
 $string['sendcoursewelcomemessage_help'] = 'When a user enrols in the course, they may be sent a welcome message email. If sent from the course contact (by default the teacher), and more than one user has this role, the email is sent from the first user to be assigned the role.';
 $string['sendexpirynotificationstask'] = "By Category enrolment send expiry notifications task";
 $string['sendwaitlistnotificationstask'] = "By Category enrolment send waitlist notifications task";
-$string['status'] = 'Allow enrolment';
+$string['status'] = 'Allow existing enrolments';
 $string['status_desc'] = 'Enable By Category enrolment method in new courses.';
 $string['status_help'] = 'If disabled, this By Category enrolment method is disabled, since all existing By Category enrolments are suspended and new users cannot enrol by category.';
 $string['syncenrolmentstask'] = 'Synchronise By Category enrolments task';
-$string['tokeninvalid'] = 'The provided token is not valid or expired. Please click the link in your email or make sure that you have copied it completly before inserting it into the browser. If your email is older than 24 hours then the token is expired.';
+$string['tokeninvalid'] = 'The provided link is not valid or expired. Please click the link in your email or make sure that you have copied it completly before inserting it into the browser. If your email is older than 24 hours then the link is already expired.';
 $string['unenrol'] = 'Unenrol user';
 $string['unenrolselfconfirm'] = 'Do you really want to unenrol yourself from course "{$a}"?';
 $string['unenroluser'] = 'Do you really want to unenrol "{$a->user}" from course "{$a->course}"?';
@@ -146,7 +142,7 @@ If you don\'t like to wait any longer, you can use the following button to leave
 $string['waitlist_users'] = 'Users on waiting list';
 $string['waitlistnotifycount'] = 'Number of users to notify about an available slot';
 $string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';
-$string['waitlistnotifylimit'] = 'Amount of times a user is beeing notified at most';
+$string['waitlistnotifylimit'] = 'Amount of times a user is being notified at most';
 $string['waitlistnotifylimit_help'] = 'Users are on a specific waiting list are only notified a specific amount of times until they are ignored.';
 $string['waitlist_notification_body'] = 'Hello {$a->userfullname},
 a spot in course {$a->coursename} is available.
@@ -166,5 +162,5 @@ $string['welcometocoursetext'] = 'Welcome to {$a->coursename}!
 If you have not done so already, you should edit your profile page so that we can learn more about you:
 
   {$a->profileurl}';
-$string['wrongtokenuser'] = 'This token was meant for another user. Please wait until you receive your Email.';
+$string['wrongtokenuser'] = 'The link was meant for another user. Please wait until you receive your Email.';
 $string['youareonthewaitlist'] = 'You are currently on the waiting list.';

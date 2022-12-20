@@ -3,7 +3,7 @@ import Selectors from './local/confirm/selectors';
 const registerEventListeners = () => {
   document.addEventListener('click', e => {
     let dataholder;
-    if(e.target && (dataholder = e.target.closest(Selectors.actions.confirmButton))) {
+    if (e.target && (dataholder = e.target.closest(Selectors.actions.confirmButton))) {
       M.util.show_confirm_dialog(e, {
         message: dataholder.dataset.message,
         callback: () => {
