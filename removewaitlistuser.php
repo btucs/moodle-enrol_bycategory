@@ -30,7 +30,7 @@ $userid = required_param('uid', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
 
 $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+$course = get_course($instance->courseid);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
