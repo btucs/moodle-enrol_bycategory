@@ -15,17 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Webservices of enrol bycategory plugin
  *
- * @package     enrol_bycategory
- * @copyright   2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    enrol_bycategory
+ * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'enrol_bycategory';
-$plugin->release = '1.0.1';
-$plugin->version = 2022122002;
-$plugin->requires = 2019052000;
-$plugin->maturity = MATURITY_STABLE;
+$functions = [
+    'enrol_bycategory_get_enrolment_methods' => [
+        'classname' => '\enrol_bycategory\external\get_enrolment_methods',
+        'description' => 'Fetch enrolment methods (manual, bycategory) for a given course id',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'enrol/bycategory:manage',
+        'services' => [],
+    ],
+];

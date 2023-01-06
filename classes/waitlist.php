@@ -126,6 +126,27 @@ class enrol_bycategory_waitlist {
     }
 
     /**
+     * Check of a given list of users is present on the waiting list
+     * @param array $userids array of userids
+     * @return array ['intersect' => userids[], 'diff' => userids[]]
+     */
+    public function is_on_waitlist_bulk($userids) {
+        global $DB;
+
+        list ($insql, $inparams) = $DB->get_in_or_equal($userids);
+        array_push($inparams, $this->instanceid);
+
+        $sql = "SELECT userid FROM {{$this->tablename}} WHERE userid $insql AND instanceid = ?";
+        $existingusers = $DB->get_records_sql($sql, $inparams);
+        $existingusers = array_keys($existingusers);
+
+        return [
+            'onwaitlist' => array_intersect($userids, $existingusers),
+            'missing' => array_values(array_diff($userids, $existingusers)),
+        ];
+    }
+
+    /**
      * Return the position of the user on the waiting list
      * @param int $userid
      * @return int position of the user or -1 if user is not on list

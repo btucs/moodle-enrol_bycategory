@@ -17,20 +17,19 @@
     Moodle template for the bulk actions on the waiting list
 
     Context variables required for this template:
-    * options - Array of courses for the select with id and fullname.
+    * options - Array of courses for the select with id, fullname and if it should be selected by default.
 }}
 <div class="mt-1 d-inline-block w-100">
     <div class="float-left">
         <span>{{# str}} bulkenrol,enrol_bycategory {{/ str}}: </span>
-        <select id="bulk-action" class="select custom-select">
+        <select id="bulk-action" class="select custom-select" name="targetcourseid">
         {{#options}}
-            <option value="{{ id }}">{{ fullname }} ({{# str}} courseid,enrol_bycategory {{/ str}}: {{ id }})</option>
+            <option value="{{ id }}" {{# selected }}selected{{/ selected}}>{{ fullname }} ({{# str}} courseid,enrol_bycategory {{/ str}}: {{ id }})</option>
         {{/options}}
         </select>
-        <button class="btn btn-primary"
-            data-action="enrol_bycategory/confirm"
-            data-message=""
-            data-sesskey="{{ sesskey }}"
-        >{{# str}} confirm {{/ str}}</button>
+        <select id="bulk-action-enrol" class="select custom-select" name="targetenrolid">
+
+        </select>
+        <input type="submit" class="btn btn-primary" value="{{# str}} next {{/ str}}">
     </div>
 </div>

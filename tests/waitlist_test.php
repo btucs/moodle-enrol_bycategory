@@ -197,14 +197,50 @@ class waitlist_test extends \advanced_testcase {
         $this->assertTrue($isonwaitlist);
     }
 
+    public function test_is_on_waitlist_bulk() {
+        global $DB;
+
+        $this->resetAfterTest();
+        $now = time();
+
+        $useridsonwaitlist = [101, 102, 103];
+        $otheruserids = [104, 105];
+
+        foreach ($useridsonwaitlist as $userid) {
+            $DB->insert_record($this->tablename, [
+                'userid' => $userid,
+                'instanceid' => $this->instanceid,
+                'usermodified' => $userid,
+                'timecreated' => $now,
+                'timemodified' => $now
+            ], false, false);
+        }
+
+        foreach ($otheruserids as $userid) {
+            $DB->insert_record($this->tablename, [
+                'userid' => $userid,
+                'instanceid' => $this->instanceid + 1,
+                'usermodified' => $userid,
+                'timecreated' => $now,
+                'timemodified' => $now
+            ], false, false);
+        }
+
+        $waitlist = new enrol_bycategory_waitlist(($this->instanceid));
+        $result = $waitlist->is_on_waitlist_bulk(array_merge($useridsonwaitlist, $otheruserids));
+
+        $this->assertEquals($useridsonwaitlist, $result['onwaitlist']);
+        $this->assertEquals($otheruserids, $result['missing']);
+    }
+
     public function test_get_user_position() {
         global $DB;
 
         $this->resetAfterTest();
         $waitlist = new enrol_bycategory_waitlist($this->instanceid);
-        $user1id = 1;
-        $user2id = 2;
-        $user3id = 3;
+        $user1id = 101;
+        $user2id = 102;
+        $user3id = 103;
         $now = time();
 
         $DB->insert_record($this->tablename, [
@@ -234,7 +270,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals($waitlist->get_user_position($user1id), 1);
         $this->assertEquals($waitlist->get_user_position($user2id), 2);
         $this->assertEquals($waitlist->get_user_position($user3id), 3);
-        $this->assertEquals($waitlist->get_user_position(4), -1);
+        $this->assertEquals($waitlist->get_user_position(104), -1);
 
         $DB->set_field($this->tablename, 'notified', 5, ['userid' => $user1id, 'instanceid' => $this->instanceid]);
         $this->assertEquals($waitlist->get_user_position($user2id), 1);

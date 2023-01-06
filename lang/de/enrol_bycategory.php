@@ -25,6 +25,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['bulkenrol'] = 'Ausgewählte Einschrieben in';
+$string['bulkenrolconfirmmessage'] = 'Sind sie sicher, dass sie die folgenden Teilnehmer*innen:
+
+{$a->users}
+
+in Kurs {$a->coursename} über Einschreibemethode {$a->enrol} einschrieben möchten?
+
+Sie werden anschließend von dieser Warteliste entfernt.';
+$string['bulkenrolconfirmtitle'] = 'Auswahl bestätigen';
+$string['bulkenrolsuccess'] = 'Die ausgewählten Personen wurden erfolgreich eingeschrieben';
+$string['bulkenrolusersmissing'] = 'Die folgenden Personen konnten nicht eingeschrieben werden, da sie nicht Teil der Warteliste waren:
+
+{$a}
+
+Alle anderen Personen wurden erfolgreich eingeschrieben.';
 $string['canntenrol'] = 'Einschreibung deaktiviert oder inaktiv';
 $string['canntenrolearly'] = 'Sie können sich noch nicht einschreiben, weil die Einschreibung erst am {$a} beginnt.';
 $string['canntenrollate'] = 'Sie können sich nicht mehr einschreiben, weil die Einschreibung am {$a} beendet wurde.';

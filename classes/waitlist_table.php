@@ -25,8 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/tablelib.php");
 
-class enrol_bycategory_waitlist_table extends table_sql
-{
+class enrol_bycategory_waitlist_table extends table_sql {
 
     private $course;
 
@@ -43,6 +42,7 @@ class enrol_bycategory_waitlist_table extends table_sql
         $checkboxattrs = [
             'title' => get_string('selectall'),
             'data-action' => 'enrol_bycategory/selectall',
+            'autocomplete' => 'off',
         ];
 
         $headers = [
@@ -68,10 +68,10 @@ class enrol_bycategory_waitlist_table extends table_sql
 
         $PAGE->requires->js_call_amd('enrol_bycategory/confirm', 'init');
         $PAGE->requires->js_call_amd('enrol_bycategory/select-all', 'init');
+        $PAGE->requires->js_call_amd('enrol_bycategory/enrol-select', 'init', [intval($params['instanceid'], 10)]);
     }
 
-    public function query_db($pagesize, $useinitialsbar = true)
-    {
+    public function query_db($pagesize, $useinitialsbar = true) {
         global $DB;
 
         $sort = $this->get_sql_sort();
@@ -111,7 +111,8 @@ class enrol_bycategory_waitlist_table extends table_sql
     public function col_select($row) {
 
         return \html_writer::checkbox('userids[]', $row->id, false, '', [
-            'class' => 'selectuserids'
+            'class' => 'selectuserids',
+            'autocomplete' => 'off'
         ]);
     }
 
@@ -179,6 +180,14 @@ class enrol_bycategory_waitlist_table extends table_sql
         return implode('&nbsp', $actions);
     }
 
+    public function wrap_html_start() {
+        echo html_writer::start_tag('form', [
+            'action' => new moodle_url('/enrol/bycategory/bulkenrolwaitlistusers.php'),
+            'method' => 'POST',
+        ]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'enrolid', 'value' => $this->sql->params['instanceid']]);
+    }
+
     /**
      * Override the table's wrap_html_finish method in order to render the bulk actions and
      * records per page options.
@@ -193,9 +202,22 @@ class enrol_bycategory_waitlist_table extends table_sql
             'enddate' => time(),
         ]);
 
+        // Preselect current course.
+        $mapselected = function($current) {
+            $current->selected = $current->id == $this->course->id;
+
+            return $current;
+        };
+
         $data = new stdClass();
-        $data->options = array_values(enrol_get_my_courses(null, 'c.fullname', 0, array_keys($activecourses), true));
+        $data->options = array_map(
+            $mapselected,
+            array_values(
+                enrol_get_my_courses(null, 'c.fullname', 0, array_keys($activecourses), true)
+            )
+        );
 
         echo $OUTPUT->render_from_template('enrol_bycategory/waitlist_bulk_actions', $data);
+        echo html_writer::end_tag('form');
     }
 }

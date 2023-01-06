@@ -102,6 +102,10 @@ if ($enrolresult === true) {
 
 redirect($courseurl, get_string('youenrolledincourse', 'enrol'), null, notification::NOTIFY_SUCCESS);
 
+/**
+ * Delete expired tokens
+ * @param int $time
+ */
 function delete_expired_tokens($time) {
     global $DB;
 

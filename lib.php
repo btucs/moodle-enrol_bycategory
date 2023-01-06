@@ -656,7 +656,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return bool - true means user with 'enrol/xxx:unenrol' may unenrol others freely, false means nobody may touch user_enrolments
      */
     public function allow_unenrol(stdClass $instance) {
-        // Users with unenrol cap may unenrol other users manually manually.
+        // Users with unenrol cap may unenrol other users manually.
         return true;
     }
 

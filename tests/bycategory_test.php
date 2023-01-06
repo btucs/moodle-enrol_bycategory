@@ -26,7 +26,6 @@
 namespace enrol_bycategory;
 
 use enrol_bycategory_phpunit_util;
-use enrol_bycategory_waitlist;
 
 defined('MOODLE_INTERNAL') || die();
 

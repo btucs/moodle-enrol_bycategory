@@ -26,6 +26,20 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['bulkenrol'] = 'Enrol selected into';
+$string['bulkenrolconfirmmessage'] = 'Are you sure you want to enrol the following users:
+
+{$a->users}
+
+to the course {$a->coursename} using enrolment method {$a->enrol}?
+
+They will be removed from this waiting list afterwards.';
+$string['bulkenrolconfirmtitle'] = 'Confirm selection';
+$string['bulkenrolsuccess'] = 'The selected users have been successfully enroled';
+$string['bulkenrolusersmissing'] = 'The following users couldn\'t be enroled as they where not part of the waiting list.
+
+{$a}
+
+All other users have been successfully enroled.';
 $string['canntenrol'] = 'Enrolment is disabled or inactive';
 $string['canntenrolearly'] = 'You cannot enrol yet; enrolment starts on {$a}.';
 $string['canntenrollate'] = 'You cannot enrol any more, since enrolment ended on {$a}.';
