@@ -25,6 +25,9 @@ import Selectors from './local/select-all/selectors';
 const registerEventListeners = () => {
     const masterElem = document.querySelector(Selectors.selectors.masterSelector);
     const checkboxElems = Array.from(document.querySelectorAll(Selectors.selectors.checkboxesSelector));
+    /** @var HTMLButtonElement */
+    const submitButtonElem = document.querySelector(Selectors.selectors.submitSelector);
+    submitButtonElem.disabled = true;
 
     if (!masterElem) {
         throw new Error('select all element doesn\'t exist');
@@ -32,6 +35,9 @@ const registerEventListeners = () => {
 
     masterElem.addEventListener('change', e => {
         const state = e.target.checked;
+
+        submitButtonElem.disabled = !state;
+
         if (state === true) {
             checkAll();
         } else {
@@ -47,6 +53,8 @@ const registerEventListeners = () => {
 
         const allChecked = checkboxElems.every((elem) => elem.checked === true);
         const allUnchecked = checkboxElems.every((elem) => elem.checked === false);
+
+        submitButtonElem.disabled = allUnchecked;
 
         if (allChecked === true) {
             masterToChecked();

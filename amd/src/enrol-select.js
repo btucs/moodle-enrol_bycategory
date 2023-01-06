@@ -71,7 +71,7 @@ const addOptions = (data, selectElement, defaultSelected) => {
 };
 
 /**
- *
+ * Initialize Module
  * @param {number} defaultSelected enrolment id to preselect
  */
 export const init = (defaultSelected) => {
