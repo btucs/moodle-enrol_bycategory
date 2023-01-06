@@ -115,7 +115,7 @@ function show_user_view($waitlist, $course, $instance) {
     } else {
         $waitlistinfo = get_string(
             'waitlist_blocked_message',
-            'enrol_bycategory',
+            'enrol_bycategory'
         );
     }
 

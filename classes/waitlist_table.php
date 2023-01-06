@@ -169,7 +169,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
                     'user' => fullname($row, true),
                     'course' => format_string($this->course->fullname)
                 ]),
-                'enrol_bycategory',
+                'enrol_bycategory'
             ),
             null,
             [
@@ -193,7 +193,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
             new pix_icon(
                 't/remove',
                 get_string('removewaitlistuser', 'enrol_bycategory'),
-                'enrol_bycategory',
+                'enrol_bycategory'
             ),
             null,
             [
