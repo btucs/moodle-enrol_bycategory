@@ -25,10 +25,19 @@
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/tablelib.php");
 
+/**
+ * Waiting list table
+ */
 class enrol_bycategory_waitlist_table extends table_sql {
 
+    /** @var stdClass */
     private $course;
 
+    /**
+     * Constructor
+     * @param stdClass $course course instance
+     * @param array $params map of parameters
+     */
     public function __construct($course, $params = []) {
         global $PAGE;
 
@@ -71,6 +80,11 @@ class enrol_bycategory_waitlist_table extends table_sql {
         $PAGE->requires->js_call_amd('enrol_bycategory/enrol-select', 'init', [intval($params['instanceid'], 10)]);
     }
 
+    /**
+     * Query DB to retrieve data for the table
+     * @param int $pagesize
+     * @param bool $useinitialsbar
+     */
     public function query_db($pagesize, $useinitialsbar = true) {
         global $DB;
 
@@ -116,11 +130,27 @@ class enrol_bycategory_waitlist_table extends table_sql {
         ]);
     }
 
+    /**
+     * The timecreated column.
+     *
+     * @param stdClass $row the row data.
+     * @return string;
+     * @throws \moodle_exception
+     * @throws \coding_exception
+     */
     public function col_timecreated($row) {
 
         return userdate($row->timecreated, get_string('strftimedatetimeshort', 'langconfig'));
     }
 
+    /**
+     * The actions column.
+     *
+     * @param stdClass $row the row data.
+     * @return string;
+     * @throws \moodle_exception
+     * @throws \coding_exception
+     */
     public function col_actions($row) {
         global $OUTPUT;
 
@@ -180,6 +210,9 @@ class enrol_bycategory_waitlist_table extends table_sql {
         return implode('&nbsp', $actions);
     }
 
+    /**
+     * Hook to wrap a table in a form
+     */
     public function wrap_html_start() {
         echo html_writer::start_tag('form', [
             'action' => new moodle_url('/enrol/bycategory/bulkenrolwaitlistusers.php'),

@@ -22,6 +22,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class enrol_bycategory_phpunit_util {
+    /**
+     * Call a non-public method
+     * @param object $obj
+     * @param string $name
+     * @param array $args
+     * @return mixed
+     */
     public static function call_method($obj, $name, array $args) {
         $class = new \ReflectionClass($obj);
         $method = $class->getMethod($name);
@@ -30,6 +37,7 @@ class enrol_bycategory_phpunit_util {
     }
 
     /**
+     * Enable the bycategory plugin
      * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
      *          based on work by 2010 Eugene Venter enrol_paypal
      */
@@ -41,6 +49,7 @@ class enrol_bycategory_phpunit_util {
     }
 
     /**
+     * Disable the bycategory plugin
      * @author  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
      *          based on work by 2010 Eugene Venter enrol_paypal
      */

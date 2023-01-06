@@ -18,7 +18,7 @@
  * bycategory enrolment plugin tests.
  *
  * @package    enrol_bycategory
- * @category   phpunit
+ * @category   test
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  *             based on work by 2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,10 +35,12 @@ require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
 require_once(__DIR__ . '/util.php');
 
 /**
+ * Testcase for enrol_bycategory_plugin
  * @covers enrol_bycategory_plugin
  */
 class bycategory_test extends \advanced_testcase {
     /**
+     * Add enrol instance to course
      * @see https://moodle.org/mod/forum/discuss.php?d=318186#p1275913
      * @author 2015 Darko Miletić
      * @param object $plugin

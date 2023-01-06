@@ -21,6 +21,12 @@
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+/**
+ * Upgrade function
+* @param number $oldversion
+* @return bool
+*/
 function xmldb_enrol_bycategory_upgrade($oldversion) {
     global $DB;
 

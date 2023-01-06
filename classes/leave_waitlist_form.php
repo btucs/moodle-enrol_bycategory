@@ -28,13 +28,25 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * MoodleQuickForm to leave the waiting list
+ */
 class enrol_bycategory_leave_waitlist_form extends moodleform {
+
+    /** @var stdClass */
     protected $instance;
 
+    /**
+     * Constructor
+     * @param mixed $customdata
+     */
     public function __construct($customdata = null) {
         parent::__construct('', $customdata);
     }
 
+    /**
+     * Configure MoodleQuickForm instance
+     */
     public function definition() {
         global $USER;
 

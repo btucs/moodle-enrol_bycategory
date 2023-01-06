@@ -26,18 +26,33 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * Moodle Form to enrol into the waiting list
+ */
 class enrol_bycategory_waitlist_form extends moodleform {
+    /** @var stdClass */
     protected $instance;
 
+    /**
+     * Constructor
+     * @param mixed $customdata
+     */
     public function __construct($customdata = null) {
         parent::__construct('', $customdata);
     }
 
+    /**
+     * Return form identifier
+     * @return string;
+     */
     protected function get_form_identifier() {
         $formid = $this->_customdata->id . '_' . get_class($this);
         return $formid;
     }
 
+    /**
+     * Configure MoodleQuickForm instance
+     */
     public function definition() {
         global $USER;
 

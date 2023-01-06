@@ -15,11 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The enrol plugin bycategory is defined here.
+ * Helper functions for enrol_bycategory plugin
  *
  * @package     enrol_bycategory
  * @copyright   2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Get a timestamp for start of day
+ * @param int $timestamp
+ * @return int
  */
 function start_of_day_timestamp($timestamp) {
     $startofday = new DateTime();

@@ -18,7 +18,7 @@
  * bycategory enrolment plugin tests.
  *
  * @package    enrol_bycategory
- * @category   phpunit
+ * @category   test
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  *             based on work by 2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,11 +36,14 @@ require_once($CFG->dirroot . '/enrol/bycategory/lib.php');
 require_once($CFG->dirroot . '/enrol/bycategory/helper.php');
 
 /**
+ * Testcase for enrol_bycategory_waitlist
  * @covers enrol_bycategory_waitlist
  */
 class waitlist_test extends \advanced_testcase {
 
+    /** @var string */
     private $tablename = 'enrol_bycategory_waitlist';
+    /** @var int */
     private $instanceid = 1;
 
     public function test_get_count() {

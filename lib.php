@@ -47,14 +47,16 @@ function enrol_bycategory_get_fontawesome_icon_map() {
  */
 class enrol_bycategory_plugin extends enrol_plugin {
 
-    protected $lasternoller = null;
+    /** @var mixed|stdClass  */
+    protected $lastenroller = null;
+    /** @var int */
     protected $lasternollerinstanceid = 0;
 
     /**
      * Use the standard interface for adding/editing the form.
      *
      * @since Moodle 3.1.
-     * @return bool.
+     * @return bool
      */
     public function use_standard_editing_ui() {
         return true;
@@ -67,8 +69,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
      *
      * @since Moodle 3.1.
      * @param object $instance Enrol instance or null if does not exist yet.
-     * @param MoodleQuickForm $mform.
-     * @param context $context.
+     * @param MoodleQuickForm $mform
+     * @param context $context
      * @return void
      */
     public function edit_instance_form($instance, MoodleQuickForm $mform, $context) {
@@ -235,8 +237,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * of this enrolment plugin to the course.
      * @author  2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
-     * @param int $courseid.
-     * @return bool.
+     * @param int $courseid
+     * @return bool
      */
     public function can_add_instance($courseid) {
         $context = context_course::instance($courseid, MUST_EXIST);
@@ -605,8 +607,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @param restore_enrolments_structure_step $step
      * @param stdClass $data
      * @param stdClass $instance
-     * @param int $oldinstancestatus
      * @param int $userid
+     * @param int $oldinstancestatus
      */
     public function restore_user_enrolment(restore_enrolments_structure_step $step, $data, $instance, $userid, $oldinstancestatus) {
         $this->enrol_user($instance, $userid, null, $data->timestart, $data->timeend, $data->status);
@@ -923,7 +925,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @param int $sendoption send email from constant ENROL_SEND_EMAIL_FROM_*
-     * @param $context context where the user will be fetched
+     * @param context $context context where the user will be fetched
      * @return mixed|stdClass the contact user object.
      */
     public function get_welcome_email_contact($sendoption, $context) {
@@ -1027,8 +1029,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
     protected function get_enroller($instanceid) {
         global $DB;
 
-        if ($this->lasternollerinstanceid == $instanceid && $this->lasternoller) {
-            return $this->lasternoller;
+        if ($this->lasternollerinstanceid == $instanceid && $this->lastenroller) {
+            return $this->lastenroller;
         }
 
         $instance = $DB->get_record('enrol', array('id' => $instanceid, 'enrol' => $this->get_name()), '*', MUST_EXIST);
@@ -1036,15 +1038,15 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         if ($users = get_enrolled_users($context, 'enrol/bycategory:manage')) {
             $users = sort_by_roleassignment_authority($users, $context);
-            $this->lasternoller = reset($users);
+            $this->lastenroller = reset($users);
             unset($users);
         } else {
-            $this->lasternoller = parent::get_enroller($instanceid);
+            $this->lastenroller = parent::get_enroller($instanceid);
         }
 
         $this->lasternollerinstanceid = $instanceid;
 
-        return $this->lasternoller;
+        return $this->lastenroller;
     }
 
     /**
@@ -1140,6 +1142,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
         return bin2hex(random_bytes(32));
     }
 
+    /**
+     * return an array of available categories
+     *
+     * @return array
+     */
     private function get_categories() {
 
         $categories = \core_course_category::make_categories_list();

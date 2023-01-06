@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Empty moodle form
+ */
 class enrol_bycategory_empty_form extends moodleform {
 
     /**

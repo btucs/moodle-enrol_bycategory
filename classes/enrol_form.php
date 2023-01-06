@@ -26,8 +26,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
+/**
+ * MoodleQuickForm to enrol users
+ */
 class enrol_bycategory_enrol_form extends moodleform {
+    /** @var stdClass */
     protected $instance;
+    /** @var bool */
     protected $toomany = false;
 
     /**

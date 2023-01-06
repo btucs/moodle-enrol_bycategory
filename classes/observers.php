@@ -24,11 +24,22 @@
 use core\event\course_deleted;
 use core\event\user_enrolment_deleted;
 
+/**
+ * Observers
+ */
 class enrol_bycategory_observers {
+    /**
+     * Observe course_deleted event
+     * @param course_deleted $event
+     */
     public static function course_deleted(course_deleted $event) {
         $eventdata = $event->get_data();
     }
 
+    /**
+     * Observe user_enrolment_deleted event
+     * @param user_enrolment_deleted $event
+     */
     public static function user_enrolment_deleted(user_enrolment_deleted $event) {
         $eventdata = $event->get_data();
     }

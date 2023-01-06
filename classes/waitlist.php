@@ -23,8 +23,9 @@
  */
 class enrol_bycategory_waitlist {
 
+    /** @var string */
     private $tablename = 'enrol_bycategory_waitlist';
-
+    /** @var int */
     private $instanceid;
 
     /**
@@ -360,7 +361,7 @@ class enrol_bycategory_waitlist {
     /**
      * Select users to be notified based on an array of enrolids
      *
-     * @param $enrolids array of enrolids
+     * @param array $enrolids array of enrolids
      *
      * @return array Map of enrol_bycategory_waitlist results
      */
@@ -398,9 +399,9 @@ class enrol_bycategory_waitlist {
     /**
      * Increase notified field based on an array of enrol_bycategory_waitlist ids
      *
-     * @param array Array of enrol_bycategory_waitlist ids
+     * @param array $waitlistids Array of enrol_bycategory_waitlist ids
      *
-     * @return
+     * @return mixed|null
      */
     public static function increase_notified($waitlistids) {
         global $DB;

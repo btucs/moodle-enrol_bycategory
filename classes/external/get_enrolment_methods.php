@@ -36,13 +36,24 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/externallib.php");
 
+/**
+ * Webservice to retrieve enrolment methods (manual, bycategory) from a course
+ */
 class get_enrolment_methods extends external_api {
+    /**
+     * Parameters description
+     * @return external_description
+     */
     public static function execute_parameters() {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'id of course'),
         ]);
     }
 
+    /**
+     * Return parameters description
+     * @return external_description
+     */
     public static function execute_returns() {
         return new external_multiple_structure(
             new external_single_structure([
@@ -52,6 +63,11 @@ class get_enrolment_methods extends external_api {
         );
     }
 
+    /**
+     * Execute the webservice
+     * @param int $courseid
+     * @return array array of enrolment methods {id,name}
+     */
     public static function execute($courseid) {
 
         $params = self::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);

@@ -51,6 +51,12 @@ if (false === $hasmanagecapability) {
     show_management_view($waitlist, $course, $instance);
 }
 
+/**
+ * display management view for teachers
+ * @param enrol_bycategory_waitlist $waitlist
+ * @param stdClass $course
+ * @param stdClass $instance enrol instance
+ */
 function show_management_view($waitlist, $course, $instance) {
     global $OUTPUT;
 
@@ -76,6 +82,12 @@ function show_management_view($waitlist, $course, $instance) {
     }
 }
 
+/**
+ * display user view to students
+ * @param enrol_bycategory_waitlist $waitlist
+ * @param stdClass $course
+ * @param stdClass $instance enrol instance
+ */
 function show_user_view($waitlist, $course, $instance) {
     global $USER, $OUTPUT;
 
