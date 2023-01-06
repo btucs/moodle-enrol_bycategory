@@ -36,6 +36,7 @@ $confirm = optional_param('confirm', false, PARAM_BOOL);
 
 $instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
 $course = get_course($instance->courseid);
+$targetcourse = get_course($targetcourseid);
 $context = context_course::instance($course->id, MUST_EXIST);
 
 $PAGE->set_url('/enrol/bycategory/bulkenrolwaitlistusers.php');
@@ -54,8 +55,6 @@ if ($confirm && confirm_sesskey()) {
     $onwaitlistresult = $waitlist->is_on_waitlist_bulk($userids);
     $onwaitlistuserids = $onwaitlistresult['onwaitlist'];
     $missinguserids = $onwaitlistresult['missing'];
-
-    $targetcourse = get_course($targetcourseid);
 
     $enrolinstances = enrol_get_instances($targetcourse->id, true);
     $targetenrolinstance = null;
@@ -105,7 +104,7 @@ $enrolmentname = empty($enrolinstance->name) ? get_string('pluginname', 'enrol_'
 $confirmmessage = get_string('bulkenrolconfirmmessage', 'enrol_bycategory', [
     // ... <space><space>\n = markdown line break.
     'users' => implode(",  \n", array_map($mapusers, $users)),
-    'coursename' => '__' . $course->fullname . '__',
+    'coursename' => '__' . $targetcourse->fullname . '__',
     'enrol' => '__' . $enrolmentname . '__',
 ]);
 
