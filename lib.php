@@ -26,8 +26,6 @@ use core\message\message;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
-
 /**
  * Extend fontawesome mapping list for custom key
  * @return array Map of key to fontawesome classes

@@ -25,6 +25,7 @@
 use core\output\notification;
 
 require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/locallib.php');
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -96,7 +97,7 @@ if ($confirm && confirm_sesskey()) {
     redirect($targeturl, get_string('bulkenrolsuccess', 'enrol_bycategory'), null, notification::NOTIFY_SUCCESS);
 }
 
-$users = get_users_by_id($userids);
+$users = enrol_bycategory_get_users_by_id($userids);
 
 $enrolinstance = $DB->get_record('enrol', ['id' => $targetenrolid], '*', MUST_EXIST);
 $enrolmentname = empty($enrolinstance->name) ? get_string('pluginname', 'enrol_' . $enrolinstance->enrol) : $enrolinstance->name;
@@ -134,22 +135,3 @@ echo $OUTPUT->heading($title);
 echo $OUTPUT->confirm(markdown_to_html($confirmmessage), $yesurl, $returnurl);
 echo $OUTPUT->footer();
 
-/**
- * Load users based on user ids
- * @param array $userids list of user ids
- * @return array list of users
- */
-function get_users_by_id($userids) {
-    global $DB;
-
-    list($insql, $inparams) = $DB->get_in_or_equal($userids);
-    $users = $DB->get_records_select(
-        'user',
-        "id {$insql}",
-        $inparams,
-        'lastname ASC',
-        'id, firstname, lastname, email, firstnamephonetic, lastnamephonetic, middlename, alternatename'
-    );
-
-    return $users;
-}
