@@ -104,7 +104,7 @@ Ihr E-Learning-Team';
 $string['expirynotifyall'] = 'Trainer/in und eingeschriebene Nutzer/innen';
 $string['expirynotifyenroller'] = 'Nur Trainer/in';
 $string['joinwaitlist'] = 'Warteliste beitreten';
-$string['joinwaitlistmessage'] = 'Sie können der Warteliste beitreten und werden täglich informiert sobald ein Platz frei geworden ist.';
+$string['joinwaitlistmessage'] = 'Sie können der Warteliste beitreten. Sobald ein Platz frei wird, werden Sie per E-Mail informiert.';
 $string['leavewaitlist'] = 'Warteliste verlassen';
 $string['longtimenosee'] = 'Inaktive abmelden';
 $string['longtimenosee_help'] = 'Wenn Personen lange Zeit nicht mehr auf den Kurs zugegriffen haben, werden sie automatisch abgemeldet. Dieser Parameter legt die maximale Inaktivitätsdauer fest.';
@@ -153,12 +153,12 @@ Sie werden keine weiteren Benachrichtigungen erhalten.
 
 Wenn Sie immernoch interessiert sind sich in diesen Kurs einzuschreiben, verlassen Sie bitte die Warteliste und schreiben Sie sich erneut ein.
 Sie werden dadurch wieder Benachrichtigungen erhalten, werden aber auch an das Ende der Warteliste gesetzt.';
-$string['waitlist_info_message'] = 'Sie werden per Email benachrichtigt sobald ein Platz verfügbar wird und erhalten dann die Möglichkeit sich in den Kurs einzuschreiben.
+$string['waitlist_info_message'] = 'Sie werden per Email benachrichtigt, sobald ein Platz verfügbar wird und erhalten dann die Möglichkeit, sich in den Kurs einzuschreiben.
 Bitte beachten Sie, dass weitere Teilnehmer*innen ebenfalls informiert werden, also seien Sie schnell.
 Die Email wird täglich versendet, wenn mindestens ein Platz verfügbar ist.
 
 Ihre aktuelle Position auf der Warteliste ist: {$a->waitlistposition}.
-Wenn Sie nicht mehr länger warten möchten nutzen Sie die nachfolgende Schaltfläche um die Warteliste zu verlassen.
+Wenn Sie nicht mehr länger warten möchten, nutzen Sie die nachfolgende Schaltfläche um die Warteliste zu verlassen.
 ';
 $string['waitlist_users'] = 'Teilnehmer*innen auf der Warteliste';
 $string['waitlistnotifycount'] = 'Anzahl der Teilnehmer*innen die über einen freien Platz informiert werden.';
