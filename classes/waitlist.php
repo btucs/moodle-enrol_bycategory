@@ -21,6 +21,7 @@
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class enrol_bycategory_waitlist {
 
     /** @var string */
@@ -240,10 +241,10 @@ class enrol_bycategory_waitlist {
             // If time since completion is set.
             if ($instance->customint5 > 0 && $ignorewaitlist === false) {
                 // ... by default count back from now.
-                $startdate = start_of_day_timestamp(time());
+                $startdate = $this->start_of_day_timestamp(time());
 
                 if ($instance->customint7 == 1 && $instance->enrolstartdate) {
-                    $startdate = start_of_day_timestamp($instance->enrolstartdate);
+                    $startdate = $this->start_of_day_timestamp($instance->enrolstartdate);
                 }
 
                 $timelimit = $startdate - $instance->customint5;
@@ -417,4 +418,17 @@ class enrol_bycategory_waitlist {
 
         return $result;
     }
+
+    /**
+    * Get a timestamp for start of day
+    * @param int $timestamp
+    * @return int
+    */
+    private function start_of_day_timestamp($timestamp) {
+        $startofday = new DateTime();
+        $startofday->setTimestamp($timestamp);
+        $startofday->setTime(0, 0, 0, 0);
+
+        return $startofday->getTimestamp();
+   }
 }

@@ -25,6 +25,7 @@
 use core\output\notification;
 
 require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -56,7 +57,7 @@ if ($tokenrecord->timecreated + $oneday < $now) {
     redirect($waitlisturl, get_string('tokeninvalid', 'enrol_bycategory'), null, notification::NOTIFY_INFO);
 }
 
-delete_expired_tokens($now);
+enrol_bycategory_delete_expired_tokens($now);
 
 $instance = $DB->get_record('enrol', array('id' => $instanceid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
 $course = get_course($instance->courseid);
@@ -101,18 +102,3 @@ if ($enrolresult === true) {
 }
 
 redirect($courseurl, get_string('youenrolledincourse', 'enrol'), null, notification::NOTIFY_SUCCESS);
-
-/**
- * Delete expired tokens
- * @param int $time
- */
-function delete_expired_tokens($time) {
-    global $DB;
-
-    $sql = "DELETE FROM {enrol_bycategory_token}
-             WHERE timecreated < :time";
-
-    $DB->execute($sql, [
-        'time' => $time - 86400,
-    ]);
-}

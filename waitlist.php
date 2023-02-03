@@ -23,6 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
 $enrolid = required_param('enrolid', PARAM_INT);
@@ -46,86 +47,7 @@ require_login();
 $waitlist = new enrol_bycategory_waitlist($enrolid);
 
 if (false === $hasmanagecapability) {
-    show_user_view($waitlist, $course, $instance);
+    enrol_bycategory_waitlist_show_user_view($waitlist, $course, $instance);
 } else {
-    show_management_view($waitlist, $course, $instance);
-}
-
-/**
- * display management view for teachers
- * @param enrol_bycategory_waitlist $waitlist
- * @param stdClass $course
- * @param stdClass $instance enrol instance
- */
-function show_management_view($waitlist, $course, $instance) {
-    global $OUTPUT;
-
-    $download = optional_param('download', '', PARAM_ALPHA);
-    $table = new enrol_bycategory_waitlist_table($course, ['instanceid' => $instance->id]);
-    $table->is_downloading(
-        $download,
-        get_string('waitlist_users', 'enrol_bycategory'),
-        get_string('waitlist_users', 'enrol_bycategory')
-    );
-
-    if (!$table->is_downloading()) {
-        echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
-    }
-
-    $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
-    $table->define_baseurl($url);
-    $table->out(25, true);
-
-    if (!$table->is_downloading()) {
-        echo $OUTPUT->footer();
-    }
-}
-
-/**
- * display user view to students
- * @param enrol_bycategory_waitlist $waitlist
- * @param stdClass $course
- * @param stdClass $instance enrol instance
- */
-function show_user_view($waitlist, $course, $instance) {
-    global $USER, $OUTPUT;
-
-    $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
-
-    if (!$waitlist->is_on_waitlist($USER->id)) {
-        redirect($courseurl);
-    } else {
-        $leavewaitlistexists = optional_param('leavewaitlist', null, PARAM_TEXT);
-        if ($leavewaitlistexists !== null) {
-            $waitlist->remove_user($USER->id);
-            redirect($courseurl);
-        }
-    }
-
-    $form = new enrol_bycategory_leave_waitlist_form($instance);
-    $waitlistposition = $waitlist->get_user_position($USER->id);
-    $waitlistinfo = '';
-    if ($waitlistposition !== -1) {
-        $waitlistinfo = get_string(
-            'waitlist_info_message',
-            'enrol_bycategory',
-            ['waitlistposition' => $waitlistposition]
-        );
-    } else {
-        $waitlistinfo = get_string(
-            'waitlist_blocked_message',
-            'enrol_bycategory'
-        );
-    }
-
-    $templatecontext = [
-        'waitlistinfo' => text_to_html($waitlistinfo, false, false, true),
-        'form' => $form->render(),
-    ];
-
-    echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
-    echo $OUTPUT->render_from_template('enrol_bycategory/waitlist', $templatecontext);
-    echo $OUTPUT->footer();
+    enrol_bycategory_waitlist_show_management_view($waitlist, $course, $instance);
 }
