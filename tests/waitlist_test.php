@@ -33,7 +33,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/enrol/bycategory/lib.php');
-require_once($CFG->dirroot . '/enrol/bycategory/helper.php');
 
 /**
  * Testcase for enrol_bycategory_waitlist

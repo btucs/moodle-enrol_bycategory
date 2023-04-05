@@ -80,4 +80,37 @@ class enrol_bycategory_phpunit_util {
             'notified' => $notified,
         ], true, false);
     }
+
+     /**
+     * Add enrol instance to course
+     * @see https://moodle.org/mod/forum/discuss.php?d=318186#p1275913
+     * @author 2015 Darko Miletić
+     * @param object $plugin
+     * @param object $course
+     * @return mixed|null
+     * @throws coding_exception
+     */
+    public static function add_enrol_instance($plugin, $course) {
+        global $DB;
+        $inst = null;
+        $pluginname = $plugin->get_name();
+        if (!empty($plugin)) {
+            $inst = null;
+            $instances = enrol_get_instances($course->id, false);
+            foreach ($instances as $instance) {
+                if ($instance->enrol == $pluginname) {
+                    $inst = $instance;
+                    break;
+                }
+            }
+            if ($inst === null) {
+                $instid = $plugin->add_default_instance($course);
+                if ($instid === null) {
+                    $instid = $plugin->add_instance($course);
+                }
+                $inst = $DB->get_record('enrol', array('id' => $instid));
+            }
+        }
+        return $inst;
+    }
 }

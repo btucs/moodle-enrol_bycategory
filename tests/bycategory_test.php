@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot.'/enrol/bycategory/lib.php');
-require_once($CFG->dirroot.'/enrol/bycategory/helper.php');
+require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 require_once(__DIR__ . '/util.php');
 
 /**
@@ -39,39 +39,6 @@ require_once(__DIR__ . '/util.php');
  * @covers enrol_bycategory_plugin
  */
 class bycategory_test extends \advanced_testcase {
-    /**
-     * Add enrol instance to course
-     * @see https://moodle.org/mod/forum/discuss.php?d=318186#p1275913
-     * @author 2015 Darko Miletić
-     * @param object $plugin
-     * @param object $course
-     * @return mixed|null
-     * @throws coding_exception
-     */
-    protected function add_enrol_instance($plugin, $course) {
-        global $DB;
-        $inst = null;
-        $pluginname = $plugin->get_name();
-        if (!empty($plugin)) {
-            $inst = null;
-            $instances = enrol_get_instances($course->id, false);
-            foreach ($instances as $instance) {
-                if ($instance->enrol == $pluginname) {
-                    $inst = $instance;
-                    break;
-                }
-            }
-            if ($inst === null) {
-                $instid = $plugin->add_default_instance($course);
-                if ($instid === null) {
-                    $instid = $plugin->add_instance($course);
-                }
-                $inst = $DB->get_record('enrol', array('id' => $instid));
-            }
-        }
-        return $inst;
-    }
-
     public function test_basics() {
         $this->assertFalse(enrol_is_enabled('bycategory'));
         $plugin = enrol_get_plugin('bycategory');
@@ -863,7 +830,7 @@ class bycategory_test extends \advanced_testcase {
         enrol_bycategory_phpunit_util::enable_plugin();
         /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
-        $instance1 = $this->add_enrol_instance($plugin, $course1);
+        $instance1 = enrol_bycategory_phpunit_util::add_enrol_instance($plugin, $course1);
         $instance1->customint6 = 1;
         $instance1->customint4 = ENROL_SEND_EMAIL_FROM_COURSE_CONTACT;
         $DB->update_record('enrol', $instance1);
