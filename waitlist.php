@@ -40,7 +40,8 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_heading($course->fullname);
 $PAGE->navbar->add(get_string('users'));
 $PAGE->navbar->add(get_string('enrolmentinstances', 'enrol'), new moodle_url('/enrol/instances.php', ['id' => $course->id]));
-$PAGE->navbar->add(get_string('waitlist', 'enrol_bycategory'));
+$name = $instance->name ?: get_string('waitlist', 'enrol_bycategory');
+$PAGE->navbar->add($name);
 
 require_login();
 

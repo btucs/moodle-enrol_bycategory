@@ -63,7 +63,9 @@ function enrol_bycategory_waitlist_show_management_view($waitlist, $course, $ins
 
     if (!$table->is_downloading()) {
         echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
+        $waitlisttranslation = get_string('waitlist', 'enrol_bycategory');
+        $heading = !empty($instance->name) ? "$instance->name - $waitlisttranslation" : $waitlisttranslation;
+        echo $OUTPUT->heading($heading);
     }
 
     $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
@@ -118,7 +120,9 @@ function enrol_bycategory_waitlist_show_user_view($waitlist, $course, $instance)
     ];
 
     echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('waitlist', 'enrol_bycategory'));
+    $waitlisttranslation = get_string('waitlist', 'enrol_bycategory');
+    $heading = !empty($instance->name) ? "$instance->name - $waitlisttranslation" : $waitlisttranslation;
+    echo $OUTPUT->heading($heading);
     echo $OUTPUT->render_from_template('enrol_bycategory/waitlist', $templatecontext);
     echo $OUTPUT->footer();
 }
