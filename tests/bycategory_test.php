@@ -804,6 +804,12 @@ class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user($instance1, $user1->id, $studentrole->id);
         $this->setUser($user1);
         $this->assertSame($expectederrorstring, $plugin->can_self_enrol($instance1, true));
+
+        // Active enroled user can't enrol again via another enrolment method
+        $instance2id = $plugin->add_instance($course1, ['customint6' => 1]);
+        $instance2 = $DB->get_record('enrol', ['id' => $instance2id], '*', MUST_EXIST);
+        $canenrol = $plugin->can_self_enrol($instance2, true);
+        $this->assertSame($expectederrorstring, $canenrol);
     }
 
     /**

@@ -403,8 +403,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 // Can not enrol guest.
                 return get_string('noguestaccess', 'enrol') . $OUTPUT->continue_button(get_login_url());
             }
-            // Check if user is already enroled.
-            if ($DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
+            // Get all enrol methods the current course and check if user is already enroled.
+            $enrolids = $DB->get_fieldset_select('enrol', 'id', 'courseid = :courseid', ['courseid' => $instance->courseid]);
+            list($insql, $inparams) = $DB->get_in_or_equal($enrolids, SQL_PARAMS_NAMED);
+            $params = ['userid' => $USER->id] + $inparams;
+            if ($DB->count_records_select('user_enrolments', "userid = :userid AND enrolid $insql", $params) > 0) {
                 return get_string('canntenrol', 'enrol_bycategory');
             }
         }
