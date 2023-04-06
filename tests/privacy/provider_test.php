@@ -26,6 +26,7 @@
 
 namespace enrol_bycategory\privacy;
 
+use stdClass;
 use context_course;
 use context_user;
 use core_privacy\local\metadata\collection;
@@ -48,17 +49,26 @@ global $CFG;
   */
 class provider_test extends provider_testcase {
 
+    /** @var stdClass */
     private $user1 = null;
+    /** @var stdClass */
     private $user2 = null;
+    /** @var stdClass */
     private $user3 = null;
 
+    /** @var stdClass */
     private $course1 = null;
+    /** @var stdClass */
     private $course2 = null;
 
+    /** @var context_course */
     private $coursecontext1 = null;
+    /** @var context_course */
     private $coursecontext2 = null;
 
+    /** @var stdClass */
     private $instance1 = null;
+    /** @var stdClass */
     private $instance2 = null;
 
     public function setUp(): void {
@@ -190,6 +200,9 @@ class provider_test extends provider_testcase {
         $this->assertEquals([$this->user2->id], $userlist->get_userids());
     }
 
+    /**
+     * Helper function to setup course and add users to the waiting list
+     */
     protected function create_course_setup() {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();

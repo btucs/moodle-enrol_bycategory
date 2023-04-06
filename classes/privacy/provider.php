@@ -41,7 +41,15 @@ use core_privacy\local\request\writer;
  * @author      Matthias Tylkowski
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider, \core_privacy\local\request\core_userlist_provider {
+class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider,
+    \core_privacy\local\request\core_userlist_provider {
+
+    /**
+     * Returns meta data about this system.
+     *
+     * @param   collection     $collection The initialised collection to add items to.
+     * @return  collection     A listing of user data stored through this system.
+     */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'enrol_bycategory_waitlist',
@@ -54,6 +62,12 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         return $collection;
     }
 
+    /**
+     * Get the list of contexts that contain user information for the specified user.
+     *
+     * @param   int         $userid     The user to search.
+     * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
+     */
     public static function get_contexts_for_userid(int $userid): contextlist {
         $sql = "SELECT c.id
                   FROM {enrol_bycategory_waitlist} ebw
@@ -73,6 +87,11 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         return $contextlist;
     }
 
+    /**
+     * Get the list of users who have data within a context.
+     *
+     * @param   userlist    $userlist   The userlist containing the list of users who have data in this context/plugin combination.
+     */
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
@@ -91,6 +110,11 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $userlist->add_from_sql('id', $sql, $params);
     }
 
+    /**
+     * Export all user data for the specified user, in the specified contexts.
+     *
+     * @param   approved_contextlist    $contextlist    The approved contexts to export information for.
+     */
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
 
@@ -118,7 +142,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $enrolments = $DB->get_recordset_sql($sql, $params);
         $enrolmentdata = [];
 
-        foreach($enrolments as $enrolment) {
+        foreach ($enrolments as $enrolment) {
             $enrolment->timecreated = transform::datetime($enrolment->timecreated);
             $enrolment->timemodified = transform::datetime($enrolment->timemodified);
             $enrolmentdata[$enrolment->courseid][] = $enrolment;
@@ -126,7 +150,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $enrolments->close();
 
         $subcontext = \core_enrol\privacy\provider::get_subcontext([get_string('pluginname', 'enrol_bycategory')]);
-        foreach($enrolmentdata as $courseid => $enrolments) {
+        foreach ($enrolmentdata as $courseid => $enrolments) {
             $data = (object) [
                 'waitlists' => $enrolments
             ];
@@ -135,6 +159,11 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         }
     }
 
+    /**
+     * Delete all data for all users in the specified context.
+     *
+     * @param   context                 $context   The specific context to delete data for.
+     */
     public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
 
@@ -155,6 +184,11 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $DB->delete_records_select('enrol_bycategory_waitlist', $select, $inparams);
     }
 
+    /**
+     * Delete all user data for the specified user, in the specified contexts.
+     *
+     * @param   approved_contextlist    $contextlist    The approved contexts and user information to delete information for.
+     */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
         global $DB;
 
@@ -187,6 +221,11 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $DB->delete_records_select('enrol_bycategory_waitlist', $select, $params);
     }
 
+    /**
+     * Delete multiple users within a single context.
+     *
+     * @param   approved_userlist       $userlist The approved context and user information to delete information for.
+     */
     public static function delete_data_for_users(approved_userlist $userlist) {
         global $DB;
 

@@ -82,14 +82,14 @@ class enrol_bycategory_phpunit_util {
     }
 
      /**
-     * Add enrol instance to course
-     * @see https://moodle.org/mod/forum/discuss.php?d=318186#p1275913
-     * @author 2015 Darko Miletić
-     * @param object $plugin
-     * @param object $course
-     * @return mixed|null
-     * @throws coding_exception
-     */
+      * Add enrol instance to course
+      * @see https://moodle.org/mod/forum/discuss.php?d=318186#p1275913
+      * @author 2015 Darko Miletić
+      * @param object $plugin
+      * @param object $course
+      * @return mixed|null
+      * @throws coding_exception
+      */
     public static function add_enrol_instance($plugin, $course) {
         global $DB;
         $inst = null;

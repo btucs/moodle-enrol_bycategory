@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ /**
+  * Waiting list implementation
+  */
 class enrol_bycategory_waitlist {
 
     /** @var string */
@@ -420,15 +423,15 @@ class enrol_bycategory_waitlist {
     }
 
     /**
-    * Get a timestamp for start of day
-    * @param int $timestamp
-    * @return int
-    */
+     * Get a timestamp for start of day
+     * @param int $timestamp
+     * @return int
+     */
     private function start_of_day_timestamp($timestamp) {
         $startofday = new DateTime();
         $startofday->setTimestamp($timestamp);
         $startofday->setTime(0, 0, 0, 0);
 
         return $startofday->getTimestamp();
-   }
+    }
 }
