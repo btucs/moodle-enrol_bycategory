@@ -16,9 +16,27 @@
 
     Moodle template for people waiting on the waitlist
 
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
     Context variables required for this template:
     * waitlistinfo - Infomessage for the user
     * form - mform for leaving the waiting list
+
+    Example context (json):
+    {
+        "waitlistinfo": "If a slot becomes available you will be informed via e-mail and will be able to enrol into this course.<br />
+        Be aware that other persons may be informed as well, so be quick.<br />
+        The e-mail is sent daily, if at least one slot is available.<br />
+        <br />
+        Your current position on the waiting list is: 1.<br />
+        If you don't like to wait any longer, you can use the following button to leave the waiting list.<br />
+        ",
+        "form": ""
+    }
 }}
 <p>
     {{# str}} youareonthewaitlist,enrol_bycategory {{/ str}} <br><br>

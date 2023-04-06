@@ -16,8 +16,22 @@
 
     Moodle template for the bulk actions on the waiting list
 
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
     Context variables required for this template:
     * options - Array of courses for the select with id, fullname and if it should be selected by default.
+
+    Example context (json):
+    {
+        "options": [
+            {"id":"108","fullname":"test course 98","selected":true},
+            {"id":"109","fullname":"test course 99","selected":false}
+        ]
+    }
 }}
 <div class="mt-1 d-inline-block w-100">
     <div class="float-left">
