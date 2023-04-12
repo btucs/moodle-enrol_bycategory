@@ -147,12 +147,14 @@ $string['unenroluser'] = 'Möchten Sie "{$a->user}" wirklich vom Kurs "{$a->cour
 $string['unenrolusers'] = 'Nutzer/innen abmelden';
 $string['usernotonwaitlist'] = 'Sie sind nicht auf der Warteliste dieses Kurses.';
 $string['waitlist'] = 'Warteliste';
+$string['waitlist_active'] = '{$a} Benutzer auf der Warteliste';
 $string['waitlist_blocked_message'] = 'Sie wurden bereits 5 Mal, ohne Reaktion, über einen freien Platz informiert.
 
 Sie werden keine weiteren Benachrichtigungen erhalten.
 
 Wenn Sie immernoch interessiert sind sich in diesen Kurs einzuschreiben, verlassen Sie bitte die Warteliste und schreiben Sie sich erneut ein.
 Sie werden dadurch wieder Benachrichtigungen erhalten, werden aber auch an das Ende der Warteliste gesetzt.';
+$string['waitlist_deactivated'] = 'Warteliste ist nicht aktiv';
 $string['waitlist_info_message'] = 'Sie werden per Email benachrichtigt, sobald ein Platz verfügbar wird und erhalten dann die Möglichkeit, sich in den Kurs einzuschreiben.
 Bitte beachten Sie, dass weitere Teilnehmer*innen ebenfalls informiert werden, also seien Sie schnell.
 Die Email wird täglich versendet, wenn mindestens ein Platz verfügbar ist.

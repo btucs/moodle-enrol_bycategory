@@ -1,0 +1,23 @@
+.badge-action-icon {
+    position: relative;
+}
+
+.badge-action-icon .indicator {
+    position: absolute;
+    top: -5px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #094478;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15px;
+    width: 15px;
+}
+
+.badge-action-icon .indicator > .noti_count {
+    font-weight: 700;
+    font-size: 0.6rem;
+    font-family: var(--font-family-monospace);
+}

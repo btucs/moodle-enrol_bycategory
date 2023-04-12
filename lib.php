@@ -896,19 +896,23 @@ class enrol_bycategory_plugin extends enrol_plugin {
         if ($instance->customint8 == 1) {
             $linkparams = array('enrolid' => $instance->id);
             $waitlistlink = new moodle_url('/enrol/bycategory/waitlist.php', $linkparams);
-            $waitlisticon = $OUTPUT->action_icon(
+            $badgerenderer = new enrol_bycategory_badge_action_icon_renderer();
+            $waitlist = new enrol_bycategory_waitlist($instance->id);
+            $waitlistusercount = $waitlist->get_count();
+            $waitlisticon = $badgerenderer->badge_action_icon(
                 $waitlistlink,
                 new pix_icon(
                     't/waitlist',
-                    get_string('waitlist', 'enrol_bycategory'),
+                    get_string('waitlist_active', 'enrol_bycategory', $waitlistusercount),
                     'enrol_bycategory',
                     array('class' => 'iconsmall fa fa-fw')
-                )
+                ),
+                $waitlistusercount
             );
         } else {
             $waitlisticon = $OUTPUT->pix_icon(
                 't/waitlist',
-                get_string('waitlist', 'enrol_bycategory'),
+                get_string('waitlist_deactivated', 'enrol_bycategory'),
                 'enrol_bycategory',
                 array('class' => 'iconsmall fa fa-fw dimmed_text')
             );

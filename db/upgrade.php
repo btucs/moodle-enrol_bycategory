@@ -24,9 +24,9 @@
 
 /**
  * Upgrade function
-* @param number $oldversion
-* @return bool
-*/
+ * @param number $oldversion
+ * @return bool
+ */
 function xmldb_enrol_bycategory_upgrade($oldversion) {
     global $DB;
 
