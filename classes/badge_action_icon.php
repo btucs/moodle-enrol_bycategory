@@ -20,9 +20,11 @@
  * @copyright   2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-class enrol_bycategory_badge_action_icon_renderer {
+ /**
+  * Creates an action icon with a badge to inform about amount
+  */
+class enrol_bycategory_badge_action_icon {
 
     /**
      * Renders an action_icon with notification amount.
@@ -52,7 +54,7 @@ class enrol_bycategory_badge_action_icon_renderer {
         $attributes = (array)$attributes;
 
         if (empty($attributes['class'])) {
-            // let ppl override the class via $options
+            // Let ppl override the class via $options.
             $attributes['class'] = 'action-icon badge-action-icon';
         }
 

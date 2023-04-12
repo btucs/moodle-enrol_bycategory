@@ -344,21 +344,21 @@ class waitlist_test extends \advanced_testcase {
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
-        $instance1->status          = ENROL_INSTANCE_ENABLED;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance2->customint8 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
-        $instance2->status          = ENROL_INSTANCE_ENABLED;
+        $instance2->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance2);
 
         $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance3->customint8 = 1; // Enable waiting list.
         $instance3->customint3 = 1; // Max enrolled.
         $instance3->customint6 = 1; // New enrols allowed.
-        $instance3->status          = ENROL_INSTANCE_ENABLED;
+        $instance3->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance3);
 
         $result = enrol_bycategory_waitlist::select_courses_with_available_space();
@@ -410,14 +410,14 @@ class waitlist_test extends \advanced_testcase {
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
-        $instance1->status          = ENROL_INSTANCE_ENABLED;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance2->customint8 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
-        $instance2->status          = ENROL_INSTANCE_ENABLED;
+        $instance2->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance2);
 
         $now = time();
@@ -475,7 +475,7 @@ class waitlist_test extends \advanced_testcase {
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
-        $instance1->status          = ENROL_INSTANCE_ENABLED;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $now = time();
@@ -504,7 +504,7 @@ class waitlist_test extends \advanced_testcase {
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
-        $instance1->status          = ENROL_INSTANCE_ENABLED;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $now = time();

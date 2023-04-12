@@ -34,9 +34,9 @@ if ($ADMIN->fulltree) {
              it describes what should happend when users are not supposed to be enerolled any more.
     */
     $options = array(
-        ENROL_EXT_REMOVED_KEEP           => get_string('extremovedkeep', 'enrol'),
+        ENROL_EXT_REMOVED_KEEP => get_string('extremovedkeep', 'enrol'),
         ENROL_EXT_REMOVED_SUSPENDNOROLES => get_string('extremovedsuspendnoroles', 'enrol'),
-        ENROL_EXT_REMOVED_UNENROL        => get_string('extremovedunenrol', 'enrol'),
+        ENROL_EXT_REMOVED_UNENROL => get_string('extremovedunenrol', 'enrol'),
     );
     $settings->add(
         new admin_setting_configselect(
@@ -80,7 +80,7 @@ if ($ADMIN->fulltree) {
     );
 
     $options = array(
-        ENROL_INSTANCE_ENABLED  => get_string('yes'),
+        ENROL_INSTANCE_ENABLED => get_string('yes'),
         ENROL_INSTANCE_DISABLED => get_string('no')
     );
 
@@ -94,7 +94,7 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(1  => get_string('yes'), 0 => get_string('no'));
+    $options = array(1 => get_string('yes'), 0 => get_string('no'));
     $settings->add(
         new admin_setting_configselect(
             'enrol_bycategory/newenrols',

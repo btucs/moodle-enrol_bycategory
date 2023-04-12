@@ -24,8 +24,6 @@
 
 use core\message\message;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Extend fontawesome mapping list for custom key
  * @return array Map of key to fontawesome classes
@@ -300,20 +298,20 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
 
         $fields = array();
-        $fields['status']               = $this->get_config('status');
-        $fields['roleid']               = $this->get_config('roleid');
-        $fields['enrolperiod']          = $this->get_config('enrolperiod');
-        $fields['expirynotify']         = $expirynotify;
-        $fields['notifyall']            = $notifyall;
-        $fields['expirythreshold']      = $this->get_config('expirythreshold');
-        $fields['customint1']           = 0; // ... categoryId.
-        $fields['customint2']           = $this->get_config('longtimenosee');
-        $fields['customint3']           = $this->get_config('maxenrolled');
-        $fields['customint4']           = $this->get_config('sendcoursewelcomemessage');
-        $fields['customint5']           = 0; // Max time since completing last course in target category.
-        $fields['customint6']           = $this->get_config('newenrols');
-        $fields['customint7']           = 0; // Count completion from 0: now or 1: enrol start time.
-        $fields['customint8']           = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
+        $fields['status'] = $this->get_config('status');
+        $fields['roleid'] = $this->get_config('roleid');
+        $fields['enrolperiod'] = $this->get_config('enrolperiod');
+        $fields['expirynotify'] = $expirynotify;
+        $fields['notifyall'] = $notifyall;
+        $fields['expirythreshold'] = $this->get_config('expirythreshold');
+        $fields['customint1'] = 0; // ... categoryId.
+        $fields['customint2'] = $this->get_config('longtimenosee');
+        $fields['customint3'] = $this->get_config('maxenrolled');
+        $fields['customint4'] = $this->get_config('sendcoursewelcomemessage');
+        $fields['customint5'] = 0; // Max time since completing last course in target category.
+        $fields['customint6'] = $this->get_config('newenrols');
+        $fields['customint7'] = 0; // Count completion from 0: now or 1: enrol start time.
+        $fields['customint8'] = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
 
         return $fields;
     }
@@ -585,10 +583,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
             $merge = false;
         } else {
             $merge = array(
-                'courseid'   => $data->courseid,
-                'enrol'      => $this->get_name(),
-                'status'     => $data->status,
-                'roleid'     => $data->roleid,
+                'courseid' => $data->courseid,
+                'enrol' => $this->get_name(),
+                'status' => $data->status,
+                'roleid' => $data->roleid,
             );
         }
         if ($merge && $instances = $DB->get_records('enrol', $merge, 'id')) {
@@ -896,7 +894,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         if ($instance->customint8 == 1) {
             $linkparams = array('enrolid' => $instance->id);
             $waitlistlink = new moodle_url('/enrol/bycategory/waitlist.php', $linkparams);
-            $badgerenderer = new enrol_bycategory_badge_action_icon_renderer();
+            $badgerenderer = new enrol_bycategory_badge_action_icon();
             $waitlist = new enrol_bycategory_waitlist($instance->id);
             $waitlistusercount = $waitlist->get_count();
             $waitlisticon = $badgerenderer->badge_action_icon(
@@ -1061,7 +1059,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_status_options() {
-        $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
+        $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
                          ENROL_INSTANCE_DISABLED => get_string('no'));
         return $options;
     }

@@ -362,33 +362,33 @@ class bycategory_test extends \advanced_testcase {
         $maninstance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance1->expirythreshold = 60 * 60 * 24 * 4;
-        $instance1->expirynotify    = 1;
-        $instance1->notifyall       = 1;
-        $instance1->status          = ENROL_INSTANCE_ENABLED;
+        $instance1->expirynotify = 1;
+        $instance1->notifyall = 1;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $maninstance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance2->expirythreshold = 60 * 60 * 24 * 1;
-        $instance2->expirynotify    = 1;
-        $instance2->notifyall       = 1;
-        $instance2->status          = ENROL_INSTANCE_ENABLED;
+        $instance2->expirynotify = 1;
+        $instance2->notifyall = 1;
+        $instance2->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance2);
 
         $maninstance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance3->expirythreshold = 60 * 60 * 24 * 1;
-        $instance3->expirynotify    = 1;
-        $instance3->notifyall       = 0;
-        $instance3->status          = ENROL_INSTANCE_ENABLED;
+        $instance3->expirynotify = 1;
+        $instance3->notifyall = 0;
+        $instance3->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance3);
 
         $maninstance4 = $DB->get_record('enrol', array('courseid' => $course4->id, 'enrol' => 'manual'), '*', MUST_EXIST);
         $instance4 = $DB->get_record('enrol', array('courseid' => $course4->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance4->expirythreshold = 60 * 60 * 24 * 1;
-        $instance4->expirynotify    = 0;
-        $instance4->notifyall       = 0;
-        $instance4->status          = ENROL_INSTANCE_ENABLED;
+        $instance4->expirynotify = 0;
+        $instance4->notifyall = 0;
+        $instance4->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance4);
 
         $plugin->enrol_user($instance1, $user1->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1, ENROL_USER_SUSPENDED); // Suspended users are not notified.
@@ -521,14 +521,14 @@ class bycategory_test extends \advanced_testcase {
         $instance1->customint8 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
-        $instance1->status     = ENROL_INSTANCE_ENABLED;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance2->customint8 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
-        $instance2->status     = ENROL_INSTANCE_ENABLED;
+        $instance2->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance2);
 
         $now = time();
@@ -805,7 +805,7 @@ class bycategory_test extends \advanced_testcase {
         $this->setUser($user1);
         $this->assertSame($expectederrorstring, $plugin->can_self_enrol($instance1, true));
 
-        // Active enroled user can't enrol again via another enrolment method
+        // Active enroled user can't enrol again via another enrolment method.
         $instance2id = $plugin->add_instance($course1, ['customint6' => 1]);
         $instance2 = $DB->get_record('enrol', ['id' => $instance2id], '*', MUST_EXIST);
         $canenrol = $plugin->can_self_enrol($instance2, true);
