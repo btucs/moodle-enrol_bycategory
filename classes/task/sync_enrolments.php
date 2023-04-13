@@ -47,7 +47,6 @@ class sync_enrolments extends \core\task\scheduled_task {
      * Run task for syncing enrolments.
      */
     public function execute() {
-        /** @var enrol_bycategory_plugin */
         $enrol = enrol_get_plugin('bycategory');
         $trace = new \text_progress_trace();
         $enrol->sync($trace);

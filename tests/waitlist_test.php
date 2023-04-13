@@ -329,7 +329,6 @@ class waitlist_test extends \advanced_testcase {
 
         enrol_bycategory_phpunit_util::enable_plugin();
 
-        /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
 
         $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
@@ -388,7 +387,6 @@ class waitlist_test extends \advanced_testcase {
 
         enrol_bycategory_phpunit_util::enable_plugin();
 
-        /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
 
         $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
@@ -463,7 +461,6 @@ class waitlist_test extends \advanced_testcase {
         $this->resetAfterTest();
         enrol_bycategory_phpunit_util::enable_plugin();
 
-        /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
 
         $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));

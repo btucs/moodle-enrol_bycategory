@@ -29,13 +29,13 @@ class enrol_bycategory_badge_action_icon {
     /**
      * Renders an action_icon with notification amount.
      *
-     * This function uses the {@link core_renderer::action_link()} method for the
+     * This function uses the {@see core_renderer::action_link()} method for the
      * most part. What it does different is prepare the icon as HTML and use it
      * as the link text.
      *
      * Theme developers: If you want to change how action links and/or icons are rendered,
-     * consider overriding function {@link core_renderer::render_action_link()} and
-     * {@link core_renderer::render_pix_icon()}.
+     * consider overriding function {@see core_renderer::render_action_link()} and
+     * {@see core_renderer::render_pix_icon()}.
      *
      * @param string|moodle_url $url A string URL or moodel_url
      * @param pix_icon $pixicon
@@ -45,7 +45,14 @@ class enrol_bycategory_badge_action_icon {
      * @param bool $linktext show title next to image in link
      * @return string HTML fragment
      */
-    public function badge_action_icon($url, pix_icon $pixicon, $amount, component_action $action = null, array $attributes = null, $linktext=false) {
+    public function badge_action_icon(
+        $url,
+        pix_icon $pixicon,
+        $amount,
+        component_action $action = null,
+        array $attributes = null,
+        $linktext = false
+    ) {
         global $OUTPUT;
 
         if (!($url instanceof moodle_url)) {

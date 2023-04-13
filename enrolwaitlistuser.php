@@ -46,7 +46,7 @@ $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $e
 if ($confirm && confirm_sesskey()) {
     if ($waitlist->is_on_waitlist($user->id)) {
         $enrolmethod = 'bycategory';
-        /** @var enrol_bycategory_plugin */
+
         $enrol = enrol_get_plugin($enrolmethod);
         if ($enrol === null) {
             redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);

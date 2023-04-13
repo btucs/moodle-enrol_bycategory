@@ -49,7 +49,7 @@ class bycategory_test extends \advanced_testcase {
 
     public function test_sync_nothing() {
         global $SITE;
-        /** @var enrol_bycategory_plugin */
+
         $plugin = enrol_get_plugin('bycategory');
 
         $trace = new \null_progress_trace();
@@ -62,7 +62,7 @@ class bycategory_test extends \advanced_testcase {
     public function test_longtimnosee() {
         global $DB, $CFG;
         $this->resetAfterTest();
-        /** @var enrol_bycategory_plugin */
+
         $plugin = enrol_get_plugin('bycategory');
         $manualplugin = enrol_get_plugin('manual');
 
@@ -194,7 +194,6 @@ class bycategory_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
 
-        /** @var enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $manualplugin = enrol_get_plugin('manual');
         $this->assertNotEmpty($manualplugin);
@@ -321,9 +320,8 @@ class bycategory_test extends \advanced_testcase {
         $this->preventResetByRollback(); // Messaging does not like transactions...
 
         enrol_bycategory_phpunit_util::enable_plugin();
-        /** @var $plugin enrol_bycategory_plugin */
+
         $plugin = enrol_get_plugin('bycategory');
-        /** @var $manualplugin enrol_manual_plugin */
         $manualplugin = enrol_get_plugin('manual');
         $now = time();
         $admin = get_admin();
@@ -498,7 +496,6 @@ class bycategory_test extends \advanced_testcase {
 
         enrol_bycategory_phpunit_util::enable_plugin();
 
-        /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
         $trace = new \null_progress_trace();
 
@@ -587,7 +584,6 @@ class bycategory_test extends \advanced_testcase {
 
         enrol_bycategory_phpunit_util::enable_plugin();
 
-        /** @var $plugin enrol_bycategory_plugin */
         $plugin = enrol_get_plugin('bycategory');
 
         $user1 = $this->getDataGenerator()->create_user();
@@ -834,7 +830,7 @@ class bycategory_test extends \advanced_testcase {
 
         // Enable self enrolment plugin and set to send email from course contact.
         enrol_bycategory_phpunit_util::enable_plugin();
-        /** @var enrol_bycategory_plugin */
+
         $plugin = enrol_get_plugin('bycategory');
         $instance1 = enrol_bycategory_phpunit_util::add_enrol_instance($plugin, $course1);
         $instance1->customint6 = 1;

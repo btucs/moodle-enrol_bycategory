@@ -64,8 +64,6 @@ function enrol_bycategory_waitlist_show_management_view($waitlist, $course, $ins
         $waitlisttranslation = get_string('waitlist', 'enrol_bycategory');
         $heading = !empty($instance->name) ? "$instance->name - $waitlisttranslation" : $waitlisttranslation;
         echo $OUTPUT->heading($heading);
-
-
         echo $OUTPUT->box(enrol_bycategory_waitlist_show_status_info());
     }
 
@@ -128,7 +126,6 @@ function enrol_bycategory_waitlist_show_user_view($waitlist, $course, $instance)
     echo $OUTPUT->footer();
 }
 
-
 /**
  * Delete expired tokens
  * @param int $time
@@ -153,9 +150,7 @@ function enrol_bycategory_waitlist_show_status_info() {
     global $PAGE;
 
     $task = \core\task\manager::get_scheduled_task(\enrol_bycategory\task\send_waitlist_notifications::class);
-    /** var tool_task_renderer */
     $renderer = $PAGE->get_renderer('tool_task');
-
     $nextruntime = $renderer->next_run_time($task);
 
     $config = get_config('enrol_bycategory');

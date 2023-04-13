@@ -46,7 +46,6 @@ class send_waitlist_notifications extends \core\task\scheduled_task {
      * Run task for sending expiry notifications.
      */
     public function execute() {
-        /** @var enrol_bycategory_plugin */
         $enrol = enrol_get_plugin('bycategory');
         $trace = new \text_progress_trace();
         $enrol->send_waitlist_notifications($trace);
