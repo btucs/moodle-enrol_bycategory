@@ -64,6 +64,9 @@ function enrol_bycategory_waitlist_show_management_view($waitlist, $course, $ins
         $waitlisttranslation = get_string('waitlist', 'enrol_bycategory');
         $heading = !empty($instance->name) ? "$instance->name - $waitlisttranslation" : $waitlisttranslation;
         echo $OUTPUT->heading($heading);
+
+
+        echo $OUTPUT->box(enrol_bycategory_waitlist_show_status_info());
     }
 
     $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
@@ -139,4 +142,31 @@ function enrol_bycategory_delete_expired_tokens($time) {
     $DB->execute($sql, [
         'time' => $time - 86400,
     ]);
+}
+
+/**
+ * Show status information about the waitlist. When are users will be informed
+ * next time? How many users are informed and how often?
+ * @return string HTML
+ */
+function enrol_bycategory_waitlist_show_status_info() {
+    global $PAGE;
+
+    $task = \core\task\manager::get_scheduled_task(\enrol_bycategory\task\send_waitlist_notifications::class);
+    /** var tool_task_renderer */
+    $renderer = $PAGE->get_renderer('tool_task');
+
+    $nextruntime = $renderer->next_run_time($task);
+
+    $config = get_config('enrol_bycategory');
+    $notifycount = $config->waitlistnotifycount;
+    $notifylimit = $config->waitlistnotifylimit;
+
+    $statusdata = [
+        'nextruntime' => $nextruntime,
+        'notifycount' => $notifycount,
+        'notifylimit' => $notifylimit
+    ];
+
+    return text_to_html(get_string('waitlist_status_info', 'enrol_bycategory', $statusdata), false, false, true);
 }

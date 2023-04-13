@@ -174,6 +174,8 @@ If you are not interested to join course "{$a->coursename}" anymore, click the f
 {$a->leavewaitlisturl}
 ';
 $string['waitlist_notification_subject'] = 'There\'s a spot available in course "{$a->coursename}"';
+$string['waitlist_status_info'] = '{$a->notifycount} Users from the waitinglist are informed about a free spot in this course {$a->nextruntime}.
+Users are only informed {$a->notifylimit} times without reaction until they are ignored.';
 $string['welcometocourse'] = 'Welcome to {$a}';
 $string['welcometocoursetext'] = 'Welcome to {$a->coursename}!
 
