@@ -218,7 +218,11 @@ class enrol_bycategory_waitlist_table extends table_sql {
             'action' => new moodle_url('/enrol/bycategory/bulkenrolwaitlistusers.php'),
             'method' => 'POST',
         ]);
-        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'enrolid', 'value' => $this->sql->params['instanceid']]);
+        echo html_writer::empty_tag('input', [
+            'type' => 'hidden',
+            'name' => 'enrolid',
+            'value' => $this->sql->params['instanceid']
+        ]);
     }
 
     /**

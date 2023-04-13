@@ -389,6 +389,7 @@ class bycategory_test extends \advanced_testcase {
         $instance4->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance4);
 
+        // phpcs:disable moodle.Files.LineLength.TooLong
         $plugin->enrol_user($instance1, $user1->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1, ENROL_USER_SUSPENDED); // Suspended users are not notified.
         $plugin->enrol_user($instance1, $user2->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 5);                 // Above threshold are not notified.
         $plugin->enrol_user($instance1, $user3->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 3 + 60 * 60);       // Less than one day after threshold - should be notified.
@@ -409,6 +410,7 @@ class bycategory_test extends \advanced_testcase {
         $manualplugin->enrol_user($maninstance4, $user4->id, $editingteacherrole->id);
         $plugin->enrol_user($instance4, $user5->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 + 60);
         $plugin->enrol_user($instance4, $user6->id, $studentrole->id, 0, $now + 60 * 60 * 24 * 1 - 60 * 60);
+        // phpcs:enable moodle.Files.LineLength.TooLong
 
         /* The notification is sent out in fixed order first individual users,
            then summary per course by enrolid, user lastname, etc.
