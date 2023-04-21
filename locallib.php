@@ -72,7 +72,7 @@ function enrol_bycategory_waitlist_show_management_view($waitlist, $course, $ins
         $waitlisttranslation = get_string('waitlist', 'enrol_bycategory');
         $heading = !empty($instance->name) ? "$instance->name - $waitlisttranslation" : $waitlisttranslation;
         echo $OUTPUT->heading($heading);
-        if($table->totalrows > 0) {
+        if ($table->totalrows > 0) {
             echo $OUTPUT->box(enrol_bycategory_waitlist_show_status_info());
         }
     }
