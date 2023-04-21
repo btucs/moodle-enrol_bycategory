@@ -59,17 +59,25 @@ function enrol_bycategory_waitlist_show_management_view($waitlist, $course, $ins
         get_string('waitlist_users', 'enrol_bycategory')
     );
 
+    $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
+    $table->define_baseurl($url);
+    // Render table ealier to have totalrow filled without doing second request.
+    ob_start();
+    $table->out(25, true);
+    $tableoutput = ob_get_contents();
+    ob_end_clean();
+
     if (!$table->is_downloading()) {
         echo $OUTPUT->header();
         $waitlisttranslation = get_string('waitlist', 'enrol_bycategory');
         $heading = !empty($instance->name) ? "$instance->name - $waitlisttranslation" : $waitlisttranslation;
         echo $OUTPUT->heading($heading);
-        echo $OUTPUT->box(enrol_bycategory_waitlist_show_status_info());
+        if($table->totalrows > 0) {
+            echo $OUTPUT->box(enrol_bycategory_waitlist_show_status_info());
+        }
     }
 
-    $url = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
-    $table->define_baseurl($url);
-    $table->out(25, true);
+    echo $tableoutput;
 
     if (!$table->is_downloading()) {
         echo $OUTPUT->footer();

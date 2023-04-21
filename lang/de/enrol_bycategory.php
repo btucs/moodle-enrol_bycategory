@@ -179,7 +179,7 @@ Wenn sie nicht mehr interessiert sind dem Kurs "{$a->coursename}" beizutreten, k
 {$a->leavewaitlisturl}
 ';
 $string['waitlist_notification_subject'] = 'Es ist ein Platz in Kurs "{$a->coursename}" verfügbar';
-$string['waitlist_status_info'] = '{$a->notifycount} Teilnehmer von der Warteliste werden am {$a->nextruntime} über einen freien Platz in diesem Kurs informiert.
+$string['waitlist_status_info'] = 'Bis zu {$a->notifycount} Teilnehmer von der Warteliste werden am {$a->nextruntime} über einen freien Platz in diesem Kurs informiert.
 Teilnehmer werden nur {$a->notifylimit} Mal informiert. Wenn sie bis dahin nicht reagieren werden sie ignoriert';
 $string['welcometocourse'] = 'Willkommen zu {$a}';
 $string['welcometocoursetext'] = 'Willkommen im Kurs "{$a->coursename}"!
