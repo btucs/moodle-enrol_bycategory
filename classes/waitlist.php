@@ -246,7 +246,7 @@ class enrol_bycategory_waitlist {
                 // ... by default count back from now.
                 $startdate = $this->start_of_day_timestamp(time());
 
-                if ($instance->customint7 == 1 && $instance->enrolstartdate) {
+                if ($instance->customchar1 == 1 && $instance->enrolstartdate) {
                     $startdate = $this->start_of_day_timestamp($instance->enrolstartdate);
                 }
 
@@ -296,7 +296,7 @@ class enrol_bycategory_waitlist {
             }
 
             // Empty spaces available and waiting list is enabled.
-            if (1 == $instance->customint8 && false === $ignorewaitlist) {
+            if (1 == $instance->customchar2 && false === $ignorewaitlist) {
                 $waitlist = new enrol_bycategory_waitlist($instance->id);
                 $waitlistcount = $waitlist->get_count();
                 if ($waitlistcount > 0) {

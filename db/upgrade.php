@@ -105,5 +105,19 @@ function xmldb_enrol_bycategory_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022060210, 'enrol', 'bycategory');
     }
 
+    if ($oldversion < 2023051200) {
+
+        $sql = "UPDATE {enrol}
+                SET customchar1 = CAST(customint7 AS VARCHAR(255)), customint7 = NULL,
+                    customchar2 = CAST(customint8 AS VARCHAR(255)), customint8 = NULL
+                WHERE enrol = 'bycategory'"
+        ;
+
+        $DB->execute($sql);
+
+        // Bycategory savepoint reached.
+        upgrade_plugin_savepoint(true, 2023051200, 'enrol', 'bycategory');
+    }
+
     return true;
 }

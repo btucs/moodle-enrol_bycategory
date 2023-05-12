@@ -92,12 +92,9 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addElement('duration', 'customint5', get_string('completionperiod', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customint5', 'completionperiod', 'enrol_bycategory');
 
-        $options = array(
-            0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
-            1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
-        );
-        $mform->addElement('select', 'customint7', get_string('enrolperiodcountfrom', 'enrol_bycategory'), $options);
-        $mform->addHelpButton('customint7', 'enrolperiodcountfrom', 'enrol_bycategory');
+        $options = $this->get_period_start_options();
+        $mform->addElement('select', 'customchar1', get_string('enrolperiodcountfrom', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customchar1', 'enrolperiodcountfrom', 'enrol_bycategory');
 
         $options = $this->get_status_options();
         $mform->addElement('select', 'status', get_string('status', 'enrol_bycategory'), $options);
@@ -143,9 +140,9 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->setType('customint3', PARAM_INT);
 
         $options = $this->get_enablewaitlist_options();
-        $mform->addElement('select', 'customint8', get_string('enablewaitlist', 'enrol_bycategory'), $options);
-        $mform->setDefault('customint8', 0);
-        $mform->addHelpButton('customint8', 'enablewaitlist', 'enrol_bycategory');
+        $mform->addElement('select', 'customchar2', get_string('enablewaitlist', 'enrol_bycategory'), $options);
+        $mform->setDefault('customchar2', 0);
+        $mform->addHelpButton('customchar2', 'enablewaitlist', 'enrol_bycategory');
 
         $mform->addElement('select', 'customint4', get_string('sendcoursewelcomemessage', 'enrol_bycategory'),
                 enrol_send_welcome_email_options());
@@ -201,6 +198,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $validexpirynotify = array_keys($this->get_expirynotify_options());
         $validlongtimenosee = array_keys($this->get_longtimenosee_options());
         $validwaitlist = array_keys($this->get_enablewaitlist_options());
+        $validperiodstart = array_keys($this->get_period_start_options());
         $tovalidate = array(
             'enrolstartdate' => PARAM_INT,
             'enrolenddate' => PARAM_INT,
@@ -211,8 +209,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint4' => PARAM_INT,
             'customint5' => PARAM_INT,
             'customint6' => $validnewenrols,
-            'customint7' => PARAM_INT,
-            'customint8' => $validwaitlist,
+            //'customint7' => PARAM_INT,
+            //'customint8' => $validwaitlist,
+            'customchar1' => $validperiodstart,
+            'customchar2' => $validwaitlist,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,
@@ -310,8 +310,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $fields['customint4'] = $this->get_config('sendcoursewelcomemessage');
         $fields['customint5'] = 0; // Max time since completing last course in target category.
         $fields['customint6'] = $this->get_config('newenrols');
-        $fields['customint7'] = 0; // Count completion from 0: now or 1: enrol start time.
-        $fields['customint8'] = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
+        $fields['customchar1'] = 0; // Count completion from 0: now or 1: enrol start time.
+        $fields['customchar2'] = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
 
         return $fields;
     }
@@ -350,7 +350,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             }
         } else {
             if (
-                $instance->customint8 == 1 && (
+                $instance->customchar2 == 1 && (
                     true === $enrolstatus ||
                     $enrolstatus === get_string('maxenrolledreached', 'enrol_bycategory')
                 )
@@ -892,7 +892,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         global $OUTPUT;
 
         $waitlisticon = '';
-        if ($instance->customint8 == 1) {
+        if ($instance->customchar2 == 1) {
             $linkparams = array('enrolid' => $instance->id);
             $waitlistlink = new moodle_url('/enrol/bycategory/waitlist.php', $linkparams);
             $badgerenderer = new enrol_bycategory_badge_action_icon();
@@ -1077,7 +1077,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
-     * Return an array of valid options for the enablewaitlist (customint8) property
+     * Return an array of valid options for the enablewaitlist (customchar2) property
      * @return array
      */
     protected function get_enablewaitlist_options() {
@@ -1086,7 +1086,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
-     * Return an array of valid options for customint7 (counting start time for enrolment period) property
+     * Return an array of valid options for customchar1 (counting start time for enrolment period) property
      *
      * @return array
      */

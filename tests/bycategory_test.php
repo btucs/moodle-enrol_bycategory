@@ -517,14 +517,14 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
 
         $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
-        $instance1->customint8 = 1; // Enable waiting list.
+        $instance1->customchar2 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
         $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
         $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
-        $instance2->customint8 = 1; // Enable waiting list.
+        $instance2->customchar2 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
         $instance2->status = ENROL_INSTANCE_ENABLED;
@@ -686,7 +686,7 @@ class bycategory_test extends \advanced_testcase {
         $instance13 = $DB->get_record('enrol', array('courseid' => $course12->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance13->customint6 = 1;
         $instance13->customint3 = 1;
-        $instance13->customint8 = 1;
+        $instance13->customchar2 = 1;
         $DB->update_record('enrol', $instance13);
         $plugin->update_status($instance13, ENROL_INSTANCE_ENABLED);
         $plugin->enrol_user($instance13, $user2->id, $studentrole->id);
@@ -696,7 +696,7 @@ class bycategory_test extends \advanced_testcase {
         $instance14 = $DB->get_record('enrol', array('courseid' => $course13->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
         $instance14->customint6 = 1;
         $instance14->customint3 = 1;
-        $instance14->customint8 = 1;
+        $instance14->customchar2 = 1;
         $DB->update_record('enrol', $instance14);
         $plugin->update_status($instance14, ENROL_INSTANCE_ENABLED);
         $plugin->enrol_user($instance14, $user2->id, $studentrole->id);
@@ -748,12 +748,12 @@ class bycategory_test extends \advanced_testcase {
 
         $instance5->enrolstartdate = time() - (86400 * 2);
         $instance5->customint5 = 60 * 60 * 24 * 10;
-        $instance5->customint7 = 1;
+        $instance5->customchar1 = 1;
         $DB->update_record('enrol', $instance5);
         // User can still enrol, because counting starts from enrolstartdate.
         $this->assertTrue($plugin->show_enrolme_link($instance5));
 
-        $instance5->customint7 = 0;
+        $instance5->customchar1 = 0;
         $DB->update_record('enrol', $instance5);
         // User can't enrol, because counting starts from now.
         $this->assertFalse($plugin->show_enrolme_link($instance5));

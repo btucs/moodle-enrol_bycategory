@@ -234,7 +234,7 @@ class provider_test extends provider_testcase {
     protected function setup_enrol($instance) {
         global $DB;
 
-        $instance->customint8 = 1; // Enable waiting list.
+        $instance->customchar2 = 1; // Enable waiting list.
         $instance->customint3 = 1; // Max enrolled.
         $instance->customint6 = 1; // New enrols allowed.
         $instance->status = ENROL_INSTANCE_ENABLED;
