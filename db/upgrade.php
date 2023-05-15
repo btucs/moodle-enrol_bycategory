@@ -110,8 +110,7 @@ function xmldb_enrol_bycategory_upgrade($oldversion) {
         $sql = "UPDATE {enrol}
                 SET customchar1 = CAST(customint7 AS VARCHAR(255)), customint7 = NULL,
                     customchar2 = CAST(customint8 AS VARCHAR(255)), customint8 = NULL
-                WHERE enrol = 'bycategory'"
-        ;
+                WHERE enrol = 'bycategory'";
 
         $DB->execute($sql);
 

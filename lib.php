@@ -22,8 +22,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ defined('MOODLE_INTERNAL') || die();
+
 use core\message\message;
-require_once $CFG->dirroot.'/group/lib.php';
+require_once($CFG->dirroot.'/group/lib.php');
 
 /**
  * Extend fontawesome mapping list for custom key
@@ -213,7 +215,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint5' => PARAM_INT,
             'customint6' => $validnewenrols,
             'customint7' => PARAM_INT,
-            //'customint8' => $validwaitlist,
             'customchar1' => $validperiodstarts,
             'customchar2' => $validwaitlist,
             'status' => $validstatus,
@@ -531,7 +532,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $this->enrol_user($instance, $userid, $instance->roleid, $timestart, $timeend);
 
-        if($instance->customint7 > 0) {
+        if ($instance->customint7 > 0) {
             groups_add_member($instance->customint7, $userid, 'enrol_bycategory', $instance->id);
         }
 
