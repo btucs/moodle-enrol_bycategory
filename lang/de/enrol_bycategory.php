@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['autogroup'] = 'Teilnehmer*innen werden automatisch in ausgewählte Gruppe einschreiben';
+$string['autogroup_help'] = 'Teilnehmer*innen werden bei Einschreibung über diese Einschreibemethode automatisch in die ausgewählte Gruppe eingeschrieben.';
 $string['bulkenrol'] = 'Ausgewählte Einschrieben in';
 $string['bulkenrolconfirmmessage'] = 'Sind sie sicher, dass sie die folgenden Teilnehmer*innen:
 
@@ -119,6 +121,7 @@ $string['newenrols_help'] = 'Diese Option legt fest, ob Nutzer/innen sich selber
 $string['nocategory'] = 'keine Einschränkung';
 $string['nocourseincategory'] = 'Um Zugang zu diesem Kurs zu erhalten, müssen bereits einen Kurs aus dem Kursbereich "{$a}" abgeschlossen haben.';
 $string['nocourseincategorysince'] = 'Um Zugang zu diesem Kurs zu erhalten, müssen bereits einen Kurs aus dem Kursbereich "{$a}" abgeschlossen haben oder ihr Kursabschluss liegt zu weit in der Vergangenheit.';
+$string['nogroup'] = 'Keine Gruppeneinschränkung';
 $string['notifiedcount'] = 'Benachrichtigt ohne Reaktion';
 $string['onwaitlistsince'] = 'Auf Wartelist seit';
 $string['pluginname'] = 'Einschreibung nach Kursbereich';
@@ -147,7 +150,7 @@ $string['unenroluser'] = 'Möchten Sie "{$a->user}" wirklich vom Kurs "{$a->cour
 $string['unenrolusers'] = 'Nutzer/innen abmelden';
 $string['usernotonwaitlist'] = 'Sie sind nicht auf der Warteliste dieses Kurses.';
 $string['waitlist'] = 'Warteliste';
-$string['waitlist_active'] = '{$a} Benutzer auf der Warteliste';
+$string['waitlist_active'] = '{$a} Teilnehmer auf der Warteliste';
 $string['waitlist_blocked_message'] = 'Sie wurden bereits 5 Mal, ohne Reaktion, über einen freien Platz informiert.
 
 Sie werden keine weiteren Benachrichtigungen erhalten.

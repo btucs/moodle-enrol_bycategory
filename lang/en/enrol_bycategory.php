@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['autogroup'] = 'Users automatically join the specified group';
+$string['autogroup_help'] = 'Users enrolling via this enrolment method will also be automatically enroled to the selected group.';
 $string['bulkenrol'] = 'Enrol selected into';
 $string['bulkenrolconfirmmessage'] = 'Are you sure you want to enrol the following users:
 
@@ -114,6 +116,7 @@ $string['newenrols_help'] = 'This setting determines whether a user can enrol in
 $string['nocategory'] = 'no category limitation';
 $string['nocourseincategory'] = 'To be able to enrol you have to complete a course from the "{$a}" category';
 $string['nocourseincategorysince'] = 'To be able to enrol you have to complete a course from the "{$a}" category or your last course completion in that category is too much in the past.';
+$string['nogroup'] = 'No group limit';
 $string['notifiedcount'] = 'Notified without reaction';
 $string['onwaitlistsince'] = 'On waiting list since';
 $string['pluginname'] = 'Enrol by Category';

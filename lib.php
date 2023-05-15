@@ -23,6 +23,7 @@
  */
 
 use core\message\message;
+require_once $CFG->dirroot.'/group/lib.php';
 
 /**
  * Extend fontawesome mapping list for custom key
@@ -84,7 +85,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
 
         $categories = $this->get_categories();
-
         $mform->addElement('select', 'customint1', get_string('category', 'enrol_bycategory'), $categories);
         $mform->addHelpButton('customint1', 'category', 'enrol_bycategory');
 
@@ -95,6 +95,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $options = $this->get_period_start_options();
         $mform->addElement('select', 'customchar1', get_string('enrolperiodcountfrom', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customchar1', 'enrolperiodcountfrom', 'enrol_bycategory');
+
+        $options = $this->get_group_options($instance);
+        $mform->addElement('select', 'customint7', get_string('autogroup', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customint7', 'autogroup', 'enrol_bycategory');
 
         $options = $this->get_status_options();
         $mform->addElement('select', 'status', get_string('status', 'enrol_bycategory'), $options);
@@ -198,7 +202,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $validexpirynotify = array_keys($this->get_expirynotify_options());
         $validlongtimenosee = array_keys($this->get_longtimenosee_options());
         $validwaitlist = array_keys($this->get_enablewaitlist_options());
-        $validperiodstart = array_keys($this->get_period_start_options());
         $tovalidate = array(
             'enrolstartdate' => PARAM_INT,
             'enrolenddate' => PARAM_INT,
@@ -209,9 +212,9 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint4' => PARAM_INT,
             'customint5' => PARAM_INT,
             'customint6' => $validnewenrols,
-            //'customint7' => PARAM_INT,
+            'customint7' => PARAM_INT,
             //'customint8' => $validwaitlist,
-            'customchar1' => $validperiodstart,
+            'customchar1' => $validperiodstarts,
             'customchar2' => $validwaitlist,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
@@ -310,6 +313,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $fields['customint4'] = $this->get_config('sendcoursewelcomemessage');
         $fields['customint5'] = 0; // Max time since completing last course in target category.
         $fields['customint6'] = $this->get_config('newenrols');
+        $fields['customint7'] = 0; // By default there is not group selected, maybe even existent.
         $fields['customchar1'] = 0; // Count completion from 0: now or 1: enrol start time.
         $fields['customchar2'] = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
 
@@ -526,6 +530,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
 
         $this->enrol_user($instance, $userid, $instance->roleid, $timestart, $timeend);
+
+        if($instance->customint7 > 0) {
+            groups_add_member($instance->customint7, $userid, 'enrol_bycategory', $instance->id);
+        }
 
         return true;
     }
@@ -1149,7 +1157,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
     /**
      * return an array of available categories
      *
-     * @return array
+     * @return array Map of category id and name
      */
     private function get_categories() {
 
@@ -1160,5 +1168,21 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $categories = [0 => get_string('nocategory', 'enrol_bycategory')] + $categories;
 
         return $categories;
+    }
+
+    /**
+     * Return an array of available groups
+     * @param object $instance Enrol instance or null if does not exist yet.
+     *
+     * @return array Map of group id and name
+     */
+    private function get_group_options($instance) {
+
+        $groups = groups_get_all_groups($instance->courseid);
+        $values = array_map(static function ($group) {
+            return $group->name;
+        }, array_values($groups));
+
+        return [0 => get_string('nogroup', 'enrol_bycategory')] + array_combine(array_keys($groups), $values);
     }
 }

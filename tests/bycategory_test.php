@@ -912,4 +912,42 @@ class bycategory_test extends \advanced_testcase {
         // ... bycategory enrol has 2 enrol actions -- edit and unenrol.
         $this->assertCount(2, $actions);
     }
+
+    /**
+     * Test for making users automatically join a group
+     */
+    public function test_autojoin_group() {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->preventResetByRollback();
+
+        enrol_bycategory_phpunit_util::enable_plugin();
+
+        $plugin = enrol_get_plugin('bycategory');
+
+        $user1 = $this->getDataGenerator()->create_user();
+
+        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $this->assertNotEmpty($studentrole);
+
+        $course1 = $this->getDataGenerator()->create_course();
+        $group1data = (object) [
+            'courseid' => $course1->id,
+            'name' => 'group1',
+        ];
+        $group1 = $this->getDataGenerator()->create_group($group1data);
+
+        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1->customint6 = 1;
+        $instance1->customint7 = $group1->id;
+
+        $this->assertFalse(groups_is_member($group1->id, $user1->id));
+
+        $DB->update_record('enrol', $instance1);
+        $plugin->update_status($instance1, ENROL_INSTANCE_ENABLED);
+        $plugin->enrol_user_manually($instance1, $user1->id);
+
+        $this->assertTrue(groups_is_member($group1->id, $user1->id));
+    }
 }
