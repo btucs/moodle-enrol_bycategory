@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['autogroup'] = 'Teilnehmer*innen werden automatisch in ausgewählte Gruppe einschreiben';
+$string['autogroup'] = 'Teilnehmer*innen automatisch in ausgewählte Gruppe einschreiben';
 $string['autogroup_help'] = 'Teilnehmer*innen werden bei Einschreibung über diese Einschreibemethode automatisch in die ausgewählte Gruppe eingeschrieben.';
 $string['bulkenrol'] = 'Ausgewählte Einschrieben in';
 $string['bulkenrolconfirmmessage'] = 'Sind sie sicher, dass sie die folgenden Teilnehmer*innen:
