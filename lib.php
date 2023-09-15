@@ -314,7 +314,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $fields['customint4'] = $this->get_config('sendcoursewelcomemessage');
         $fields['customint5'] = 0; // Max time since completing last course in target category.
         $fields['customint6'] = $this->get_config('newenrols');
-        $fields['customint7'] = 0; // By default there is not group selected, maybe even existent.
+        $fields['customint7'] = 0; // By default there is no group selected, maybe even existent.
         $fields['customchar1'] = 0; // Count completion from 0: now or 1: enrol start time.
         $fields['customchar2'] = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
 
