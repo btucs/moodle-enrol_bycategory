@@ -26,10 +26,12 @@
 namespace enrol_bycategory;
 
 use enrol_bycategory_phpunit_util;
+use Exception;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
+require_once($CFG->dirroot.'/lib/setuplib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/lib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 require_once(__DIR__ . '/util.php');
@@ -59,7 +61,7 @@ class bycategory_test extends \advanced_testcase {
         $plugin->sync($trace, $SITE->id);
     }
 
-    public function test_longtimnosee() {
+    public function test_longtimenosee() {
         global $DB, $CFG;
         $this->resetAfterTest();
 
@@ -949,5 +951,53 @@ class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user_manually($instance1, $user1->id);
 
         $this->assertTrue(groups_is_member($group1->id, $user1->id));
+    }
+
+    /**
+     * Test Users should not be able to join multiple waitlists on the same course
+     */
+    public function test_waitlist_multi_join() {
+        global $DB;
+
+        $this->resetAfterTest();
+        $this->preventResetByRollback();
+
+        enrol_bycategory_phpunit_util::enable_plugin();
+
+        $plugin = enrol_get_plugin('bycategory');
+
+        $user1 = $this->getDataGenerator()->create_user();
+        $user2 = $this->getDataGenerator()->create_user();
+        $user3 = $this->getDataGenerator()->create_user();
+
+        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $this->assertNotEmpty($studentrole);
+
+        $course1 = $this->getDataGenerator()->create_course();
+
+        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1->customint6 = 1;
+        $instance1->customint3 = 1;
+        $instance1->customchar2 = 1;
+        $instance1->status = ENROL_INSTANCE_ENABLED;
+        $DB->update_record('enrol', $instance1);
+
+        $instance2id = $plugin->add_instance($course1, [
+            'customint6' => 1,
+            'customint3' => 1,
+            'customchar2' => 1,
+            'status' => ENROL_INSTANCE_ENABLED
+        ]);
+        $instance2 = $DB->get_record('enrol', ['id' => $instance2id], '*', MUST_EXIST);
+
+        $plugin->enrol_user($instance1, $user1->id, $studentrole->id);
+        $plugin->enrol_user($instance2, $user2->id, $studentrole->id);
+        $this->setUser($user3);
+
+        enrol_bycategory_phpunit_util::add_to_waitlist($instance2->id, $user3->id, time());
+
+        $this->expectException(\moodle_exception::class);
+        $this->expectExceptionMessage('redirect');
+        $plugin->enrol_page_hook($instance1);
     }
 }
