@@ -336,10 +336,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $enrolstatus = $this->can_self_enrol($instance);
 
         // Check if the user is on another waiting list in the same course.
-        $waitlistid_or_false = $this->is_on_any_waitlist($USER->id, $instance->courseid);
+        $waitlistidorfalse = $this->is_on_any_waitlist($USER->id, $instance->courseid);
         // If the user is on a waiting list and it is not this instance redirect to the waiting list.
-        if (false !== $waitlistid_or_false && $waitlistid_or_false != $instance->id) {
-            $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $waitlistid_or_false]);
+        if (false !== $waitlistidorfalse && $waitlistidorfalse != $instance->id) {
+            $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $waitlistidorfalse]);
             redirect($waitlisturl);
         }
 
@@ -1156,7 +1156,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      *
      * @return int | boolean id of the enrol method where the user is on the waiting list or false
      */
-    function is_on_any_waitlist($userid, $courseid) {
+    protected function is_on_any_waitlist($userid, $courseid) {
         global $DB;
 
         $sql = "SELECT e.id FROM {enrol_bycategory_waitlist} ebw
