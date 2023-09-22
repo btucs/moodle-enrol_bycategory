@@ -45,7 +45,7 @@ global $CFG;
 
  /**
   * Testcasse for privacy provider
-  * @covers enrol_bycategory\privacy\provider
+  * @covers \enrol_bycategory\privacy\provider
   */
 class provider_test extends provider_testcase {
 
