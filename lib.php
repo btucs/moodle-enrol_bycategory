@@ -728,7 +728,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $params = [
             'now' => time(),
             'useractive' => ENROL_USER_ACTIVE,
-            'courselevel' => CONTEXT_COURSE
+            'courselevel' => CONTEXT_COURSE,
         ];
 
         $coursesql = "";
@@ -1011,7 +1011,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                     'context' => $context,
                     'para' => false,
                     'newlines' => true,
-                    'filter' => true]
+                    'filter' => true],
                 );
                 $messagetext = html_to_text($messagehtml);
             }
@@ -1072,8 +1072,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_status_options() {
-        $options = [ENROL_INSTANCE_ENABLED => get_string('yes'),
-                         ENROL_INSTANCE_DISABLED => get_string('no')];
+        $options = [
+            ENROL_INSTANCE_ENABLED => get_string('yes'),
+            ENROL_INSTANCE_DISABLED => get_string('no'),
+        ];
         return $options;
     }
 
@@ -1105,7 +1107,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
     protected function get_period_start_options() {
         $options = [
             0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
-            1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
+            1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory'),
         ];
 
         return $options;
@@ -1119,9 +1121,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_expirynotify_options() {
-        $options = [0 => get_string('no'),
-                         1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
-                         2 => get_string('expirynotifyall', 'enrol_bycategory')];
+        $options = [
+            0 => get_string('no'),
+            1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
+            2 => get_string('expirynotifyall', 'enrol_bycategory'),
+        ];
         return $options;
     }
 
@@ -1133,19 +1137,21 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_longtimenosee_options() {
-        $options = [0 => get_string('never'),
-                         1800 * 3600 * 24 => get_string('numdays', '', 1800),
-                         1000 * 3600 * 24 => get_string('numdays', '', 1000),
-                         365 * 3600 * 24 => get_string('numdays', '', 365),
-                         180 * 3600 * 24 => get_string('numdays', '', 180),
-                         150 * 3600 * 24 => get_string('numdays', '', 150),
-                         120 * 3600 * 24 => get_string('numdays', '', 120),
-                         90 * 3600 * 24 => get_string('numdays', '', 90),
-                         60 * 3600 * 24 => get_string('numdays', '', 60),
-                         30 * 3600 * 24 => get_string('numdays', '', 30),
-                         21 * 3600 * 24 => get_string('numdays', '', 21),
-                         14 * 3600 * 24 => get_string('numdays', '', 14),
-                         7 * 3600 * 24 => get_string('numdays', '', 7)];
+        $options = [
+            0 => get_string('never'),
+            1800 * 3600 * 24 => get_string('numdays', '', 1800),
+            1000 * 3600 * 24 => get_string('numdays', '', 1000),
+            365 * 3600 * 24 => get_string('numdays', '', 365),
+            180 * 3600 * 24 => get_string('numdays', '', 180),
+            150 * 3600 * 24 => get_string('numdays', '', 150),
+            120 * 3600 * 24 => get_string('numdays', '', 120),
+            90 * 3600 * 24 => get_string('numdays', '', 90),
+            60 * 3600 * 24 => get_string('numdays', '', 60),
+            30 * 3600 * 24 => get_string('numdays', '', 30),
+            21 * 3600 * 24 => get_string('numdays', '', 21),
+            14 * 3600 * 24 => get_string('numdays', '', 14),
+            7 * 3600 * 24 => get_string('numdays', '', 7),
+        ];
         return $options;
     }
 
@@ -1170,7 +1176,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'pluginname' => 'bycategory',
             'userid' => $userid,
             'courseid' => $courseid,
-            'status' => ENROL_INSTANCE_ENABLED
+            'status' => ENROL_INSTANCE_ENABLED,
         ];
 
         $waitlistid = $DB->get_field_sql($sql, $params);

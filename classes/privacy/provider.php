@@ -54,7 +54,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $collection->add_database_table(
             'enrol_bycategory_waitlist',
             [
-                'userid' => 'privacy:metadata:enrol_bycategory_waitlist:userid'
+                'userid' => 'privacy:metadata:enrol_bycategory_waitlist:userid',
             ],
             'privacy:metadata:enrol_bycategory_waitlist'
         );
@@ -77,7 +77,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
 
         $params = [
             'context' => CONTEXT_COURSE,
-            'userid' => $userid
+            'userid' => $userid,
         ];
 
         $contextlist = new contextlist();
@@ -136,7 +136,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
 
         $params = [
             'context' => CONTEXT_COURSE,
-            'userid' => $user->id
+            'userid' => $user->id,
         ] + $contextparams;
 
         $enrolments = $DB->get_recordset_sql($sql, $params);
@@ -152,7 +152,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $subcontext = \core_enrol\privacy\provider::get_subcontext([get_string('pluginname', 'enrol_bycategory')]);
         foreach ($enrolmentdata as $courseid => $enrolments) {
             $data = (object) [
-                'waitlists' => $enrolments
+                'waitlists' => $enrolments,
             ];
 
             writer::with_context(\context_course::instance($courseid))->export_data($subcontext, $data);

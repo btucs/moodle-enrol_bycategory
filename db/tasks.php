@@ -33,7 +33,7 @@ $tasks = [
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*',
-        'disabled' => 0
+        'disabled' => 0,
     ],
     [
         'classname' => '\enrol_bycategory\task\send_expiry_notifications',
@@ -43,7 +43,7 @@ $tasks = [
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*',
-        'disabled' => 0
+        'disabled' => 0,
     ],
     [
         'classname' => '\enrol_bycategory\task\send_waitlist_notifications',
@@ -53,7 +53,7 @@ $tasks = [
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*',
-        'disabked' => 0
-    ]
+        'disabked' => 0,
+    ],
 ];
 

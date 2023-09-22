@@ -126,7 +126,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
 
         return \html_writer::checkbox('userids[]', $row->id, false, '', [
             'class' => 'selectuserids',
-            'autocomplete' => 'off'
+            'autocomplete' => 'off',
         ]);
     }
 
@@ -158,7 +158,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
 
         $url = new moodle_url('/enrol/bycategory/enrolwaitlistuser.php', [
             'enrolid' => $this->sql->params['instanceid'],
-            'uid' => $row->id
+            'uid' => $row->id,
         ]);
 
         $actions[] = $OUTPUT->action_icon(
@@ -167,7 +167,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
                 't/enrol',
                 get_string('enrolwaitlistuser', 'enrol_bycategory', [
                     'user' => fullname($row, true),
-                    'course' => format_string($this->course->fullname)
+                    'course' => format_string($this->course->fullname),
                 ]),
                 'enrol_bycategory'
             ),
@@ -176,7 +176,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
                 'data-action' => 'enrol_bycategory/confirm',
                 'data-message' => get_string('enrolwaitlistuserconfirm', 'enrol_bycategory', [
                     'user' => fullname($row, true),
-                    'course' => format_string($this->course->fullname)
+                    'course' => format_string($this->course->fullname),
                 ]),
                 'data-sesskey' => sesskey(),
                 'class' => 'enrol_user',
@@ -200,10 +200,10 @@ class enrol_bycategory_waitlist_table extends table_sql {
                 'data-action' => 'enrol_bycategory/confirm',
                 'data-message' => get_string('removewaitlistuserconfirm', 'enrol_bycategory', [
                     'user' => fullname($row, true),
-                    'course' => format_string($this->course->fullname)
+                    'course' => format_string($this->course->fullname),
                 ]),
                 'data-sesskey' => sesskey(),
-                'class' => 'remove_user'
+                'class' => 'remove_user',
             ]
         );
 
@@ -221,7 +221,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
         echo html_writer::empty_tag('input', [
             'type' => 'hidden',
             'name' => 'enrolid',
-            'value' => $this->sql->params['instanceid']
+            'value' => $this->sql->params['instanceid'],
         ]);
     }
 

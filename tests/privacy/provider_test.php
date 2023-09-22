@@ -191,7 +191,8 @@ class provider_test extends provider_testcase {
         );
 
         $approveduserlist = new \core_privacy\local\request\approved_userlist($this->coursecontext1, 'enrol_bycategory', [
-            $this->user1->id, $this->user3->id
+            $this->user1->id,
+            $this->user3->id,
         ]);
 
         provider::delete_data_for_users($approveduserlist);

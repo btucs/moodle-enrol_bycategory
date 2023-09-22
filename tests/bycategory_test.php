@@ -115,11 +115,11 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(3, $DB->count_records('user_enrolments'));
         $DB->insert_record('user_lastaccess', [
             'userid' => $user2->id, 'courseid' => $course1->id,
-            'timeaccess' => $now - 60 * 60 * 24 * 20  // ... now - 2 weeks, 6 days .
+            'timeaccess' => $now - 60 * 60 * 24 * 20,  // ... now - 2 weeks, 6 days .
         ]);
         $DB->insert_record('user_lastaccess', [
             'userid' => $user3->id, 'courseid' => $course1->id,
-            'timeaccess' => $now - 60 * 60 * 24 * 2 // ... now - 2 days .
+            'timeaccess' => $now - 60 * 60 * 24 * 2, // ... now - 2 days .
         ]);
         $DB->insert_record('user_lastaccess', ['userid' => $user4->id, 'courseid' => $course1->id, 'timeaccess' => $now - 60]);
 
@@ -134,16 +134,16 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(8, $DB->count_records('user_enrolments'));
         $DB->insert_record('user_lastaccess', [
             'userid' => $user2->id, 'courseid' => $course3->id,
-            'timeaccess' => $now - 60 * 60 * 24 * 11 // ... now - 1 week, 4 days .
+            'timeaccess' => $now - 60 * 60 * 24 * 11, // ... now - 1 week, 4 days .
         ]);
 
         $DB->insert_record('user_lastaccess', [
             'userid' => $user3->id, 'courseid' => $course3->id,
-            'timeaccess' => $now - 60 * 60 * 24 * 200 // ... now - 6 month, 2 weeks .
+            'timeaccess' => $now - 60 * 60 * 24 * 200, // ... now - 6 month, 2 weeks .
         ]);
         $DB->insert_record('user_lastaccess', [
             'userid' => $user4->id, 'courseid' => $course3->id,
-            'timeaccess' => $now - 60 * 60 * 24 * 200
+            'timeaccess' => $now - 60 * 60 * 24 * 200,
         ]);
 
         $maninstance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'manual'], '*', MUST_EXIST);
@@ -284,16 +284,16 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(5, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
         $this->assertEquals(1, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
         $this->assertFalse($DB->record_exists('role_assignments', [
-            'contextid' => $context1->id, 'userid' => $user3->id, 'roleid' => $studentrole->id
+            'contextid' => $context1->id, 'userid' => $user3->id, 'roleid' => $studentrole->id,
         ]));
         $this->assertFalse($DB->record_exists('role_assignments', [
-            'contextid' => $context3->id, 'userid' => $user2->id, 'roleid' => $studentrole->id
+            'contextid' => $context3->id, 'userid' => $user2->id, 'roleid' => $studentrole->id,
         ]));
         $this->assertFalse($DB->record_exists('role_assignments', [
-            'contextid' => $context3->id, 'userid' => $user1->id, 'roleid' => $teacherrole->id
+            'contextid' => $context3->id, 'userid' => $user1->id, 'roleid' => $teacherrole->id,
         ]));
         $this->assertTrue($DB->record_exists('role_assignments', [
-            'contextid' => $context3->id, 'userid' => $user1->id, 'roleid' => $studentrole->id
+            'contextid' => $context3->id, 'userid' => $user1->id, 'roleid' => $studentrole->id,
         ]));
 
         $plugin->set_config('expiredaction', ENROL_EXT_REMOVED_UNENROL);
@@ -986,7 +986,7 @@ class bycategory_test extends \advanced_testcase {
             'customint6' => 1,
             'customint3' => 1,
             'customchar2' => 1,
-            'status' => ENROL_INSTANCE_ENABLED
+            'status' => ENROL_INSTANCE_ENABLED,
         ]);
         $instance2 = $DB->get_record('enrol', ['id' => $instance2id], '*', MUST_EXIST);
 

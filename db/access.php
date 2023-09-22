@@ -35,7 +35,7 @@ $capabilities = [
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        ]
+        ],
     ],
 
     /* Manage user bycategory-enrolments. */
@@ -46,7 +46,7 @@ $capabilities = [
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        ]
+        ],
     ],
 
     /* Voluntarily unenrol self from course - watch out for data loss. */
@@ -55,7 +55,7 @@ $capabilities = [
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'student' => CAP_ALLOW,
-        ]
+        ],
     ],
 
     /* Unenrol anybody from course (including self) -  watch out for data loss. */
@@ -65,7 +65,7 @@ $capabilities = [
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        ]
+        ],
     ],
 
     /* Ability to enrol self in courses. */
@@ -74,7 +74,7 @@ $capabilities = [
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'user' => CAP_ALLOW,
-        ]
+        ],
     ],
 
 ];

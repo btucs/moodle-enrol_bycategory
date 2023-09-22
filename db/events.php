@@ -27,6 +27,6 @@
 $observers = [
   [
     'eventname' => 'core\event\course_deleted',
-    'callback' => 'enrol_bycategory\observers::course_deleted'
-  ]
+    'callback' => 'enrol_bycategory\observers::course_deleted',
+  ],
 ];

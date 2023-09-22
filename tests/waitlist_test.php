@@ -60,7 +60,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $userid,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $this->assertEquals($waitlist->get_count(), 1);
@@ -70,7 +70,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => 2,
             'usermodified' => $userid,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $this->assertEquals($waitlist->get_count(), 1);
@@ -93,7 +93,7 @@ class waitlist_test extends \advanced_testcase {
 
         $exits = $DB->record_exists($this->tablename, [
             'instanceid' => $this->instanceid,
-            'userid' => $userid
+            'userid' => $userid,
         ]);
         $this->assertTrue($exits);
     }
@@ -110,7 +110,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $userid,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $user2id = 2;
@@ -119,7 +119,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $user2id,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $count = $DB->count_records($this->tablename, ['instanceid' => $this->instanceid]);
@@ -143,7 +143,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $userid,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $user2id = 2;
@@ -152,7 +152,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $user2id,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $user3id = 3;
@@ -161,7 +161,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $user3id,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $count = $DB->count_records($this->tablename, ['instanceid' => $this->instanceid]);
@@ -192,7 +192,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $userid,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $isonwaitlist = $waitlist->is_on_waitlist($userid);
@@ -214,7 +214,7 @@ class waitlist_test extends \advanced_testcase {
                 'instanceid' => $this->instanceid,
                 'usermodified' => $userid,
                 'timecreated' => $now,
-                'timemodified' => $now
+                'timemodified' => $now,
             ], false, false);
         }
 
@@ -224,7 +224,7 @@ class waitlist_test extends \advanced_testcase {
                 'instanceid' => $this->instanceid + 1,
                 'usermodified' => $userid,
                 'timecreated' => $now,
-                'timemodified' => $now
+                'timemodified' => $now,
             ], false, false);
         }
 
@@ -250,7 +250,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $user1id,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], false, false);
 
         $DB->insert_record($this->tablename, [
@@ -258,7 +258,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $user2id,
             'timecreated' => $now + 1,
-            'timemodified' => $now + 1
+            'timemodified' => $now + 1,
         ], false, false);
 
         $DB->insert_record($this->tablename, [
@@ -266,7 +266,7 @@ class waitlist_test extends \advanced_testcase {
             'instanceid' => $this->instanceid,
             'usermodified' => $user3id,
             'timecreated' => $now + 2,
-            'timemodified' => $now + 2
+            'timemodified' => $now + 2,
         ], false, false);
 
         $this->assertEquals($waitlist->get_user_position($user1id), 1);

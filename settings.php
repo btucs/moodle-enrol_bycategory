@@ -81,7 +81,7 @@ if ($ADMIN->fulltree) {
 
     $options = [
         ENROL_INSTANCE_ENABLED => get_string('yes'),
-        ENROL_INSTANCE_DISABLED => get_string('no')
+        ENROL_INSTANCE_DISABLED => get_string('no'),
     ];
 
     $settings->add(
@@ -131,7 +131,7 @@ if ($ADMIN->fulltree) {
 
     $options = [
         0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
-        1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
+        1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory'),
     ];
 
     $settings->add(
@@ -147,7 +147,7 @@ if ($ADMIN->fulltree) {
     $options = [
         0 => get_string('no'),
         1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
-        2 => get_string('expirynotifyall', 'enrol_bycategory')
+        2 => get_string('expirynotifyall', 'enrol_bycategory'),
     ];
 
     $settings->add(
@@ -183,7 +183,7 @@ if ($ADMIN->fulltree) {
         30 * 3600 * 24 => get_string('numdays', '', 30),
         21 * 3600 * 24 => get_string('numdays', '', 21),
         14 * 3600 * 24 => get_string('numdays', '', 14),
-        7 * 3600 * 24 => get_string('numdays', '', 7)
+        7 * 3600 * 24 => get_string('numdays', '', 7),
     ];
 
     $settings->add(

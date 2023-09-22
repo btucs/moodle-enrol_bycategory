@@ -168,7 +168,7 @@ function enrol_bycategory_waitlist_show_status_info() {
     $statusdata = [
         'nextruntime' => $nextruntime,
         'notifycount' => $notifycount,
-        'notifylimit' => $notifylimit
+        'notifylimit' => $notifylimit,
     ];
 
     return text_to_html(get_string('waitlist_status_info', 'enrol_bycategory', $statusdata), false, false, true);

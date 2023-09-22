@@ -27,13 +27,13 @@ $messageproviders = [
     'expiry_notification' => [
         'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
-            'email' => MESSAGE_FORCED
-        ]
+            'email' => MESSAGE_FORCED,
+        ],
     ],
     'waitlist_notification' => [
         'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
-            'email' => MESSAGE_FORCED
-        ]
+            'email' => MESSAGE_FORCED,
+        ],
     ],
 ];

@@ -33,6 +33,6 @@ $functions = [
         'services' => [],
         // Moodle 3.9.
         'classpath' => 'enrol/bycategory/external/get_enrolment_methods.php',
-        'methodname' => 'execute'
+        'methodname' => 'execute',
     ],
 ];

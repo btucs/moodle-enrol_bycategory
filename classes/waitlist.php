@@ -111,7 +111,7 @@ class enrol_bycategory_waitlist {
             'instanceid' => $this->instanceid,
             'usermodified' => $USER->id,
             'timecreated' => $now,
-            'timemodified' => $now
+            'timemodified' => $now,
         ], true, false);
     }
 
@@ -174,7 +174,7 @@ class enrol_bycategory_waitlist {
 
         $waitlistusers = $DB->get_records_sql($sql, [
             'instanceid' => $this->instanceid,
-            'notifylimit' => $usernotifylimit
+            'notifylimit' => $usernotifylimit,
         ]);
 
         $userids = array_keys($waitlistusers);
@@ -394,7 +394,7 @@ class enrol_bycategory_waitlist {
 
         $waitlistentries = $DB->get_records_sql($sql, [
             'useramount' => $usernotifycount,
-            'notifylimit' => $usernotifylimit
+            'notifylimit' => $usernotifylimit,
         ] + $inparams);
 
         return $waitlistentries;
@@ -416,7 +416,7 @@ class enrol_bycategory_waitlist {
                  WHERE id $insql";
 
         $result = $DB->execute($sql, [
-            'now' => time()
+            'now' => time(),
         ] + $inparams);
 
         return $result;
