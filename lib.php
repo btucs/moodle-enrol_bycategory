@@ -1011,8 +1011,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
                     'context' => $context,
                     'para' => false,
                     'newlines' => true,
-                    'filter' => true],
-                );
+                    'filter' => true,
+                ]);
                 $messagetext = html_to_text($messagehtml);
             }
         } else {
