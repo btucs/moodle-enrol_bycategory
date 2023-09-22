@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/enrol/bycategory/lib.php');
 
 /**
  * Testcase for enrol_bycategory_waitlist
- * @covers enrol_bycategory_waitlist
+ * @covers \enrol_bycategory_waitlist
  */
 class waitlist_test extends \advanced_testcase {
 

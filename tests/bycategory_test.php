@@ -38,7 +38,7 @@ require_once(__DIR__ . '/util.php');
 
 /**
  * Testcase for enrol_bycategory_plugin
- * @covers enrol_bycategory_plugin
+ * @covers \enrol_bycategory_plugin
  */
 class bycategory_test extends \advanced_testcase {
     public function test_basics() {

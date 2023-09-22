@@ -35,8 +35,12 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
  * Testcase for get_enrolment_methods
+ * @covers enrol_bycategory\external\get_enrolment_methods
  */
 class get_enrolment_methods_test extends externallib_advanced_testcase {
+    /**
+     * @runInSeparateProcess
+     */
     public function test_webservice() {
         global $DB, $USER;
         $this->resetAfterTest(true);
