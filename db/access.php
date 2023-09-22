@@ -25,56 +25,56 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
     /* Add or edit enrol-bycategory instance in course. */
-    'enrol/bycategory:config' => array(
+    'enrol/bycategory:config' => [
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
     /* Manage user bycategory-enrolments. */
-    'enrol/bycategory:manage' => array(
+    'enrol/bycategory:manage' => [
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
     /* Voluntarily unenrol self from course - watch out for data loss. */
-    'enrol/bycategory:unenrolself' => array(
+    'enrol/bycategory:unenrolself' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'student' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
     /* Unenrol anybody from course (including self) -  watch out for data loss. */
-    'enrol/bycategory:unenrol' => array(
+    'enrol/bycategory:unenrol' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
     /* Ability to enrol self in courses. */
-    'enrol/bycategory:enrolself' => array(
+    'enrol/bycategory:enrolself' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'user' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
-);
+];

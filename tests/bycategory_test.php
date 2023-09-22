@@ -76,12 +76,12 @@ class bycategory_test extends \advanced_testcase {
 
         // Prepare some data.
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
-        $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->assertNotEmpty($teacherrole);
 
-        $record = array('firstaccess' => $now - 60 * 60 * 24 * 800);
+        $record = ['firstaccess' => $now - 60 * 60 * 24 * 800];
         $record['lastaccess'] = $now - 60 * 60 * 24 * 100;
         $user1 = $this->getDataGenerator()->create_user($record);
         $record['lastaccess'] = $now - 60 * 60 * 24 * 10;
@@ -98,12 +98,12 @@ class bycategory_test extends \advanced_testcase {
         $context2 = \context_course::instance($course2->id);
         $context3 = \context_course::instance($course3->id);
 
-        $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
-        $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
-        $id = $plugin->add_instance($course3, array('status' => ENROL_INSTANCE_ENABLED, 'roleid' => $teacherrole->id));
-        $instance3b = $DB->get_record('enrol', array('id' => $id), '*', MUST_EXIST);
+        $this->assertEquals(3, $DB->count_records('enrol', ['enrol' => 'bycategory']));
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+        $instance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+        $id = $plugin->add_instance($course3, ['status' => ENROL_INSTANCE_ENABLED, 'roleid' => $teacherrole->id]);
+        $instance3b = $DB->get_record('enrol', ['id' => $id], '*', MUST_EXIST);
         unset($id);
 
         $this->assertEquals($studentrole->id, $instance1->roleid);
@@ -113,15 +113,15 @@ class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user($instance1, $user2->id, $studentrole->id);
         $plugin->enrol_user($instance1, $user3->id, $studentrole->id);
         $this->assertEquals(3, $DB->count_records('user_enrolments'));
-        $DB->insert_record('user_lastaccess', array(
+        $DB->insert_record('user_lastaccess', [
             'userid' => $user2->id, 'courseid' => $course1->id,
             'timeaccess' => $now - 60 * 60 * 24 * 20  // ... now - 2 weeks, 6 days .
-        ));
-        $DB->insert_record('user_lastaccess', array(
+        ]);
+        $DB->insert_record('user_lastaccess', [
             'userid' => $user3->id, 'courseid' => $course1->id,
             'timeaccess' => $now - 60 * 60 * 24 * 2 // ... now - 2 days .
-        ));
-        $DB->insert_record('user_lastaccess', array('userid' => $user4->id, 'courseid' => $course1->id, 'timeaccess' => $now - 60));
+        ]);
+        $DB->insert_record('user_lastaccess', ['userid' => $user4->id, 'courseid' => $course1->id, 'timeaccess' => $now - 60]);
 
         $this->assertEquals($studentrole->id, $instance3->roleid);
         $instance3->customint2 = 60 * 60 * 24 * 50; // 1 month 2 weeks .
@@ -132,30 +132,30 @@ class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user($instance3b, $user1->id, $teacherrole->id);
         $plugin->enrol_user($instance3b, $user4->id, $teacherrole->id);
         $this->assertEquals(8, $DB->count_records('user_enrolments'));
-        $DB->insert_record('user_lastaccess', array(
+        $DB->insert_record('user_lastaccess', [
             'userid' => $user2->id, 'courseid' => $course3->id,
             'timeaccess' => $now - 60 * 60 * 24 * 11 // ... now - 1 week, 4 days .
-        ));
+        ]);
 
-        $DB->insert_record('user_lastaccess', array(
+        $DB->insert_record('user_lastaccess', [
             'userid' => $user3->id, 'courseid' => $course3->id,
             'timeaccess' => $now - 60 * 60 * 24 * 200 // ... now - 6 month, 2 weeks .
-        ));
-        $DB->insert_record('user_lastaccess', array(
+        ]);
+        $DB->insert_record('user_lastaccess', [
             'userid' => $user4->id, 'courseid' => $course3->id,
             'timeaccess' => $now - 60 * 60 * 24 * 200
-        ));
+        ]);
 
-        $maninstance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'manual'), '*', MUST_EXIST);
-        $maninstance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'manual'), '*', MUST_EXIST);
+        $maninstance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        $maninstance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'manual'], '*', MUST_EXIST);
 
         $manualplugin->enrol_user($maninstance2, $user1->id, $studentrole->id);
         $manualplugin->enrol_user($maninstance3, $user1->id, $teacherrole->id);
 
         $this->assertEquals(10, $DB->count_records('user_enrolments'));
         $this->assertEquals(9, $DB->count_records('role_assignments'));
-        $this->assertEquals(7, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(2, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
+        $this->assertEquals(7, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(2, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
 
         // Execute sync - this is the same thing used from cron.
 
@@ -164,19 +164,19 @@ class bycategory_test extends \advanced_testcase {
         $trace->reset_buffer();
         $this->assertEquals(10, $DB->count_records('user_enrolments'));
         $this->assertStringContainsString('No expired enrol_bycategory enrolments detected', $output);
-        $this->assertTrue($DB->record_exists('user_enrolments', array('enrolid' => $instance1->id, 'userid' => $user1->id)));
-        $this->assertTrue($DB->record_exists('user_enrolments', array('enrolid' => $instance1->id, 'userid' => $user2->id)));
-        $this->assertTrue($DB->record_exists('user_enrolments', array('enrolid' => $instance3->id, 'userid' => $user1->id)));
-        $this->assertTrue($DB->record_exists('user_enrolments', array('enrolid' => $instance3->id, 'userid' => $user3->id)));
+        $this->assertTrue($DB->record_exists('user_enrolments', ['enrolid' => $instance1->id, 'userid' => $user1->id]));
+        $this->assertTrue($DB->record_exists('user_enrolments', ['enrolid' => $instance1->id, 'userid' => $user2->id]));
+        $this->assertTrue($DB->record_exists('user_enrolments', ['enrolid' => $instance3->id, 'userid' => $user1->id]));
+        $this->assertTrue($DB->record_exists('user_enrolments', ['enrolid' => $instance3->id, 'userid' => $user3->id]));
 
         $plugin->sync($trace, null);
         $output = $trace->get_buffer();
         $trace->reset_buffer();
         $this->assertEquals(6, $DB->count_records('user_enrolments'));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance1->id, 'userid' => $user1->id)));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance1->id, 'userid' => $user2->id)));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance3->id, 'userid' => $user1->id)));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance3->id, 'userid' => $user3->id)));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance1->id, 'userid' => $user1->id]));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance1->id, 'userid' => $user2->id]));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance3->id, 'userid' => $user1->id]));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance3->id, 'userid' => $user3->id]));
         $this->assertStringContainsString('unenrolling user ' . $user1->id . ' from course ' . $course1->id .
             ' as they did not log in for at least 14 days', $output);
         $this->assertStringContainsString('unenrolling user ' . $user1->id . ' from course ' . $course3->id .
@@ -188,8 +188,8 @@ class bycategory_test extends \advanced_testcase {
         $this->assertStringNotContainsString('unenrolling user ' . $user4->id, $output);
 
         $this->assertEquals(6, $DB->count_records('role_assignments'));
-        $this->assertEquals(4, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(2, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
+        $this->assertEquals(4, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(2, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
     }
 
     public function test_expired() {
@@ -207,11 +207,11 @@ class bycategory_test extends \advanced_testcase {
 
         // Prepare some data.
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
-        $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $this->assertNotEmpty($teacherrole);
-        $managerrole = $DB->get_record('role', array('shortname' => 'manager'));
+        $managerrole = $DB->get_record('role', ['shortname' => 'manager']);
         $this->assertNotEmpty($managerrole);
 
         $user1 = $this->getDataGenerator()->create_user();
@@ -226,28 +226,28 @@ class bycategory_test extends \advanced_testcase {
         $context2 = \context_course::instance($course2->id);
         $context3 = \context_course::instance($course3->id);
 
-        $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $this->assertEquals(3, $DB->count_records('enrol', ['enrol' => 'bycategory']));
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $this->assertEquals($studentrole->id, $instance1->roleid);
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $this->assertEquals($studentrole->id, $instance2->roleid);
-        $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $this->assertEquals($studentrole->id, $instance3->roleid);
-        $id = $plugin->add_instance($course3, array('status' => ENROL_INSTANCE_ENABLED, 'roleid' => $teacherrole->id));
-        $instance3b = $DB->get_record('enrol', array('id' => $id), '*', MUST_EXIST);
+        $id = $plugin->add_instance($course3, ['status' => ENROL_INSTANCE_ENABLED, 'roleid' => $teacherrole->id]);
+        $instance3b = $DB->get_record('enrol', ['id' => $id], '*', MUST_EXIST);
         $this->assertEquals($teacherrole->id, $instance3b->roleid);
         unset($id);
 
-        $maninstance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'manual'), '*', MUST_EXIST);
-        $maninstance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'manual'), '*', MUST_EXIST);
+        $maninstance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        $maninstance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'manual'], '*', MUST_EXIST);
 
         $manualplugin->enrol_user($maninstance2, $user1->id, $studentrole->id);
         $manualplugin->enrol_user($maninstance3, $user1->id, $teacherrole->id);
 
         $this->assertEquals(2, $DB->count_records('user_enrolments'));
         $this->assertEquals(2, $DB->count_records('role_assignments'));
-        $this->assertEquals(1, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(1, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
+        $this->assertEquals(1, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(1, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
 
         $plugin->enrol_user($instance1, $user1->id, $studentrole->id);
         $plugin->enrol_user($instance1, $user2->id, $studentrole->id);
@@ -263,8 +263,8 @@ class bycategory_test extends \advanced_testcase {
 
         $this->assertEquals(10, $DB->count_records('user_enrolments'));
         $this->assertEquals(10, $DB->count_records('role_assignments'));
-        $this->assertEquals(7, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(2, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
+        $this->assertEquals(7, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(2, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
 
         // Execute tests.
 
@@ -281,20 +281,20 @@ class bycategory_test extends \advanced_testcase {
         $plugin->sync($trace, null);
         $this->assertEquals(10, $DB->count_records('user_enrolments'));
         $this->assertEquals(7, $DB->count_records('role_assignments'));
-        $this->assertEquals(5, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(1, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
-        $this->assertFalse($DB->record_exists('role_assignments', array(
+        $this->assertEquals(5, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(1, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
+        $this->assertFalse($DB->record_exists('role_assignments', [
             'contextid' => $context1->id, 'userid' => $user3->id, 'roleid' => $studentrole->id
-        )));
-        $this->assertFalse($DB->record_exists('role_assignments', array(
+        ]));
+        $this->assertFalse($DB->record_exists('role_assignments', [
             'contextid' => $context3->id, 'userid' => $user2->id, 'roleid' => $studentrole->id
-        )));
-        $this->assertFalse($DB->record_exists('role_assignments', array(
+        ]));
+        $this->assertFalse($DB->record_exists('role_assignments', [
             'contextid' => $context3->id, 'userid' => $user1->id, 'roleid' => $teacherrole->id
-        )));
-        $this->assertTrue($DB->record_exists('role_assignments', array(
+        ]));
+        $this->assertTrue($DB->record_exists('role_assignments', [
             'contextid' => $context3->id, 'userid' => $user1->id, 'roleid' => $studentrole->id
-        )));
+        ]));
 
         $plugin->set_config('expiredaction', ENROL_EXT_REMOVED_UNENROL);
 
@@ -303,17 +303,17 @@ class bycategory_test extends \advanced_testcase {
         role_assign($teacherrole->id, $user1->id, $context3->id);
         $this->assertEquals(10, $DB->count_records('user_enrolments'));
         $this->assertEquals(10, $DB->count_records('role_assignments'));
-        $this->assertEquals(7, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(2, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
+        $this->assertEquals(7, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(2, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
 
         $plugin->sync($trace, null);
         $this->assertEquals(7, $DB->count_records('user_enrolments'));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance1->id, 'userid' => $user3->id)));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance3->id, 'userid' => $user2->id)));
-        $this->assertFalse($DB->record_exists('user_enrolments', array('enrolid' => $instance3b->id, 'userid' => $user1->id)));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance1->id, 'userid' => $user3->id]));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance3->id, 'userid' => $user2->id]));
+        $this->assertFalse($DB->record_exists('user_enrolments', ['enrolid' => $instance3b->id, 'userid' => $user1->id]));
         $this->assertEquals(6, $DB->count_records('role_assignments'));
-        $this->assertEquals(5, $DB->count_records('role_assignments', array('roleid' => $studentrole->id)));
-        $this->assertEquals(1, $DB->count_records('role_assignments', array('roleid' => $teacherrole->id)));
+        $this->assertEquals(5, $DB->count_records('role_assignments', ['roleid' => $studentrole->id]));
+        $this->assertEquals(1, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
     }
 
     public function test_send_expiry_notifications() {
@@ -335,56 +335,56 @@ class bycategory_test extends \advanced_testcase {
         $plugin->set_config('expirynotifylast', $now - 60 * 60 * 24);
         $plugin->set_config('expirynotifyhour', 0);
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
-        $editingteacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'));
+        $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $this->assertNotEmpty($editingteacherrole);
-        $managerrole = $DB->get_record('role', array('shortname' => 'manager'));
+        $managerrole = $DB->get_record('role', ['shortname' => 'manager']);
         $this->assertNotEmpty($managerrole);
 
-        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
-        $user2 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser2'));
-        $user3 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser3'));
-        $user4 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser4'));
-        $user5 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser5'));
-        $user6 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
-        $user7 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
-        $user8 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
+        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'xuser1']);
+        $user2 = $this->getDataGenerator()->create_user(['lastname' => 'xuser2']);
+        $user3 = $this->getDataGenerator()->create_user(['lastname' => 'xuser3']);
+        $user4 = $this->getDataGenerator()->create_user(['lastname' => 'xuser4']);
+        $user5 = $this->getDataGenerator()->create_user(['lastname' => 'xuser5']);
+        $user6 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
+        $user7 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
+        $user8 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
 
-        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
-        $course2 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse2'));
-        $course3 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse3'));
-        $course4 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse4'));
+        $course1 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse1']);
+        $course2 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse2']);
+        $course3 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse3']);
+        $course4 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse4']);
 
-        $this->assertEquals(4, $DB->count_records('enrol', array('enrol' => 'manual')));
-        $this->assertEquals(4, $DB->count_records('enrol', array('enrol' => 'bycategory')));
+        $this->assertEquals(4, $DB->count_records('enrol', ['enrol' => 'manual']));
+        $this->assertEquals(4, $DB->count_records('enrol', ['enrol' => 'bycategory']));
 
-        $maninstance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'manual'), '*', MUST_EXIST);
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $maninstance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->expirythreshold = 60 * 60 * 24 * 4;
         $instance1->expirynotify = 1;
         $instance1->notifyall = 1;
         $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
-        $maninstance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'manual'), '*', MUST_EXIST);
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $maninstance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance2->expirythreshold = 60 * 60 * 24 * 1;
         $instance2->expirynotify = 1;
         $instance2->notifyall = 1;
         $instance2->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance2);
 
-        $maninstance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'manual'), '*', MUST_EXIST);
-        $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $maninstance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        $instance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance3->expirythreshold = 60 * 60 * 24 * 1;
         $instance3->expirynotify = 1;
         $instance3->notifyall = 0;
         $instance3->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance3);
 
-        $maninstance4 = $DB->get_record('enrol', array('courseid' => $course4->id, 'enrol' => 'manual'), '*', MUST_EXIST);
-        $instance4 = $DB->get_record('enrol', array('courseid' => $course4->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $maninstance4 = $DB->get_record('enrol', ['courseid' => $course4->id, 'enrol' => 'manual'], '*', MUST_EXIST);
+        $instance4 = $DB->get_record('enrol', ['courseid' => $course4->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance4->expirythreshold = 60 * 60 * 24 * 1;
         $instance4->expirynotify = 0;
         $instance4->notifyall = 0;
@@ -503,29 +503,29 @@ class bycategory_test extends \advanced_testcase {
         $plugin = enrol_get_plugin('bycategory');
         $trace = new \null_progress_trace();
 
-        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
-        $user2 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser2'));
-        $user3 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser3'));
-        $user4 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser4'));
-        $user5 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser5'));
-        $user6 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
-        $user7 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
-        $user8 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
+        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'xuser1']);
+        $user2 = $this->getDataGenerator()->create_user(['lastname' => 'xuser2']);
+        $user3 = $this->getDataGenerator()->create_user(['lastname' => 'xuser3']);
+        $user4 = $this->getDataGenerator()->create_user(['lastname' => 'xuser4']);
+        $user5 = $this->getDataGenerator()->create_user(['lastname' => 'xuser5']);
+        $user6 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
+        $user7 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
+        $user8 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
 
-        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
-        $course2 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse2'));
-        $course3 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse3'));
+        $course1 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse1']);
+        $course2 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse2']);
+        $course3 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse3']);
 
-        $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
+        $this->assertEquals(3, $DB->count_records('enrol', ['enrol' => 'bycategory']));
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customchar2 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
         $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance2->customchar2 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
@@ -593,7 +593,7 @@ class bycategory_test extends \advanced_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
 
         $course1 = $this->getDataGenerator()->create_course();
@@ -611,66 +611,66 @@ class bycategory_test extends \advanced_testcase {
         $course13 = $this->getDataGenerator()->create_course();
 
         // New enrolments are allowed and enrolment instance is enabled.
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customint6 = 1;
         $DB->update_record('enrol', $instance1);
         $plugin->update_status($instance1, ENROL_INSTANCE_ENABLED);
 
         // New enrolments are not allowed, but enrolment instance is enabled.
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance2->customint6 = 0;
         $DB->update_record('enrol', $instance2);
         $plugin->update_status($instance2, ENROL_INSTANCE_ENABLED);
 
         // New enrolments are allowed , but enrolment instance is disabled.
-        $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance3->customint6 = 1;
         $DB->update_record('enrol', $instance3);
         $plugin->update_status($instance3, ENROL_INSTANCE_DISABLED);
 
         // New enrolments are not allowed and enrolment instance is disabled.
-        $instance4 = $DB->get_record('enrol', array('courseid' => $course4->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance4 = $DB->get_record('enrol', ['courseid' => $course4->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance4->customint6 = 0;
         $DB->update_record('enrol', $instance4);
         $plugin->update_status($instance4, ENROL_INSTANCE_DISABLED);
 
         // Course required to pass another course from specific category.
         $category1 = $this->getDataGenerator()->create_category();
-        $instance5 = $DB->get_record('enrol', array('courseid' => $course5->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance5 = $DB->get_record('enrol', ['courseid' => $course5->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance5->customint1 = $category1->id;
         $DB->update_record('enrol', $instance5);
         $plugin->update_status($instance5, ENROL_INSTANCE_ENABLED);
 
         // Enrol start date is in future.
-        $instance7 = $DB->get_record('enrol', array('courseid' => $course6->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance7 = $DB->get_record('enrol', ['courseid' => $course6->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance7->customint6 = 1;
         $instance7->enrolstartdate = time() + 60;
         $DB->update_record('enrol', $instance7);
         $plugin->update_status($instance7, ENROL_INSTANCE_ENABLED);
 
         // Enrol start date is in past.
-        $instance8 = $DB->get_record('enrol', array('courseid' => $course7->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance8 = $DB->get_record('enrol', ['courseid' => $course7->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance8->customint6 = 1;
         $instance8->enrolstartdate = time() - 60;
         $DB->update_record('enrol', $instance8);
         $plugin->update_status($instance8, ENROL_INSTANCE_ENABLED);
 
         // Enrol end date is in future.
-        $instance9 = $DB->get_record('enrol', array('courseid' => $course8->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance9 = $DB->get_record('enrol', ['courseid' => $course8->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance9->customint6 = 1;
         $instance9->enrolenddate = time() + 60;
         $DB->update_record('enrol', $instance9);
         $plugin->update_status($instance9, ENROL_INSTANCE_ENABLED);
 
         // Enrol end date is in past.
-        $instance10 = $DB->get_record('enrol', array('courseid' => $course9->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance10 = $DB->get_record('enrol', ['courseid' => $course9->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance10->customint6 = 1;
         $instance10->enrolenddate = time() - 60;
         $DB->update_record('enrol', $instance10);
         $plugin->update_status($instance10, ENROL_INSTANCE_ENABLED);
 
         // Maximum enrolments reached, waitlist not enabled.
-        $instance11 = $DB->get_record('enrol', array('courseid' => $course10->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance11 = $DB->get_record('enrol', ['courseid' => $course10->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance11->customint6 = 1;
         $instance11->customint3 = 1;
         $DB->update_record('enrol', $instance11);
@@ -678,14 +678,14 @@ class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user($instance11, $user2->id, $studentrole->id);
 
         // Maximum enrolments not reached.
-        $instance12 = $DB->get_record('enrol', array('courseid' => $course11->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance12 = $DB->get_record('enrol', ['courseid' => $course11->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance12->customint6 = 1;
         $instance12->customint3 = 1;
         $DB->update_record('enrol', $instance12);
         $plugin->update_status($instance12, ENROL_INSTANCE_ENABLED);
 
         // Maximum enrolments reached, waitlist enabled.
-        $instance13 = $DB->get_record('enrol', array('courseid' => $course12->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance13 = $DB->get_record('enrol', ['courseid' => $course12->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance13->customint6 = 1;
         $instance13->customint3 = 1;
         $instance13->customchar2 = 1;
@@ -695,7 +695,7 @@ class bycategory_test extends \advanced_testcase {
 
         // Empty space in course, but users on waitlist.
         // Maximum enrolments reached, waitlist enabled.
-        $instance14 = $DB->get_record('enrol', array('courseid' => $course13->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance14 = $DB->get_record('enrol', ['courseid' => $course13->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance14->customint6 = 1;
         $instance14->customint3 = 1;
         $instance14->customchar2 = 1;
@@ -726,11 +726,11 @@ class bycategory_test extends \advanced_testcase {
         $finishedcourse->category = $category1->id;
         $DB->update_record('course', $finishedcourse);
         $this->getDataGenerator()->enrol_user($user1->id, $finishedcourse->id, $studentrole->id);
-        $DB->insert_record('course_completions', array(
+        $DB->insert_record('course_completions', [
             'userid' => $user1->id,
             'course' => $finishedcourse->id,
             'timecompleted' => time() - 60 * 60 * 24 * 11, // ... two weeks .
-        ));
+        ]);
 
         // User passed course in required category.
         $this->assertTrue($plugin->show_enrolme_link($instance5));
@@ -777,16 +777,16 @@ class bycategory_test extends \advanced_testcase {
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $guest = $DB->get_record('user', array('id' => $CFG->siteguest));
+        $guest = $DB->get_record('user', ['id' => $CFG->siteguest]);
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
-        $editingteacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'));
+        $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $this->assertNotEmpty($editingteacherrole);
 
         $course1 = $this->getDataGenerator()->create_course();
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customint6 = 1;
         $DB->update_record('enrol', $instance1);
         $plugin->update_status($instance1, ENROL_INSTANCE_ENABLED);
@@ -930,7 +930,7 @@ class bycategory_test extends \advanced_testcase {
 
         $user1 = $this->getDataGenerator()->create_user();
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
 
         $course1 = $this->getDataGenerator()->create_course();
@@ -940,7 +940,7 @@ class bycategory_test extends \advanced_testcase {
         ];
         $group1 = $this->getDataGenerator()->create_group($group1data);
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customint6 = 1;
         $instance1->customint7 = $group1->id;
 
@@ -970,12 +970,12 @@ class bycategory_test extends \advanced_testcase {
         $user2 = $this->getDataGenerator()->create_user();
         $user3 = $this->getDataGenerator()->create_user();
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
 
         $course1 = $this->getDataGenerator()->create_course();
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customint6 = 1;
         $instance1->customint3 = 1;
         $instance1->customchar2 = 1;

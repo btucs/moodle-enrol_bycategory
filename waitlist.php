@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $enrolid = required_param('enrolid', PARAM_INT);
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'bycategory'], '*', MUST_EXIST);
 $course = get_course($instance->courseid);
 $context = context_course::instance($course->id, MUST_EXIST);
 $hasmanagecapability = has_capability('enrol/bycategory:manage', $context);

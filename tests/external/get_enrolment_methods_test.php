@@ -50,10 +50,10 @@ class get_enrolment_methods_test extends externallib_advanced_testcase {
 
         $context = context_course::instance($course->id);
 
-        $teacherrole = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
         $manualplugin = enrol_get_plugin('manual');
 
-        $maninstance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'manual'), '*', MUST_EXIST);
+        $maninstance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'manual'], '*', MUST_EXIST);
         $manualplugin->enrol_user($maninstance, $USER->id, $teacherrole->id);
 
         $this->assignUserCapability('enrol/bycategory:manage', $context->id, $teacherrole->id);

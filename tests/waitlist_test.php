@@ -291,16 +291,16 @@ class waitlist_test extends \advanced_testcase {
 
         $user1 = $this->getDataGenerator()->create_user();
         $user2 = $this->getDataGenerator()->create_user();
-        $guest = $DB->get_record('user', array('id' => $CFG->siteguest));
+        $guest = $DB->get_record('user', ['id' => $CFG->siteguest]);
 
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->assertNotEmpty($studentrole);
-        $editingteacherrole = $DB->get_record('role', array('shortname' => 'editingteacher'));
+        $editingteacherrole = $DB->get_record('role', ['shortname' => 'editingteacher']);
         $this->assertNotEmpty($editingteacherrole);
 
         $course1 = $this->getDataGenerator()->create_course();
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customint6 = 1;
         $DB->update_record('enrol', $instance1);
         $plugin->update_status($instance1, ENROL_INSTANCE_ENABLED);
@@ -331,29 +331,29 @@ class waitlist_test extends \advanced_testcase {
 
         $plugin = enrol_get_plugin('bycategory');
 
-        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
+        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'xuser1']);
 
-        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
-        $course2 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse2'));
-        $course3 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse3'));
+        $course1 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse1']);
+        $course2 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse2']);
+        $course3 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse3']);
 
-        $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
+        $this->assertEquals(3, $DB->count_records('enrol', ['enrol' => 'bycategory']));
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customchar2 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
         $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance2->customchar2 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
         $instance2->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance2);
 
-        $instance3 = $DB->get_record('enrol', array('courseid' => $course3->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance3 = $DB->get_record('enrol', ['courseid' => $course3->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance3->customchar2 = 1; // Enable waiting list.
         $instance3->customint3 = 1; // Max enrolled.
         $instance3->customint6 = 1; // New enrols allowed.
@@ -389,29 +389,29 @@ class waitlist_test extends \advanced_testcase {
 
         $plugin = enrol_get_plugin('bycategory');
 
-        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
-        $user2 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser2'));
-        $user3 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser3'));
-        $user4 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser4'));
-        $user5 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser5'));
-        $user6 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
-        $user7 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
-        $user8 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser6'));
+        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'xuser1']);
+        $user2 = $this->getDataGenerator()->create_user(['lastname' => 'xuser2']);
+        $user3 = $this->getDataGenerator()->create_user(['lastname' => 'xuser3']);
+        $user4 = $this->getDataGenerator()->create_user(['lastname' => 'xuser4']);
+        $user5 = $this->getDataGenerator()->create_user(['lastname' => 'xuser5']);
+        $user6 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
+        $user7 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
+        $user8 = $this->getDataGenerator()->create_user(['lastname' => 'xuser6']);
 
-        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
-        $course2 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse2'));
-        $course3 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse3'));
+        $course1 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse1']);
+        $course2 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse2']);
+        $course3 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse3']);
 
-        $this->assertEquals(3, $DB->count_records('enrol', array('enrol' => 'bycategory')));
+        $this->assertEquals(3, $DB->count_records('enrol', ['enrol' => 'bycategory']));
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customchar2 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
         $instance1->status = ENROL_INSTANCE_ENABLED;
         $DB->update_record('enrol', $instance1);
 
-        $instance2 = $DB->get_record('enrol', array('courseid' => $course2->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance2 = $DB->get_record('enrol', ['courseid' => $course2->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance2->customchar2 = 1; // Enable waiting list.
         $instance2->customint3 = 1; // Max enrolled.
         $instance2->customint6 = 1; // New enrols allowed.
@@ -463,12 +463,12 @@ class waitlist_test extends \advanced_testcase {
 
         $plugin = enrol_get_plugin('bycategory');
 
-        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
-        $user2 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser2'));
+        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'xuser1']);
+        $user2 = $this->getDataGenerator()->create_user(['lastname' => 'xuser2']);
 
-        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
+        $course1 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse1']);
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customchar2 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.
@@ -494,10 +494,10 @@ class waitlist_test extends \advanced_testcase {
         enrol_bycategory_phpunit_util::enable_plugin();
         $plugin = enrol_get_plugin('bycategory');
 
-        $user1 = $this->getDataGenerator()->create_user(array('lastname' => 'xuser1'));
-        $course1 = $this->getDataGenerator()->create_course(array('fullname' => 'xcourse1'));
+        $user1 = $this->getDataGenerator()->create_user(['lastname' => 'xuser1']);
+        $course1 = $this->getDataGenerator()->create_course(['fullname' => 'xcourse1']);
 
-        $instance1 = $DB->get_record('enrol', array('courseid' => $course1->id, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+        $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance1->customchar2 = 1; // Enable waiting list.
         $instance1->customint3 = 1; // Max enrolled.
         $instance1->customint6 = 1; // New enrols allowed.

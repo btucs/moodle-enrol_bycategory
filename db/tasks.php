@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => '\enrol_bycategory\task\sync_enrolments',
         'blocking' => 0,
         'minute' => '*/10',
@@ -34,8 +34,8 @@ $tasks = array(
         'month' => '*',
         'dayofweek' => '*',
         'disabled' => 0
-    ),
-    array(
+    ],
+    [
         'classname' => '\enrol_bycategory\task\send_expiry_notifications',
         'blocking' => 0,
         'minute' => '*/10',
@@ -44,8 +44,8 @@ $tasks = array(
         'month' => '*',
         'dayofweek' => '*',
         'disabled' => 0
-    ),
-    array(
+    ],
+    [
         'classname' => '\enrol_bycategory\task\send_waitlist_notifications',
         'blocking' => 0,
         'minute' => '0',
@@ -54,6 +54,6 @@ $tasks = array(
         'month' => '*',
         'dayofweek' => '*',
         'disabked' => 0
-    )
-);
+    ]
+];
 

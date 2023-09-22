@@ -108,7 +108,7 @@ class enrol_bycategory_phpunit_util {
                 if ($instid === null) {
                     $instid = $plugin->add_instance($course);
                 }
-                $inst = $DB->get_record('enrol', array('id' => $instid));
+                $inst = $DB->get_record('enrol', ['id' => $instid]);
             }
         }
         return $inst;

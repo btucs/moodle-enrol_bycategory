@@ -29,7 +29,7 @@ $enrolid = required_param('enrolid', PARAM_INT);
 $userid = required_param('uid', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
 
-$instance = $DB->get_record('enrol', array('id' => $enrolid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'bycategory'], '*', MUST_EXIST);
 $course = get_course($instance->courseid);
 $context = context_course::instance($course->id, MUST_EXIST);
 

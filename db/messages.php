@@ -23,17 +23,17 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = array (
-    'expiry_notification' => array(
-        'defaults' => array(
+$messageproviders = [
+    'expiry_notification' => [
+        'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
             'email' => MESSAGE_FORCED
-        )
-    ),
-    'waitlist_notification' => array(
-        'defaults' => array(
+        ]
+    ],
+    'waitlist_notification' => [
+        'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDIN,
             'email' => MESSAGE_FORCED
-        )
-    ),
-);
+        ]
+    ],
+];

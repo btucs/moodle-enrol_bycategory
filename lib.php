@@ -81,7 +81,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
         unset($instance->notifyall);
 
-        $nameattribs = array('size' => '20', 'maxlength' => '255');
+        $nameattribs = ['size' => '20', 'maxlength' => '255'];
         $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'), $nameattribs);
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'server');
@@ -90,7 +90,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addElement('select', 'customint1', get_string('category', 'enrol_bycategory'), $categories);
         $mform->addHelpButton('customint1', 'category', 'enrol_bycategory');
 
-        $options = array('optional' => true, 'defaultunit' => DAYSECS, 'units' => array(DAYSECS, WEEKSECS));
+        $options = ['optional' => true, 'defaultunit' => DAYSECS, 'units' => [DAYSECS, WEEKSECS]];
         $mform->addElement('duration', 'customint5', get_string('completionperiod', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customint5', 'completionperiod', 'enrol_bycategory');
 
@@ -114,7 +114,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $roles = $this->extend_assignable_roles($context, $instance->roleid);
         $mform->addElement('select', 'roleid', get_string('role', 'enrol_bycategory'), $roles);
 
-        $options = array('optional' => true, 'defaultunit' => 86400);
+        $options = ['optional' => true, 'defaultunit' => 86400];
         $mform->addElement('duration', 'enrolperiod', get_string('enrolperiod', 'enrol_bycategory'), $options);
         $mform->addHelpButton('enrolperiod', 'enrolperiod', 'enrol_bycategory');
 
@@ -122,17 +122,17 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addElement('select', 'expirynotify', get_string('expirynotify', 'core_enrol'), $options);
         $mform->addHelpButton('expirynotify', 'expirynotify', 'core_enrol');
 
-        $options = array('optional' => false, 'defaultunit' => 86400);
+        $options = ['optional' => false, 'defaultunit' => 86400];
         $mform->addElement('duration', 'expirythreshold', get_string('expirythreshold', 'core_enrol'), $options);
         $mform->addHelpButton('expirythreshold', 'expirythreshold', 'core_enrol');
         $mform->disabledIf('expirythreshold', 'expirynotify', 'eq', 0);
 
-        $options = array('optional' => true);
+        $options = ['optional' => true];
         $mform->addElement('date_time_selector', 'enrolstartdate', get_string('enrolstartdate', 'enrol_bycategory'), $options);
         $mform->setDefault('enrolstartdate', 0);
         $mform->addHelpButton('enrolstartdate', 'enrolstartdate', 'enrol_bycategory');
 
-        $options = array('optional' => true);
+        $options = ['optional' => true];
         $mform->addElement('date_time_selector', 'enrolenddate', get_string('enrolenddate', 'enrol_bycategory'), $options);
         $mform->setDefault('enrolenddate', 0);
         $mform->addHelpButton('enrolenddate', 'enrolenddate', 'enrol_bycategory');
@@ -154,7 +154,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 enrol_send_welcome_email_options());
         $mform->addHelpButton('customint4', 'sendcoursewelcomemessage', 'enrol_bycategory');
 
-        $options = array('cols' => '60', 'rows' => '8');
+        $options = ['cols' => '60', 'rows' => '8'];
         $mform->addElement('textarea', 'customtext1', get_string('customwelcomemessage', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customtext1', 'customwelcomemessage', 'enrol_bycategory');
 
@@ -177,7 +177,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array Array of "element_name" => "error_description" if there are errors, empty otherwise.
      */
     public function edit_instance_validation($data, $files, $instance, $context) {
-        $errors = array();
+        $errors = [];
 
         if ($data['status'] == ENROL_INSTANCE_ENABLED) {
             if (!empty($data['enrolenddate']) && $data['enrolenddate'] < $data['enrolstartdate']) {
@@ -204,7 +204,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $validexpirynotify = array_keys($this->get_expirynotify_options());
         $validlongtimenosee = array_keys($this->get_longtimenosee_options());
         $validwaitlist = array_keys($this->get_enablewaitlist_options());
-        $tovalidate = array(
+        $tovalidate = [
             'enrolstartdate' => PARAM_INT,
             'enrolenddate' => PARAM_INT,
             'name' => PARAM_TEXT,
@@ -221,7 +221,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,
             'roleid' => $validroles,
-        );
+        ];
 
         if ($data['expirynotify'] != 0) {
             $tovalidate['expirythreshold'] = PARAM_INT;
@@ -301,7 +301,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             $notifyall = 0;
         }
 
-        $fields = array();
+        $fields = [];
         $fields['status'] = $this->get_config('status');
         $fields['roleid'] = $this->get_config('roleid');
         $fields['enrolperiod'] = $this->get_config('enrolperiod');
@@ -454,7 +454,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         global $DB;
 
         if (empty($instance->name)) {
-            if (!empty($instance->roleid) && $role = $DB->get_record('role', array('id' => $instance->roleid))) {
+            if (!empty($instance->roleid) && $role = $DB->get_record('role', ['id' => $instance->roleid])) {
                 $role = ' (' . role_get_name($role, context_course::instance($instance->courseid, IGNORE_MISSING)) . ')';
             } else {
                 $role = '';
@@ -555,7 +555,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $roles = get_assignable_roles($context, ROLENAME_BOTH);
         if (!isset($roles[$defaultrole])) {
-            if ($role = $DB->get_record('role', array('id' => $defaultrole))) {
+            if ($role = $DB->get_record('role', ['id' => $defaultrole])) {
                 $roles[$defaultrole] = role_get_name($role, $context, ROLENAME_BOTH);
             }
         }
@@ -594,12 +594,12 @@ class enrol_bycategory_plugin extends enrol_plugin {
         if ($step->get_task()->get_target() == backup::TARGET_NEW_COURSE) {
             $merge = false;
         } else {
-            $merge = array(
+            $merge = [
                 'courseid' => $data->courseid,
                 'enrol' => $this->get_name(),
                 'status' => $data->status,
                 'roleid' => $data->roleid,
-            );
+            ];
         }
         if ($merge && $instances = $DB->get_records('enrol', $merge, 'id')) {
             $instance = reset($instances);
@@ -725,11 +725,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $trace->output('Verifying bycategory-enrolments...');
 
-        $params = array(
+        $params = [
             'now' => time(),
             'useractive' => ENROL_USER_ACTIVE,
             'courselevel' => CONTEXT_COURSE
-        );
+        ];
 
         $coursesql = "";
         if ($courseid) {
@@ -848,7 +848,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 }
 
                 $a = new stdClass();
-                $a->coursename = format_string($course->fullname, true, array());
+                $a->coursename = format_string($course->fullname, true, []);
                 $a->confirmenrolurl = (string)new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
                 $a->leavewaitlisturl = (string)new moodle_url('/course/view.php', ['id' => $course->id]);
                 $a->userfullname = fullname($user, true);
@@ -905,7 +905,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $waitlisticon = '';
         if ($instance->customchar2 == 1) {
-            $linkparams = array('enrolid' => $instance->id);
+            $linkparams = ['enrolid' => $instance->id];
             $waitlistlink = new moodle_url('/enrol/bycategory/waitlist.php', $linkparams);
             $badgerenderer = new enrol_bycategory_badge_action_icon();
             $waitlist = new enrol_bycategory_waitlist($instance->id);
@@ -916,7 +916,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                     't/waitlist',
                     get_string('waitlist_active', 'enrol_bycategory', $waitlistusercount),
                     'enrol_bycategory',
-                    array('class' => 'iconsmall fa fa-fw')
+                    ['class' => 'iconsmall fa fa-fw']
                 ),
                 $waitlistusercount
             );
@@ -925,7 +925,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 't/waitlist',
                 get_string('waitlist_deactivated', 'enrol_bycategory'),
                 'enrol_bycategory',
-                array('class' => 'iconsmall fa fa-fw dimmed_text')
+                ['class' => 'iconsmall fa fa-fw dimmed_text']
             );
         }
 
@@ -950,7 +950,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $contact = null;
         // Send as the first user assigned as the course contact.
         if ($sendoption == ENROL_SEND_EMAIL_FROM_COURSE_CONTACT) {
-            $rusers = array();
+            $rusers = [];
             if (!empty($CFG->coursecontact)) {
                 $croles = explode(',', $CFG->coursecontact);
                 list($sort, $sortparams) = users_order_by_sql('u');
@@ -993,13 +993,13 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $context = context_course::instance($course->id);
 
         $a = new stdClass();
-        $a->coursename = format_string($course->fullname, true, array('context' => $context));
+        $a->coursename = format_string($course->fullname, true, ['context' => $context]);
         $a->profileurl = "$CFG->wwwroot/user/view.php?id=$user->id&course=$course->id";
 
         if (trim($instance->customtext1) !== '') {
             $message = $instance->customtext1;
-            $key = array('{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}');
-            $value = array($a->coursename, $a->profileurl, fullname($user), $user->email);
+            $key = ['{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}'];
+            $value = [$a->coursename, $a->profileurl, fullname($user), $user->email];
             $message = str_replace($key, $value, $message);
             if (strpos($message, '<') === false) {
                 // Plain text only.
@@ -1007,11 +1007,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $messagehtml = text_to_html($messagetext, null, false, true);
             } else {
                 // This is most probably the tag/newline soup known as FORMAT_MOODLE.
-                $messagehtml = format_text($message, FORMAT_MOODLE, array(
+                $messagehtml = format_text($message, FORMAT_MOODLE, [
                     'context' => $context,
                     'para' => false,
                     'newlines' => true,
-                    'filter' => true)
+                    'filter' => true]
                 );
                 $messagetext = html_to_text($messagehtml);
             }
@@ -1021,7 +1021,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
 
         $subject = get_string('welcometocourse', 'enrol_bycategory', format_string(
-            $course->fullname, true, array('context' => $context)
+            $course->fullname, true, ['context' => $context]
         ));
 
         $sendoption = $instance->customint4;
@@ -1049,7 +1049,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             return $this->lastenroller;
         }
 
-        $instance = $DB->get_record('enrol', array('id' => $instanceid, 'enrol' => $this->get_name()), '*', MUST_EXIST);
+        $instance = $DB->get_record('enrol', ['id' => $instanceid, 'enrol' => $this->get_name()], '*', MUST_EXIST);
         $context = context_course::instance($instance->courseid);
 
         if ($users = get_enrolled_users($context, 'enrol/bycategory:manage')) {
@@ -1072,8 +1072,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_status_options() {
-        $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
-                         ENROL_INSTANCE_DISABLED => get_string('no'));
+        $options = [ENROL_INSTANCE_ENABLED => get_string('yes'),
+                         ENROL_INSTANCE_DISABLED => get_string('no')];
         return $options;
     }
 
@@ -1084,7 +1084,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_newenrols_options() {
-        $options = array(1 => get_string('yes'), 0 => get_string('no'));
+        $options = [1 => get_string('yes'), 0 => get_string('no')];
         return $options;
     }
 
@@ -1093,7 +1093,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_enablewaitlist_options() {
-        $options = array(1 => get_string('yes'), 0 => get_string('no'));
+        $options = [1 => get_string('yes'), 0 => get_string('no')];
         return $options;
     }
 
@@ -1103,10 +1103,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_period_start_options() {
-        $options = array(
+        $options = [
             0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
             1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
-        );
+        ];
 
         return $options;
     }
@@ -1119,9 +1119,9 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_expirynotify_options() {
-        $options = array(0 => get_string('no'),
+        $options = [0 => get_string('no'),
                          1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
-                         2 => get_string('expirynotifyall', 'enrol_bycategory'));
+                         2 => get_string('expirynotifyall', 'enrol_bycategory')];
         return $options;
     }
 
@@ -1133,7 +1133,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return array
      */
     protected function get_longtimenosee_options() {
-        $options = array(0 => get_string('never'),
+        $options = [0 => get_string('never'),
                          1800 * 3600 * 24 => get_string('numdays', '', 1800),
                          1000 * 3600 * 24 => get_string('numdays', '', 1000),
                          365 * 3600 * 24 => get_string('numdays', '', 365),
@@ -1145,7 +1145,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                          30 * 3600 * 24 => get_string('numdays', '', 30),
                          21 * 3600 * 24 => get_string('numdays', '', 21),
                          14 * 3600 * 24 => get_string('numdays', '', 14),
-                         7 * 3600 * 24 => get_string('numdays', '', 7));
+                         7 * 3600 * 24 => get_string('numdays', '', 7)];
         return $options;
     }
 

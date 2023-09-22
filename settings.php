@@ -33,11 +33,11 @@ if ($ADMIN->fulltree) {
     /* Note: let's reuse the ext sync constants and strings here, internally it is very similar,
              it describes what should happend when users are not supposed to be enerolled any more.
     */
-    $options = array(
+    $options = [
         ENROL_EXT_REMOVED_KEEP => get_string('extremovedkeep', 'enrol'),
         ENROL_EXT_REMOVED_SUSPENDNOROLES => get_string('extremovedsuspendnoroles', 'enrol'),
         ENROL_EXT_REMOVED_UNENROL => get_string('extremovedunenrol', 'enrol'),
-    );
+    ];
     $settings->add(
         new admin_setting_configselect(
             'enrol_bycategory/expiredaction',
@@ -48,7 +48,7 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array();
+    $options = [];
     for ($i = 0; $i < 24; $i++) {
         $options[$i] = $i;
     }
@@ -79,10 +79,10 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(
+    $options = [
         ENROL_INSTANCE_ENABLED => get_string('yes'),
         ENROL_INSTANCE_DISABLED => get_string('no')
-    );
+    ];
 
     $settings->add(
         new admin_setting_configselect(
@@ -94,7 +94,7 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(1 => get_string('yes'), 0 => get_string('no'));
+    $options = [1 => get_string('yes'), 0 => get_string('no')];
     $settings->add(
         new admin_setting_configselect(
             'enrol_bycategory/newenrols',
@@ -129,10 +129,10 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(
+    $options = [
         0 => get_string('enrolperiodcountfromnow', 'enrol_bycategory'),
         1 => get_string('enrolperiodcountfromenrollstart', 'enrol_bycategory')
-    );
+    ];
 
     $settings->add(
         new admin_setting_configselect(
@@ -144,11 +144,11 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(
+    $options = [
         0 => get_string('no'),
         1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
         2 => get_string('expirynotifyall', 'enrol_bycategory')
-    );
+    ];
 
     $settings->add(
         new admin_setting_configselect(
@@ -170,7 +170,7 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(
+    $options = [
         0 => get_string('never'),
         1800 * 3600 * 24 => get_string('numdays', '', 1800),
         1000 * 3600 * 24 => get_string('numdays', '', 1000),
@@ -184,7 +184,7 @@ if ($ADMIN->fulltree) {
         21 * 3600 * 24 => get_string('numdays', '', 21),
         14 * 3600 * 24 => get_string('numdays', '', 14),
         7 * 3600 * 24 => get_string('numdays', '', 7)
-    );
+    ];
 
     $settings->add(
         new admin_setting_configselect(
@@ -216,7 +216,7 @@ if ($ADMIN->fulltree) {
         )
     );
 
-    $options = array(0 => get_string('no'), 1 => get_string('yes'));
+    $options = [0 => get_string('no'), 1 => get_string('yes')];
     $settings->add(
         new admin_setting_configselect(
             'enrol_bycategory/enablewaitlist',

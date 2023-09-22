@@ -59,7 +59,7 @@ if ($tokenrecord->timecreated + $oneday < $now) {
 
 enrol_bycategory_delete_expired_tokens($now);
 
-$instance = $DB->get_record('enrol', array('id' => $instanceid, 'enrol' => 'bycategory'), '*', MUST_EXIST);
+$instance = $DB->get_record('enrol', ['id' => $instanceid, 'enrol' => 'bycategory'], '*', MUST_EXIST);
 $course = get_course($instance->courseid);
 $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
 $context = context_course::instance($course->id, MUST_EXIST);
