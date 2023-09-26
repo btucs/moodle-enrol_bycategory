@@ -337,8 +337,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         // Check if the user is on another waiting list in the same course.
         $waitlistidorfalse = $this->is_on_any_waitlist($USER->id, $instance->courseid);
-        // If the user is on a waiting list and it is not this instance redirect to the waiting list.
-        if (false !== $waitlistidorfalse && $waitlistidorfalse != $instance->id) {
+        if (false !== $waitlistidorfalse) {
             $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $waitlistidorfalse]);
             redirect($waitlisturl);
         }
