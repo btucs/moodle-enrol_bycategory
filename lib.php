@@ -851,6 +851,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $a->confirmenrolurl = (string)new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
                 $a->leavewaitlisturl = (string)new moodle_url('/course/view.php', ['id' => $course->id]);
                 $a->userfullname = fullname($user, true);
+                $a->firstname = \core_user::get_user($waitlistentry->userid)->firstname;
                 $a->notifyamount = $usernotifycount - 1;
 
                 $subject = get_string('waitlist_notification_subject', 'enrol_bycategory', $a);
@@ -986,19 +987,20 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return void
      */
     protected function email_welcome_message($instance, $user) {
-        global $CFG, $DB;
+        global $CFG;
 
         $course = get_course($instance->courseid);
         $context = context_course::instance($course->id);
 
         $a = new stdClass();
+        $a->courseurl = "$CFG->wwwroot/course/view.php?id=$course->id";
         $a->coursename = format_string($course->fullname, true, ['context' => $context]);
         $a->profileurl = "$CFG->wwwroot/user/view.php?id=$user->id&course=$course->id";
 
         if (trim($instance->customtext1) !== '') {
             $message = $instance->customtext1;
-            $key = ['{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}'];
-            $value = [$a->coursename, $a->profileurl, fullname($user), $user->email];
+            $key = ['$a->courseurl', '{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}'];
+            $value = [$a->courseurl, $a->coursename, $a->profileurl, fullname($user), $user->email];
             $message = str_replace($key, $value, $message);
             if (strpos($message, '<') === false) {
                 // Plain text only.
