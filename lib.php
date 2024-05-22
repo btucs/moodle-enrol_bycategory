@@ -856,7 +856,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $a->firstname = \core_user::get_user($waitlistentry->userid)->firstname;
                 $a->notifyamount = $usernotifycount - 1;
                 $a->usernotifiedcount = $waitlistentry->notified + 1;
-                $a->usernotifytotalcount = $this->get_config('waitlistnotifylimit');
+                $a->usernotifytotalcount = $this->get_config('waitlistnotifylimit') - 1;
 
                 $subject = get_string($a->usernotifiedcount <= $a->usernotifytotalcount ? 'waitlist_notification_subject' : 'waitlist_removed_notification_subject', 'enrol_bycategory', $a);
                 $body = get_string($a->usernotifiedcount <= $a->usernotifytotalcount ? 'waitlist_notification_body' : 'waitlist_removed_notification_body', 'enrol_bycategory', $a);
@@ -899,6 +899,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
                         message_send($ccmessage);
                     }
+                } else {
+                    // remove the student from the waitlist if has not responded
+                    $waitlist = new enrol_bycategory_waitlist($waitlistentry->instanceid);
+                    $waitlist->remove_user($waitlistentry->userid);
                 }
 
                 if ($messageid) {

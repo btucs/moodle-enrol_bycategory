@@ -167,29 +167,30 @@ $string['waitlistnotifycount'] = 'Number of users to notify about an available s
 $string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';
 $string['waitlistnotifylimit'] = 'Amount of times a user is being notified at most';
 $string['waitlistnotifylimit_help'] = 'Users are on a specific waiting list are only notified a specific amount of times until they are ignored.';
-$string['waitlist_notification_body'] = '<div style="font-family:sans-serif"><p>Dear {$a->firstname},</p><p>Welcome to the <a href=\'{$a->courseurl}\'>{$a->coursename}</a> course.</p>
+$string['waitlist_notification_body'] = '<div style="font-family:sans-serif"><p>Dear {$a->firstname},</p><p>Welcome to the <a href=\'{$a->courseurl}\'>BAVirtual ({$a->coursename})</a> course.</p>
   <p>Please click the \'Enrol me\' link to enrol yourself in the available spot: <a href=\'{$a->confirmenrolurl}\'>Enrol me</a></p>
   <p>As you will be aware, the course comprises a mixture of theoretical modules that are completed within the Moodle system and practical flying training with an instructor.
   This training will be carried out using shared cockpit software during a training session on Discord.</p><p>Please use the \'My availability\' function from the main course
-  page menu to post your availability. An instructor will then pick one of your available slots to book a session with you, afterwhich, you will receive an email with the
+  page menu to post your availability. An instructor will then pick one of your available slots to book a session with you; afterwhich, you will receive an email with the
   booked session details.  Make sure to be in the Training Lobby channel on the BAVirtual Discord server at that date and time.</p><p>
-  In the meantime, please review the course Policy and the Course Material & Useful Links sections from the course\'s main page. Also, please complete through the first practical lesson to the very end.
+  In the meantime, please review the course Policy and the Course Material & Useful Links sections from the course\'s main page. Also, please complete the first practical lesson all the way through to the very end.
   Completing each lesson prior to an instructor session is mandatory, otherwise an instructor will not be able to book a session with you.</p>
   <p>If you have any questions regarding the setup of any software, or anything else to do with the course, please don’t hesitate to post on the ppl-p1-students Discord channel
-  on the BAVirtual server.</p><p>If you no longer like to join the "{$a->coursename}" course, please click the \'Remove me from the waitlist\' link to be removed from the waiting list and forfeit your slot:
+  on the BAVirtual server.</p><p>If you no longer like to join the "{$a->coursename}" course, please click the \'Remove me from the waitlist\' link to be removed from the waiting list and forfeit your spot:
   <a href=\'{$a->leavewaitlisturl}\'>Remove me from the waitlist</a></p><p>We wish you the best of luck with the course!</p><p>&nbsp;</p<p>BAVirtual Training Staff</p>
   <p><a href="http://2glmdtcd.r.eu-west-2.awstrack.me/L0/http:%2F%2Fwww.bavirtual.co.uk/2/010b018c985f26d6-ee7061c4-bc58-47ac-9711-9c4f4340f65c-000000/N2Wr-Urnms2Vji8kECk9XaO8R_0=138">
   <img src="https://ecp.yusercontent.com/mail?url=https%3A%2F%2Fbavms.bavirtual.co.uk%2Fassets%2Fimg%2Flogo.png&t=1714496892&ymreqid=612e92b1-a1b2-101e-1cda-ef0102012100&sig=kzAh8tw.4ohK_HpU0liB_Q--~D" alt="BAVirtual Flight Training" width="230px" border="0" /></a></p></div>';
-$string['waitlist_notification_subject'] = 'BAVirtual "{$a->coursename}" course - Available slot!';
-$string['waitlist_notification_ccbody'] = '<div style="font-family:sans-serif"><strong>Notification {$a->usernotifiedcount} of {$a->usernotifytotalcount}</strong>.<><br>Waitlisted student \'{$a->userfullname}\' was notified of an open slot in the {$a->coursename} course with instructions on how to self-enrol or opt out.
-  <br><br>If \'{$a->userfullname}\' does not self-enrol by the last notification, the slot will be reassigned to another waitlisted student.</><br>
-  <p><a href="{$a->participantsurl}">{$a->coursename} participants</a></p>.</div>';
+$string['waitlist_notification_subject'] = 'BAVirtual "{$a->coursename}" course - Available spot!';
 $string['waitlist_notification_ccsubject'] = 'New waitlisted enrolment notification - {$a->courseshortname} course!';
-$string['waitlist_removed_notification_body'] = '<div style="font-family:sans-serif"><p>Dear {$a->firstname},</p><p>Due to the unresponsiveness to the past {$a->usernotifytotalcount} attempts to self-enrol in the
-  {$a->coursename} course, you have been removed from the waitlist.</p><p>&nbsp;</p><p>BAVirtual Training Staff</p>
+$string['waitlist_notification_ccbody'] = '<div style="font-family:sans-serif"><strong>Notification {$a->usernotifiedcount} of {$a->usernotifytotalcount}</strong>.<p><br>Waitlisted student \'{$a->userfullname}\' was notified of an open spot in the {$a->coursename} course with instructions to self-enrol or opt out.
+  <br><br>If \'{$a->userfullname}\' does not self-enrol by the last notification, the spot will be reassigned to another waitlisted student.</p><br>
+  <p><a href="{$a->participantsurl}">{$a->coursename} participants</a></p>.</div>';
+$string['waitlist_removed_notification_subject'] = 'BAVirtual "{$a->coursename}" course - removed from the waitlist!';
+$string['waitlist_removed_notification_body'] = '<div style="font-family:sans-serif"><p>Dear {$a->firstname},</p><p>Due to your unresponsiveness in enrolling in the {$a->coursename} course, you have been removed from the waitlist.</p>
+  <p>We attempted to reach you on this email address {$a->usernotifytotalcount} times with instructions to self-enrol or opt-out, but no action was taken on your part.</p>
+  <p>&nbsp;</p><p>BAVirtual Training Staff</p>
   <p><a href="http://2glmdtcd.r.eu-west-2.awstrack.me/L0/http:%2F%2Fwww.bavirtual.co.uk/2/010b018c985f26d6-ee7061c4-bc58-47ac-9711-9c4f4340f65c-000000/N2Wr-Urnms2Vji8kECk9XaO8R_0=138">
   <img src="https://ecp.yusercontent.com/mail?url=https%3A%2F%2Fbavms.bavirtual.co.uk%2Fassets%2Fimg%2Flogo.png&t=1714496892&ymreqid=612e92b1-a1b2-101e-1cda-ef0102012100&sig=kzAh8tw.4ohK_HpU0liB_Q--~D" alt="BAVirtual Flight Training" width="230px" border="0" /></a></p></div>';
-$string['waitlist_removed_notification_subject'] = 'BAVirtual "{$a->coursename}" course - removed from waitlist!';
 $string['waitlist_status_info'] = 'Up to {$a->notifycount} Users from the waiting list are informed about an open spot in this course {$a->nextruntime}.
 Users are only informed {$a->notifylimit} times without reaction until they are ignored.';
 $string['welcometocourse'] = 'Welcome to {$a}';
