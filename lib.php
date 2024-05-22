@@ -826,7 +826,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         if ($count > 0) {
             foreach ($waitlistentries as $waitlistentry) {
-
                 $token = $this->create_token();
                 $DB->insert_record('enrol_bycategory_token', [
                     'token' => $token,
@@ -848,21 +847,19 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
                 $a = new stdClass();
                 $a->coursename = format_string($course->fullname, true, []);
-                $a->confirmenrolurl = (string)new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
-                $a->leavewaitlisturl = (string)new moodle_url('/course/view.php', ['id' => $course->id]);
+                $a->courseshortname = format_string($course->shortname, true, []);
+                $a->courseurl = (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false);
+                $a->participantsurl = (new moodle_url('/user/index.php', ['id' => $course->id]))->out(false);
+                $a->confirmenrolurl = (new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]))->out(false);
+                $a->leavewaitlisturl = (new moodle_url('/enrol/bycategory/waitlist.php', ['id' => $course->id, 'token' => $token, 'enrolid' => $waitlistentry->instanceid, 'leavewaitlist'=>1]))->out(false);
                 $a->userfullname = fullname($user, true);
                 $a->firstname = \core_user::get_user($waitlistentry->userid)->firstname;
                 $a->notifyamount = $usernotifycount - 1;
+                $a->usernotifiedcount = $waitlistentry->notified + 1;
+                $a->usernotifytotalcount = $this->get_config('waitlistnotifylimit');
 
-                $subject = get_string('waitlist_notification_subject', 'enrol_bycategory', $a);
-                $body = get_string('waitlist_notification_body', 'enrol_bycategory', $a);
-                $markdownbody = str_replace([
-                    $a->confirmenrolurl,
-                    $a->leavewaitlisturl,
-                ], [
-                    "[$a->confirmenrolurl]($a->confirmenrolurl)",
-                    "[$a->leavewaitlisturl]($a->leavewaitlisturl)",
-                ], $body);
+                $subject = get_string($a->usernotifiedcount <= $a->usernotifytotalcount ? 'waitlist_notification_subject' : 'waitlist_removed_notification_subject', 'enrol_bycategory', $a);
+                $body = get_string($a->usernotifiedcount <= $a->usernotifytotalcount ? 'waitlist_notification_body' : 'waitlist_removed_notification_body', 'enrol_bycategory', $a);
 
                 $message = new message();
                 $message->component = 'enrol_bycategory';
@@ -871,14 +868,39 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $message->userto = $user;
                 $message->subject = $subject;
                 $message->fullmessage = $body;
-                $message->fullmessageformat = FORMAT_PLAIN;
-                $message->fullmessagehtml = markdown_to_html($markdownbody);
+                $message->fullmessageformat = FORMAT_HTML; // FORMAT_PLAIN;
+                $message->fullmessagehtml = $body; //markdown_to_html($markdownbody);
                 $message->smallmessage = $subject;
                 $message->contexturlname = $a->coursename;
                 $message->contexturl = $a->confirmenrolurl;
                 $message->notification = 1; // This is only set to 0 for personal messages between users.
-
                 $messageid = message_send($message);
+
+                // cc course manager(s)
+                if ($a->usernotifiedcount <= $a->usernotifytotalcount) {
+                    $context = \context_course::instance($course->id);
+                    $teachers = get_enrolled_users($context, 'enrol/bycategory:manage', 0 , 'u.*', null, 0, 0, true);
+                    $ccsubject = get_string('waitlist_notification_ccsubject', 'enrol_bycategory', $a);
+                    $ccbody = get_string('waitlist_notification_ccbody', 'enrol_bycategory', $a);
+                    foreach ($teachers as $teacher) {
+                        $ccmessage = new message();
+                        $ccmessage->component = 'enrol_bycategory';
+                        $ccmessage->name = 'waitlist_notification';
+                        $ccmessage->userfrom = $userfrom;
+                        $ccmessage->userto = $teacher->id;
+                        $ccmessage->subject = $ccsubject;
+                        $ccmessage->fullmessage = $ccbody;
+                        $ccmessage->fullmessageformat = FORMAT_HTML;
+                        $ccmessage->fullmessagehtml = $ccbody;
+                        $ccmessage->smallmessage = $ccsubject;
+                        $ccmessage->contexturlname = $a->coursename;
+                        $ccmessage->contexturl = $a->courseurl;
+                        $ccmessage->notification = 1; // This is only set to 0 for personal messages between users.
+
+                        message_send($ccmessage);
+                    }
+                }
+
                 if ($messageid) {
                     $trace->output("notifying user $user->id that there is a spot available in $course->id.");
                 } else {
