@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'enrol_bycategory';
-$plugin->release = '1.2.2';
-$plugin->version = 2023092601;
+$plugin->release = '1.2.3';
+$plugin->version = 2024052201;
 $plugin->requires = 2019052000;
 $plugin->maturity = MATURITY_STABLE;

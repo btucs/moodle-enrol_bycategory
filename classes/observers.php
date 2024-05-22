@@ -21,7 +21,9 @@
  * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 use core\event\course_deleted;
+use core\event\user_updated;
 use core\event\user_enrolment_deleted;
 
 /**
@@ -42,5 +44,21 @@ class enrol_bycategory_observers {
      */
     public static function user_enrolment_deleted(user_enrolment_deleted $event) {
         $eventdata = $event->get_data();
+    }
+
+    /**
+     * Observe user_updated event if user update is a suspension and delete user from waitlist
+     * @param user_updated $event
+     */
+    public static function user_updated(user_updated $event) {
+        global $DB;
+
+        // check if the user is suspended
+        $eventdata = (object) $event->get_data();
+        $user = $DB->get_record('user', array('id'=>$eventdata->relateduserid));
+
+        if ($user->suspended == 1) {
+            $DB->delete_records('enrol_bycategory_waitlist', ['userid' => $eventdata->relateduserid]);
+        }
     }
 }
