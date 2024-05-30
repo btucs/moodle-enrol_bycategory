@@ -326,7 +326,7 @@ class enrol_bycategory_waitlist {
     public static function select_courses_with_available_space() {
         global $DB;
 
-        $sql = "SELECT e.id AS instanceid, c.id, c.fullname FROM {enrol} e
+        $sql = "SELECT e.id AS instanceid, c.id, c.fullname, c.shortname FROM {enrol} e
                   JOIN {course} c ON e.courseid = c.id
                  WHERE e.enrol = :pluginname
                     AND e.status = :status
