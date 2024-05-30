@@ -849,7 +849,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $a->coursename = format_string($course->fullname, true, []);
                 $a->courseshortname = format_string($course->shortname, true, []);
                 $a->courseurl = (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false);
-                $a->participantsurl = (new moodle_url('/user/index.php', ['id' => $course->id]))->out(false);
+                $a->waitlisturl = (new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $waitlistentry->id]))->out(false);
                 $a->confirmenrolurl = (new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]))->out(false);
                 $a->leavewaitlisturl = (new moodle_url('/enrol/bycategory/waitlist.php', ['id' => $course->id, 'token' => $token, 'enrolid' => $waitlistentry->instanceid, 'leavewaitlist'=>1]))->out(false);
                 $a->userfullname = fullname($user, true);

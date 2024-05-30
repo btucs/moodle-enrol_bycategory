@@ -184,7 +184,7 @@ $string['waitlist_notification_subject'] = 'BAVirtual "{$a->coursename}" course 
 $string['waitlist_notification_ccsubject'] = 'New waitlisted enrolment notification - {$a->courseshortname} course!';
 $string['waitlist_notification_ccbody'] = '<div style="font-family:sans-serif"><strong>Notification {$a->usernotifiedcount} of {$a->usernotifytotalcount}</strong>.<p><br>Waitlisted student \'{$a->userfullname}\' was notified of an open spot in the {$a->coursename} course with instructions to self-enrol or opt out.
   <br><br>If \'{$a->userfullname}\' does not self-enrol by the last notification, the spot will be reassigned to another waitlisted student.</p><br>
-  <p><a href="{$a->participantsurl}">{$a->coursename} participants</a></p>.</div>';
+  <p><a href="{$a->waitlisturl}">{$a->coursename} waitlist</a>.</p></div>';
 $string['waitlist_removed_notification_subject'] = 'BAVirtual "{$a->coursename}" course - removed from the waitlist!';
 $string['waitlist_removed_notification_body'] = '<div style="font-family:sans-serif"><p>Dear {$a->firstname},</p><p>Due to your unresponsiveness in enrolling in the {$a->coursename} course, you have been removed from the waitlist.</p>
   <p>We attempted to reach you on this email address {$a->usernotifytotalcount} times with instructions to self-enrol or opt-out, but no action was taken on your part.</p>
