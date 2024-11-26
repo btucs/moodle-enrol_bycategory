@@ -100,19 +100,32 @@ class enrol_bycategory_waitlist {
     public function add_user($userid) {
         global $DB, $USER;
 
-        $now = time();
-
         if (empty($userid)) {
             throw new coding_exception('$userid is empty');
         }
 
-        return $DB->insert_record($this->tablename, [
+        // get seniorty date from an external service if service is provided
+        $externaluserinfo = get_config('enrol_bycategory', 'externalseniorityapi');
+        $seniority = \core_user::get_user($userid)->timecreated;
+        if (!empty($externaluserinfo)) {
+            if (!empty($seniority = self::call_external_service($externaluserinfo, $userid))) {
+                $dtime = DateTime::createFromFormat("Y-m-d G:i:s", $seniority);
+                $seniority = !empty($dtime) ? $dtime->getTimestamp() : 0;
+            }
+        }
+
+        $now = time();
+
+        $params = [
             'userid' => $userid,
             'instanceid' => $this->instanceid,
             'usermodified' => $USER->id,
             'timecreated' => $now,
             'timemodified' => $now,
-        ], true, false);
+            'senioritydate' => $seniority,
+        ];
+
+        return $DB->insert_record($this->tablename, $params, true, false);
     }
 
     /**
@@ -194,7 +207,7 @@ class enrol_bycategory_waitlist {
      * @return bool|string true if successful, else error message or false.
      */
     public function can_enrol(stdClass $instance = null, $userid = null, $ignorewaitlist = false) {
-        global $CFG, $DB, $USER;
+        global $DB, $USER;
 
         if ($instance === null) {
             $instance = $DB->get_record('enrol', ['id' => $this->instanceid], '*', MUST_EXIST);
@@ -306,6 +319,22 @@ class enrol_bycategory_waitlist {
             }
         }
 
+        // evaluate for external criteria which returns an array with whether the user is eligible or not, and a message
+        if (!empty($instance->customchar3)) {
+            $eligibilityjson = self::call_external_service($instance->customchar3, $userid);
+            $eligibility = json_decode($eligibilityjson);
+            if (!empty($eligibility)) {
+                if ($eligibility->eligible) {
+                    return true;
+                }
+                else {
+                    return $eligibility->warning;
+                }
+            } else {
+                return get_string('unabletogetcriteria', 'enrol_bycategory');
+            }
+        }
+
         return true;
     }
 
@@ -326,7 +355,7 @@ class enrol_bycategory_waitlist {
     public static function select_courses_with_available_space() {
         global $DB;
 
-        $sql = "SELECT e.id AS instanceid, c.id, c.fullname FROM {enrol} e
+        $sql = "SELECT e.id AS instanceid, c.id, c.fullname, c.shortname FROM {enrol} e
                   JOIN {course} c ON e.courseid = c.id
                  WHERE e.enrol = :pluginname
                     AND e.status = :status
@@ -376,26 +405,50 @@ class enrol_bycategory_waitlist {
         if ($usernotifycount === false) {
             $usernotifycount = 5;
         }
+        $userstonotify = $usernotifycount;
 
         $usernotifylimit = get_config('enrol_bycategory', 'waitlistnotifylimit');
         if ($usernotifylimit === false) {
             $usernotifylimit = 5;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($enrolids, SQL_PARAMS_NAMED);
-        $sql = "WITH waitlist_window as (
-                    SELECT *, ROW_NUMBER() OVER (
-                        PARTITION BY instanceid ORDER BY timecreated ASC
-                    ) r
-                      FROM {enrol_bycategory_waitlist}
-                      WHERE instanceid $insql AND notified < :notifylimit
-                )
-                SELECT * FROM waitlist_window WHERE r <= :useramount";
+        $nextreminderdays = get_config('enrol_bycategory', 'waitlistnotifyperiod');
+        if ($nextreminderdays === false) {
+            $nextreminderdays = 3;
+        }
 
-        $waitlistentries = $DB->get_records_sql($sql, [
-            'useramount' => $usernotifycount,
-            'notifylimit' => $usernotifylimit,
-        ] + $inparams);
+        $waitlistentries = [];
+
+        foreach ($enrolids as $enrolid) {
+            $instance = $DB->get_record('enrol', ['id' => $enrolid], '*', MUST_EXIST);
+
+            // check if notify count is based on specified settings or available spots (0)
+            if ($usernotifycount == 0) {
+                $enroledcount = $DB->count_records('user_enrolments', ['enrolid' => $instance->id]);
+                $userstonotify = $instance->customint3 >= $enroledcount ? $instance->customint3 - $enroledcount : 0;
+            }
+
+            if ($userstonotify > 0) {
+                // sort by seniority when applicable
+                $sortcolumn = !empty($instance->customint8) ? 'senioritydate' : 'timecreated';
+                $sql = "WITH waitlist_window as (
+                            SELECT *, ROW_NUMBER() OVER (PARTITION BY instanceid ORDER BY $sortcolumn ASC) r
+                            FROM {enrol_bycategory_waitlist}
+                            WHERE instanceid = $enrolid
+                                AND notified < :notifylimit
+                                AND (DATEDIFF(CURDATE(), FROM_UNIXTIME(timemodified)) > :nextreminder OR notified > 0)
+                        )
+                        SELECT * FROM waitlist_window WHERE r <= :useramount";
+
+                $entries = $DB->get_records_sql($sql, [
+                    'sortcolumn'  => $sortcolumn,
+                    'useramount'  => $userstonotify,
+                    'notifylimit' => $usernotifylimit,
+                    'nextreminder'=> $nextreminderdays,
+                ]);
+                $waitlistentries = $waitlistentries + $entries;
+            }
+        }
 
         return $waitlistentries;
     }
@@ -433,5 +486,50 @@ class enrol_bycategory_waitlist {
         $startofday->setTime(0, 0, 0, 0);
 
         return $startofday->getTimestamp();
+    }
+
+    /**
+     * Get the user's seniority.
+     *
+     * @param  string $url    The service URL and query parameters to evaluate
+     * @param  int    $userid The user id to evaluate in the external service
+     * @return string $value  The timezone seniority.
+     */
+	public static function call_external_service(string $url, int $userid) {
+
+        $url = self::parse_text($url, \core_user::get_user($userid));
+        $ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		$data = curl_exec($ch);
+		$httpcode = curl_getinfo($ch,CURLINFO_HTTP_CODE);
+		if($httpcode != 200)
+			throw new \Exception(get_string('googletimezoneerror', 'local_booking'));
+
+		return $data;
+	}
+
+    /**
+     * Return an array of valid options for the status.
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     *
+     * @param  string $text text containing keys to replace
+     * @param  object $a    object containing key/value pairs
+     * @return string
+     */
+    public static function parse_text(string $text, object $a) {
+        $mergedtext = '';
+        $options = (array) $a;
+        $search = array();
+        $replace = array();
+        foreach ($options as $key => $value) {
+            $search[]  = '{$a->'.$key.'}';
+            $replace[] = (string)$value;
+        }
+        if ($search) {
+            $mergedtext = str_replace($search, $replace, $text);
+        }
+        return $mergedtext;
     }
 }

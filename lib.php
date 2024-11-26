@@ -26,6 +26,7 @@
 
 use core\message\message;
 require_once($CFG->dirroot.'/group/lib.php');
+require_once($CFG->libdir.'/enrollib.php');
 
 /**
  * Extend fontawesome mapping list for custom key
@@ -90,6 +91,11 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addElement('select', 'customint1', get_string('category', 'enrol_bycategory'), $categories);
         $mform->addHelpButton('customint1', 'category', 'enrol_bycategory');
 
+        $svcattribs = ['size' => '70', 'maxlength' => '255'];
+        $mform->addElement('text', 'customchar3', get_string('externalvalidation', 'enrol_bycategory'), $svcattribs);
+        $mform->addHelpButton('customchar3', 'externalvalidation', 'enrol_bycategory');
+        $mform->setType('customchar3', PARAM_TEXT);
+
         $options = ['optional' => true, 'defaultunit' => DAYSECS, 'units' => [DAYSECS, WEEKSECS]];
         $mform->addElement('duration', 'customint5', get_string('completionperiod', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customint5', 'completionperiod', 'enrol_bycategory');
@@ -110,6 +116,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addElement('select', 'customint6', get_string('newenrols', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customint6', 'newenrols', 'enrol_bycategory');
         $mform->disabledIf('customint6', 'status', 'eq', ENROL_INSTANCE_DISABLED);
+
+        $options = $this->get_priority_options();
+        $mform->addElement('select', 'customint8', get_string('priority', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customint8', 'priority', 'enrol_bycategory');
 
         $roles = $this->extend_assignable_roles($context, $instance->roleid);
         $mform->addElement('select', 'roleid', get_string('role', 'enrol_bycategory'), $roles);
@@ -157,6 +167,18 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $options = ['cols' => '60', 'rows' => '8'];
         $mform->addElement('textarea', 'customtext1', get_string('customwelcomemessage', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customtext1', 'customwelcomemessage', 'enrol_bycategory');
+
+        $options = ['cols' => '60', 'rows' => '8'];
+        $mform->addElement('textarea', 'customtext2', get_string('customselfenrolmessage', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customtext2', 'customselfenrolmessage', 'enrol_bycategory');
+
+        $options = ['cols' => '60', 'rows' => '8'];
+        $mform->addElement('textarea', 'customtext3', get_string('customwaitlistinfomessage', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customtext3', 'customwaitlistinfomessage', 'enrol_bycategory');
+
+        $options = ['cols' => '60', 'rows' => '8'];
+        $mform->addElement('textarea', 'customtext4', get_string('customremovedfromwaitlistmessage', 'enrol_bycategory'), $options);
+        $mform->addHelpButton('customtext4', 'customremovedfromwaitlistmessage', 'enrol_bycategory');
 
         if (enrol_accessing_via_instance($instance)) {
             $warntext = get_string('instanceeditselfwarningtext', 'core_enrol');
@@ -215,12 +237,17 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint5' => PARAM_INT,
             'customint6' => $validnewenrols,
             'customint7' => PARAM_INT,
+            'customint8' => PARAM_INT,
             'customchar1' => $validperiodstarts,
             'customchar2' => $validwaitlist,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,
             'roleid' => $validroles,
+            'customtext1' => PARAM_RAW,
+            'customtext2' => PARAM_RAW,
+            'customtext3' => PARAM_RAW,
+            'customtext4' => PARAM_RAW,
         ];
 
         if ($data['expirynotify'] != 0) {
@@ -338,7 +365,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         // Check if the user is on another waiting list in the same course.
         $waitlistidorfalse = $this->is_on_any_waitlist($USER->id, $instance->courseid);
         if (false !== $waitlistidorfalse) {
-            $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $waitlistidorfalse]);
+            $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]);
             redirect($waitlisturl);
         }
 
@@ -504,7 +531,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return bool|array true if enroled else error code and messege
      */
     public function enrol_self(stdClass $instance, $data = null) {
-        global $DB, $USER, $CFG;
+        global $USER;
 
         $enrolresult = $this->enrol_user_manually($instance, $USER->id);
 
@@ -525,6 +552,8 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return bool|array true if enroled else error code and message
      */
     public function enrol_user_manually(stdClass $instance, $userid) {
+        global $DB;
+
         $timestart = time();
         if ($instance->enrolperiod) {
             $timeend = $timestart + $instance->enrolperiod;
@@ -821,24 +850,41 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $count = count($waitlistentries);
         $trace->output('preparing to notifify '.$count.' users.' );
 
+        // get seniority timestamp based on username
         $userfrom = core_user::get_noreply_user();
         $now = time();
+        $trace->output('... notification processing started.');
 
         if ($count > 0) {
+
+            $nextreminderdays = get_config('enrol_bycategory', 'waitlistnotifyperiod');
+            if ($nextreminderdays === false) {
+                $nextreminderdays = 3;
+            }
+
             foreach ($waitlistentries as $waitlistentry) {
 
+                // skip if the user notification period has not passed yet
+                $nextreminderts = $waitlistentry->timemodified + ($nextreminderdays * 86400);
+                if ($nextreminderts > time() && $waitlistentry->notified > 0) {
+                    $trace->output(str_repeat(" ", 8) . "user $waitlistentry->userid skipped, next notification time not reached");
+                    continue;
+                }
+
                 $token = $this->create_token();
-                $DB->insert_record('enrol_bycategory_token', [
+                $user = $DB->get_record('user', ['id' => $waitlistentry->userid]);
+                $instance = $DB->get_record('enrol', ['id' => $waitlistentry->instanceid], '*', MUST_EXIST);
+                $params = [
                     'token' => $token,
                     'waitlistid' => $waitlistentry->id,
                     'userid' => $waitlistentry->userid,
                     'usermodified' => $USER->id,
                     'timecreated' => $now,
                     'timemodified' => $now,
-                ], false, false);
+                ];
+                $DB->insert_record('enrol_bycategory_token', $params, false, false);
 
                 $course = $courseswithspace[$waitlistentry->instanceid];
-                $user = $DB->get_record('user', ['id' => $waitlistentry->userid]);
                 $oldforcelang = force_current_language($user->lang);
 
                 $usernotifycount = get_config('enrol_bycategory', 'waitlistnotifycount');
@@ -848,20 +894,28 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
                 $a = new stdClass();
                 $a->coursename = format_string($course->fullname, true, []);
-                $a->confirmenrolurl = (string)new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
-                $a->leavewaitlisturl = (string)new moodle_url('/course/view.php', ['id' => $course->id]);
+                $a->courseshortname = format_string($course->shortname, true, []);
+                $a->courseurl = (new moodle_url('/course/view.php', ['id' => $course->id]))->out(false);
+                $a->waitlisturl = (new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instance->id]))->out(false);
+                $a->confirmenrolurl = (new moodle_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]))->out(false);
+                $a->leavewaitlisturl = (new moodle_url('/enrol/bycategory/waitlist.php', ['id' => $course->id, 'token' => $token, 'enrolid' => $waitlistentry->instanceid, 'leavewaitlist'=>1]))->out(false);
                 $a->userfullname = fullname($user, true);
+                $a->firstname = \core_user::get_user($waitlistentry->userid)->firstname;
                 $a->notifyamount = $usernotifycount - 1;
+                $a->usernotifiedcount = $waitlistentry->notified + 1;
+                $a->usernotifytotalcount = $this->get_config('waitlistnotifylimit') - 1;
 
-                $subject = get_string('waitlist_notification_subject', 'enrol_bycategory', $a);
-                $body = get_string('waitlist_notification_body', 'enrol_bycategory', $a);
-                $markdownbody = str_replace([
-                    $a->confirmenrolurl,
-                    $a->leavewaitlisturl,
-                ], [
-                    "[$a->confirmenrolurl]($a->confirmenrolurl)",
-                    "[$a->leavewaitlisturl]($a->leavewaitlisturl)",
-                ], $body);
+                // custom enrolment notification message, but on the last time send notification of being removed from the waitlist
+                if ($a->usernotifiedcount <= $a->usernotifytotalcount) {
+                    // replace tag values in the custom message
+                    $subject = get_string('waitlist_notification_subject', 'enrol_bycategory', $a);
+                    $body = enrol_bycategory_waitlist::parse_text($instance->customtext2, $a);
+                } else {
+                    $subject = get_string('waitlist_removed_notification_subject', 'enrol_bycategory', $a);
+                    $body = !empty(trim($instance->customtext4)) ?
+                        enrol_bycategory_waitlist::parse_text($instance->customtext4, $a) :
+                        get_string('waitlist_removed_notification_body', 'enrol_bycategory', $a);
+                }
 
                 $message = new message();
                 $message->component = 'enrol_bycategory';
@@ -870,27 +924,56 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $message->userto = $user;
                 $message->subject = $subject;
                 $message->fullmessage = $body;
-                $message->fullmessageformat = FORMAT_PLAIN;
-                $message->fullmessagehtml = markdown_to_html($markdownbody);
+                $message->fullmessageformat = FORMAT_HTML; // FORMAT_PLAIN;
+                $message->fullmessagehtml = $body; //markdown_to_html($markdownbody);
                 $message->smallmessage = $subject;
                 $message->contexturlname = $a->coursename;
                 $message->contexturl = $a->confirmenrolurl;
                 $message->notification = 1; // This is only set to 0 for personal messages between users.
-
                 $messageid = message_send($message);
-                if ($messageid) {
-                    $trace->output("notifying user $user->id that there is a spot available in $course->id.");
+
+                // cc course manager(s)
+                if ($a->usernotifiedcount <= $a->usernotifytotalcount) {
+                    $context = \context_course::instance($course->id);
+                    $teachers = get_enrolled_users($context, 'enrol/bycategory:manage', 0 , 'u.*', null, 0, 0, true);
+                    $ccsubject = get_string('waitlist_notification_ccsubject', 'enrol_bycategory', $a);
+                    $ccbody = get_string('waitlist_notification_ccbody', 'enrol_bycategory', $a);
+                    foreach ($teachers as $teacher) {
+                        $ccmessage = new message();
+                        $ccmessage->component = 'enrol_bycategory';
+                        $ccmessage->name = 'waitlist_notification';
+                        $ccmessage->userfrom = $userfrom;
+                        $ccmessage->userto = $teacher->id;
+                        $ccmessage->subject = $ccsubject;
+                        $ccmessage->fullmessage = $ccbody;
+                        $ccmessage->fullmessageformat = FORMAT_HTML;
+                        $ccmessage->fullmessagehtml = $ccbody;
+                        $ccmessage->smallmessage = $ccsubject;
+                        $ccmessage->contexturlname = $a->coursename;
+                        $ccmessage->contexturl = $a->courseurl;
+                        $ccmessage->notification = 1; // This is only set to 0 for personal messages between users.
+
+                        message_send($ccmessage);
+                    }
                 } else {
-                    $trace->output("error notifying user $user->id that there is a spot available in $course->id.");
+                    // remove the student from the waitlist if has not responded
+                    $waitlist = new enrol_bycategory_waitlist($waitlistentry->instanceid);
+                    $waitlist->remove_user($waitlistentry->userid);
                 }
 
                 force_current_language($oldforcelang);
-            }
 
-            enrol_bycategory_waitlist::increase_notified(array_keys($waitlistentries));
+                if ($messageid) {
+                    $trace->output(str_repeat(" ", 8) . "notifying user $user->id that there is a spot available in $course->id.");
+                    enrol_bycategory_waitlist::increase_notified(array_keys($waitlistentries));
+                } else {
+                    $trace->output(str_repeat(" ", 8) . "error notifying user $user->id that there is a spot available in $course->id.");
+                }
+
+            }
         }
 
-        $trace->output('...notification processing finished.');
+        $trace->output('... notification processing finished.');
         $trace->finished();
     }
 
@@ -986,19 +1069,22 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @return void
      */
     protected function email_welcome_message($instance, $user) {
-        global $CFG, $DB;
+        global $CFG;
 
         $course = get_course($instance->courseid);
         $context = context_course::instance($course->id);
 
         $a = new stdClass();
+        $a->courseurl = "$CFG->wwwroot/course/view.php?id=$course->id";
         $a->coursename = format_string($course->fullname, true, ['context' => $context]);
+        $a->courseshortname = format_string($course->shortname, true, ['context' => $context]);
+        $a->firstname = format_string($user->firstname, true, ['context' => $context]);
         $a->profileurl = "$CFG->wwwroot/user/view.php?id=$user->id&course=$course->id";
 
         if (trim($instance->customtext1) !== '') {
             $message = $instance->customtext1;
-            $key = ['{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}'];
-            $value = [$a->coursename, $a->profileurl, fullname($user), $user->email];
+            $key = ['{$a->courseurl}', '{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->firstname}', '{$a->email}'];
+            $value = [$a->courseurl, $a->coursename, $a->profileurl, fullname($user), $user->firstname, $user->email];
             $message = str_replace($key, $value, $message);
             if (strpos($message, '<') === false) {
                 // Plain text only.
@@ -1124,6 +1210,21 @@ class enrol_bycategory_plugin extends enrol_plugin {
             0 => get_string('no'),
             1 => get_string('expirynotifyenroller', 'enrol_bycategory'),
             2 => get_string('expirynotifyall', 'enrol_bycategory'),
+        ];
+        return $options;
+    }
+
+    /**
+     * Return an array of valid options for the waitlist prioritization property.
+     *
+     * @author 2024 Mustafa Hajjar
+     *
+     * @return array
+     */
+    protected function get_priority_options() {
+        $options = [
+            0 => get_string('prioritybyenlisting', 'enrol_bycategory'),
+            1 => get_string('prioritybyseniority', 'enrol_bycategory'),
         ];
         return $options;
     }

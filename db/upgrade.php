@@ -32,90 +32,19 @@ function xmldb_enrol_bycategory_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2022060205) {
+    if ($oldversion < 2024061100) {
 
         // Define table enrol_bycategory_waitlist to be created.
         $table = new xmldb_table('enrol_bycategory_waitlist');
+        $field = new xmldb_field('senioritydate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
-        // Adding fields to table enrol_bycategory_waitlist.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('instanceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-
-        // Adding keys to table enrol_bycategory_waitlist.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
-        $table->add_key('userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
-        $table->add_key('instanceid', XMLDB_KEY_FOREIGN, ['instanceid'], 'enrol', ['id']);
-
-        // Conditionally launch create table for enrol_bycategory_waitlist.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-
-        // Bycategory savepoint reached.
-        upgrade_plugin_savepoint(true, 2022060205, 'enrol', 'bycategory');
-    }
-
-    if ($oldversion < 2022060206) {
-
-        // Define field notified to be added to enrol_bycategory_waitlist.
-        $table = new xmldb_table('enrol_bycategory_waitlist');
-        $field = new xmldb_field('notified', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'timemodified');
-
-        // Conditionally launch add field notified.
+        // Launch addition of the session id field.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
         // Bycategory savepoint reached.
-        upgrade_plugin_savepoint(true, 2022060206, 'enrol', 'bycategory');
-    }
-
-    if ($oldversion < 2022060210) {
-
-        // Define table enrol_bycategory_token to be created.
-        $table = new xmldb_table('enrol_bycategory_token');
-
-        // Adding fields to table enrol_bycategory_token.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('token', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('waitlistid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('usermodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-
-        // Adding keys to table enrol_bycategory_token.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $table->add_key('usermodified', XMLDB_KEY_FOREIGN, ['usermodified'], 'user', ['id']);
-        $table->add_key('waitlistid', XMLDB_KEY_FOREIGN, ['waitlistid'], 'enrol_bycategory_waitlist', ['id']);
-
-        // Adding indexes to table enrol_bycategory_token.
-        $table->add_index('token', XMLDB_INDEX_UNIQUE, ['token']);
-
-        // Conditionally launch create table for enrol_bycategory_token.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-
-        // Bycategory savepoint reached.
-        upgrade_plugin_savepoint(true, 2022060210, 'enrol', 'bycategory');
-    }
-
-    if ($oldversion < 2023051200) {
-
-        $sql = "UPDATE {enrol}
-                SET customchar1 = CAST(customint7 AS VARCHAR(255)), customint7 = NULL,
-                    customchar2 = CAST(customint8 AS VARCHAR(255)), customint8 = NULL
-                WHERE enrol = 'bycategory'";
-
-        $DB->execute($sql);
-
-        // Bycategory savepoint reached.
-        upgrade_plugin_savepoint(true, 2023051200, 'enrol', 'bycategory');
+        upgrade_plugin_savepoint(true, 2024061100, 'enrol', 'bycategory');
     }
 
     return true;

@@ -35,8 +35,8 @@ function enrol_bycategory_get_users_by_id($userids) {
         'user',
         "id {$insql}",
         $inparams,
-        'lastname ASC',
-        'id, firstname, lastname, email, firstnamephonetic, lastnamephonetic, middlename, alternatename'
+        'timecreated DESC',
+        'id, firstname, lastname, email, firstnamephonetic, lastnamephonetic, middlename, alternatename, timecreated'
     );
 
     return $users;
@@ -63,7 +63,7 @@ function enrol_bycategory_waitlist_show_management_view($waitlist, $course, $ins
     $table->define_baseurl($url);
     // Render table ealier to have totalrow filled without doing second request.
     ob_start();
-    $table->out(25, true);
+    $table->out(50, true);
     $tableoutput = ob_get_contents();
     ob_end_clean();
 
@@ -109,11 +109,14 @@ function enrol_bycategory_waitlist_show_user_view($waitlist, $course, $instance)
     $waitlistposition = $waitlist->get_user_position($USER->id);
     $waitlistinfo = '';
     if ($waitlistposition !== -1) {
-        $waitlistinfo = get_string(
-            'waitlist_info_message',
-            'enrol_bycategory',
-            ['waitlistposition' => $waitlistposition]
-        );
+        if (!empty($instance->customtext3)) {
+            $waitlistinfo = str_replace('{$a->usernotifytotalcount}', get_config('enrol_bycategory', 'waitlistnotifylimit') - 1, $instance->customtext3);
+        } else {
+            $waitlistinfo = get_string('waitlist_info_message', 'enrol_bycategory');
+        }
+        $waitlistinfo .= get_string(
+            'waitlist_position_message',
+            'enrol_bycategory', ['waitlistposition' => $waitlistposition]);
     } else {
         $waitlistinfo = get_string(
             'waitlist_blocked_message',

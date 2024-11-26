@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/tablelib.php");
+require_once("$CFG->libdir/enrollib.php");
 
 /**
  * Waiting list table
@@ -44,8 +45,16 @@ class enrol_bycategory_waitlist_table extends table_sql {
         parent::__construct('waitlist');
 
         $this->course = $course;
+        $instances = array_values(enrol_get_instances($course->id, true));
+        $instance = $instances[array_search('bycategory', array_column($instances, 'enrol'))];
+        $byseniority = !empty($instance->customint8);
 
-        $columns = ['select', 'firstname', 'lastname', 'email', 'timecreated', 'notified', 'actions'];
+        $columns = ['select', 'seq', 'full_name', 'email', 'timecreated'];
+
+        if ($byseniority) {
+            $columns[] = 'senioritydate';
+        }
+        $columns = array_merge($columns, ['notified', 'actions']);
         $this->define_columns($columns);
 
         $checkboxattrs = [
@@ -56,19 +65,24 @@ class enrol_bycategory_waitlist_table extends table_sql {
 
         $headers = [
             html_writer::checkbox('selectall', 1, false, null, $checkboxattrs),
-            get_string('firstname'),
-            get_string('lastname'),
+            '#',
+            get_string('fullname'),
             get_string('email'),
             get_string('onwaitlistsince', 'enrol_bycategory'),
+        ];
+        if ($byseniority) {
+            $headers[] = get_string('prioritybyseniority', 'enrol_bycategory');
+        }
+        $headers = array_merge($headers,[
             get_string('notifiedcount', 'enrol_bycategory'),
             '',
-        ];
+        ]);
         $this->define_headers($headers);
 
         $this->collapsible(false);
         $this->column_class('actions', 'text-nowrap');
         $this->pageable(true);
-        $this->sortable(true, 'lastname', SORT_ASC);
+        $this->sortable(true, ($byseniority ? 'senioritydate' : 'timecreated'));
         $this->no_sorting('select', 'actions');
 
         $where = 'ebw.instanceid = :instanceid';
@@ -98,11 +112,12 @@ class enrol_bycategory_waitlist_table extends table_sql {
             $where = "WHERE {$this->sql->where}";
         }
 
-        $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.firstnamephonetic,
+        $sql = "SELECT @rownum:=@rownum+1 seq, u.id, concat(u.firstname, \" \", u.lastname, \" \", u.alternatename) as full_name,
+                   u.lastname, u.firstname, u.email, u.firstnamephonetic,
                    u.lastnamephonetic, u.middlename, u.alternatename, ebw.timecreated,
-                   ebw.notified
+                   ebw.notified, ebw.senioritydate
               FROM {enrol_bycategory_waitlist} ebw
-              JOIN {user} u ON u.id = ebw.userid
+              JOIN {user} u ON u.id = ebw.userid, (SELECT @rownum:=0) r
               {$where}
               {$sort}";
 
@@ -131,6 +146,26 @@ class enrol_bycategory_waitlist_table extends table_sql {
     }
 
     /**
+     * The fullname column.
+     *
+     * @param stdClass $row the row data.
+     * @return string;
+     * @throws \moodle_exception
+     * @throws \coding_exception
+     */
+    public function col_full_name($row) {
+        global $OUTPUT;
+
+        $name = fullname($row, has_capability('moodle/site:viewfullnames', $this->get_context()));
+        if ($this->download) {
+            return $name;
+        }
+
+        $profileurl = new moodle_url('/user/profile.php', array('id' => $row->{$this->useridfield}));
+        return $OUTPUT->action_link($profileurl, $name);
+    }
+
+    /**
      * The timecreated column.
      *
      * @param stdClass $row the row data.
@@ -141,6 +176,19 @@ class enrol_bycategory_waitlist_table extends table_sql {
     public function col_timecreated($row) {
 
         return userdate($row->timecreated, get_string('strftimedatetimeshort', 'langconfig'));
+    }
+
+    /**
+     * The seniority date column.
+     *
+     * @param stdClass $row the row data.
+     * @return string;
+     * @throws \moodle_exception
+     * @throws \coding_exception
+     */
+    public function col_senioritydate($row) {
+
+        return !empty($row->senioritydate) ? userdate($row->senioritydate, get_string('strftimedatetimeshort', 'langconfig')) : '';
     }
 
     /**

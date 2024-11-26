@@ -15,17 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Hook callbacks for enrol_bycategory
  *
- * @package     enrol_bycategory
- * @copyright   2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    enrol_bycategory
+ * @copyright  2024 Mustafa Hajjar <mustafahajjar@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'enrol_bycategory';
-$plugin->release = '1.2.4';
-$plugin->version = 2024112600;
-$plugin->requires = 2019052000;
-$plugin->maturity = MATURITY_STABLE;
+$callbacks = [
+    [
+        'hook' => core_enrol\hook\after_user_enrolled::class,
+        'callback' => 'enrol_bycategory\user_enrolment_callbacks::send_course_welcome_message',
+    ],
+];

@@ -246,4 +246,23 @@ if ($ADMIN->fulltree) {
             PARAM_INT
         )
     );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'enrol_bycategory/waitlistnotifyperiod',
+            get_string('waitlistnotifyperiod', 'enrol_bycategory'),
+            get_string('waitlistnotifyperiod_help', 'enrol_bycategory'),
+            3,
+            PARAM_INT
+        )
+    );
+
+    $settings->add(
+        new admin_setting_configtext(
+            'enrol_bycategory/externalseniorityapi',
+            get_string('externalseniorityapi', 'enrol_bycategory'),
+            get_string('externalseniorityapi_help', 'enrol_bycategory'),
+            null, PARAM_RAW, 100)
+    );
+
 }
