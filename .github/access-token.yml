@@ -7,6 +7,7 @@ statements:
       - repo:${origin}:ref:refs/heads/main
       - repo:${origin}:ref:refs/tags/v*
       - repo:bavirtual/moodle-docker:workflow_ref:bavirtual/moodle-docker/.github/workflows/dockerpublish.yml@refs/heads/main
+      - repo:bavirtual/moodle-enrol_bycategory:workflow_ref:bavirtual/moodle-enrol_bycategory/.github/workflows/moodlepublish.yml@refs/heads/main
 
     permissions: # https://docs.github.com/en/rest/authentication/permissions-required-for-github-apps
       contents: read
