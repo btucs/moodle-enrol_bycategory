@@ -60,7 +60,7 @@ jobs:
 
       - name: install phpunit
         run: |
-          composer require -n -no-dev --prefer-dist phpunit/phpunit:^9.6
+          composer require phpunit/phpunit:^9.6
 
       - name: Install moodle-plugin-ci
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
