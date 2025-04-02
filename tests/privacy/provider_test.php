@@ -232,6 +232,9 @@ class provider_test extends provider_testcase {
         enrol_bycategory_phpunit_util::add_to_waitlist($instance2->id, $user1->id, $now);
     }
 
+    /**
+     * Setup the enrol instance.
+     */
     protected function setup_enrol($instance) {
         global $DB;
 

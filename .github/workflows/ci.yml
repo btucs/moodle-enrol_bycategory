@@ -81,11 +81,11 @@ jobs:
 
       - name: Moodle PHPDoc Checker
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpdoc --max-warnings 0 -- ./plugin
+        run: moodle-plugin-ci phpdoc -m ./moodle --max-warnings 0 -- ./plugin
 
       - name: Validating
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci validate -- ./plugin
+        run: moodle-plugin-ci validate -m ./moodle -- ./plugin
 
       - name: Check upgrade savepoints
         if: ${{ !cancelled() }}
@@ -97,7 +97,7 @@ jobs:
 
       - name: Grunt
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci grunt --max-lint-warnings 0 ./plugin
+        run: moodle-plugin-ci grunt -m ./moodle --max-lint-warnings 0 -- ./plugin
 
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
@@ -106,7 +106,7 @@ jobs:
       - name: Behat features
         id: behat
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci behat --profile chrome --scss-deprecations ./plugin
+        run: moodle-plugin-ci behat --profile chrome
 
       - name: Upload Behat Faildump
         if: ${{ failure() && steps.behat.outcome == 'failure' }}
