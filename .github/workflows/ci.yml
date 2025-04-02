@@ -81,11 +81,11 @@ jobs:
 
       - name: Moodle PHPDoc Checker
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpdoc --max-warnings 0 ./plugin
+        run: moodle-plugin-ci phpdoc --max-warnings 0 -- ./plugin
 
       - name: Validating
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci validate ./plugin
+        run: moodle-plugin-ci validate -- ./plugin
 
       - name: Check upgrade savepoints
         if: ${{ !cancelled() }}
