@@ -234,6 +234,7 @@ class provider_test extends provider_testcase {
 
     /**
      * Setup the enrol instance.
+     * @param mixed $instance
      */
     protected function setup_enrol($instance) {
         global $DB;
