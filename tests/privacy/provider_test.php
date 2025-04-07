@@ -47,7 +47,7 @@ global $CFG;
   * Testcasse for privacy provider
   * @covers \enrol_bycategory\privacy\provider
   */
-class provider_test extends provider_testcase {
+final class provider_test extends provider_testcase {
 
     /** @var stdClass */
     private $user1 = null;
@@ -72,17 +72,18 @@ class provider_test extends provider_testcase {
     private $instance2 = null;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
     }
 
-    public function test_get_metadata() {
+    public function test_get_metadata(): void {
         $collection = new collection('enrol_bycategory');
         $collection = provider::get_metadata($collection);
 
         $this->assertNotEmpty($collection);
     }
 
-    public function test_get_contexts_for_user() {
+    public function test_get_contexts_for_user(): void {
         $this->create_course_setup();
 
         $contextlist = provider::get_contexts_for_userid($this->user1->id);
@@ -102,7 +103,7 @@ class provider_test extends provider_testcase {
         $this->assertContainsEquals($this->coursecontext1->id, $contextids);
     }
 
-    public function test_get_users_in_context() {
+    public function test_get_users_in_context(): void {
         $this->create_course_setup();
 
         $userlist = new userlist($this->coursecontext1, 'enrol_bycategory');
@@ -120,7 +121,7 @@ class provider_test extends provider_testcase {
         );
     }
 
-    public function test_export_user_data() {
+    public function test_export_user_data(): void {
         $this->create_course_setup();
 
         $contextlist = provider::get_contexts_for_userid($this->user1->id);
@@ -142,7 +143,7 @@ class provider_test extends provider_testcase {
         $this->assertNotEmpty($writer->get_data($subcontext));
     }
 
-    public function test_delete_data_for_all_users_in_context() {
+    public function test_delete_data_for_all_users_in_context(): void {
         global $DB;
 
         $this->create_course_setup();
@@ -155,7 +156,7 @@ class provider_test extends provider_testcase {
         $this->assertEquals(0, $DB->count_records('enrol_bycategory_waitlist', ['instanceid' => $this->instance2->id]));
     }
 
-    public function test_delete_data_for_user() {
+    public function test_delete_data_for_user(): void {
         global $DB;
 
         $this->create_course_setup();
@@ -178,7 +179,7 @@ class provider_test extends provider_testcase {
         $this->assertEquals(0, $DB->count_records('enrol_bycategory_waitlist', ['userid' => $this->user1->id]));
     }
 
-    public function test_delete_data_for_users() {
+    public function test_delete_data_for_users(): void {
         global $DB;
 
         $this->create_course_setup();
@@ -204,7 +205,7 @@ class provider_test extends provider_testcase {
     /**
      * Helper function to setup course and add users to the waiting list
      */
-    protected function create_course_setup() {
+    protected function create_course_setup(): void {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
 
@@ -232,7 +233,11 @@ class provider_test extends provider_testcase {
         enrol_bycategory_phpunit_util::add_to_waitlist($instance2->id, $user1->id, $now);
     }
 
-    protected function setup_enrol($instance) {
+    /**
+     * Setup the enrol instance.
+     * @param mixed $instance
+     */
+    protected function setup_enrol($instance): void {
         global $DB;
 
         $instance->customchar2 = 1; // Enable waiting list.

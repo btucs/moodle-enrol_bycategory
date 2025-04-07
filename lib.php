@@ -255,10 +255,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @author  2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @param object $course
-     * @param array $fields instance fields
+     * @param array|null $fields instance fields
      * @return int id of new instance, null if can not be created
      */
-    public function add_instance($course, array $fields = null) {
+    public function add_instance($course, ?array $fields = null) {
         // In the form we are representing 2 db columns with one field.
         if (!empty($fields) && !empty($fields['expirynotify'])) {
             if ($fields['expirynotify'] == 2) {

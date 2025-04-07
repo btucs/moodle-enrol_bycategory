@@ -42,6 +42,11 @@ $string['bulkenrolusersmissing'] = 'Die folgenden Personen konnten nicht eingesc
 {$a}
 
 Alle anderen Personen wurden erfolgreich eingeschrieben.';
+$string['bycategory:config'] = 'Instanzen von Einschreibung nach Kursbereich konfigurieren';
+$string['bycategory:enrolself'] = 'Selbsteinschreibung im Kurs';
+$string['bycategory:manage'] = 'Eingeschriebene Nutzer/innen verwalten';
+$string['bycategory:unenrol'] = 'Nutzer/innen aus dem Kurs abmelden';
+$string['bycategory:unenrolself'] = 'Selbst aus dem Kurs abmelden';
 $string['canntenrol'] = 'Einschreibung deaktiviert oder inaktiv';
 $string['canntenrolearly'] = 'Sie können sich noch nicht einschreiben, weil die Einschreibung erst am {$a} beginnt.';
 $string['canntenrollate'] = 'Sie können sich nicht mehr einschreiben, weil die Einschreibung am {$a} beendet wurde.';
@@ -49,6 +54,8 @@ $string['category'] = 'abgeschlossener Kurs in Kursbereich';
 $string['category_help'] = 'Wählen Sie einen Kursbereich aus in dem ein Kurs abgeschlossen sein muss, um Zugang zu diesem Kurs zu erhalten.
 
 Wenn Sie "Keine Einschränkung" auswählen kann sich jeder Einschreiben.';
+$string['completionperiod'] = 'Zeitraum seit Abschluss';
+$string['completionperiod_help'] = 'Der erlaubte maximale Zeitraum seit Abschluss eines Kurses aus dem eingestellten Kursbereich.';
 $string['confirmbulkdeleteenrolment'] = 'Möchten Sie die Einschreibungen dieser Nutzer/innen wirklich löschen?';
 $string['customwelcomemessage'] = 'Begrüßungstext';
 $string['customwelcomemessage_help'] = 'Ein Begrüßungstext kann ein einfacher Text sein oder im Moodle-Auto-Format auch HTML-Tags und MultiLang-Tags enthalten.
@@ -59,8 +66,6 @@ Sie können folgende Platzhalter im Text verwenden:
 * Link zum Nutzerprofil {$a->profileurl}
 * Nutzer-E-Mail-Adresse {$a->email}
 * Vollständiger Nutzername {$a->fullname}';
-$string['completionperiod'] = 'Zeitraum seit Abschluss';
-$string['completionperiod_help'] = 'Der erlaubte maximale Zeitraum seit Abschluss eines Kurses aus dem eingestellten Kursbereich.';
 $string['defaultrole'] = 'Rolle im Kurs';
 $string['defaultrole_desc'] = 'Wählen Sie eine Rolle aus, die Nutzer/innen bei der Selbsteinschreibung zugewiesen werden soll.';
 $string['deleteselectedusers'] = 'Ausgewählte Selbsteinschreibungen löschen';
@@ -77,15 +82,22 @@ $string['enrolperiod_desc'] = 'Die Teilnahmedauer ist die Zeitdauer, in der die 
 $string['enrolperiod_help'] = 'Die Teilnahmedauer ist die Zeitdauer, in der die Einschreibung gültig ist, beginnend mit dem Moment der Einschreibung. Wenn diese Option deaktiviert wird, ist die Teilnahmedauer unbegrenzt.';
 $string['enrolperiodcountfrom'] = 'Zeitraum beginnt von';
 $string['enrolperiodcountfrom_help'] = 'Der Zeitraum seit Abschluss des Kurses kann entweder von der aktuellen Zeit rückwärts zählen oder seit Einschreibungsbeginn. In jedem Fall zählt der Tag und nicht die Uhrzeit.';
-$string['enrolperiodcountfromnow'] = 'aktuelle Zeit';
 $string['enrolperiodcountfromenrollstart'] = 'Einschreibungsbeginn';
+$string['enrolperiodcountfromnow'] = 'aktuelle Zeit';
 $string['enrolstartdate'] = 'Einschreibungsbeginn';
 $string['enrolstartdate_help'] = 'Legen Sie fest, was nach dem Ablauf der Einschreibung in einem Kurs passiert. Denken Sie daran, dass bei der Austragung von Nutzer/innen einige Daten nicht mehr verfügbar sind.';
 $string['enrolwaitlistuser'] = '"{$a->user}" in "{$a->course}" einschreiben';
 $string['enrolwaitlistuserconfirm'] = 'Möchten Sie wirklich "{$a->user}" manuell in den Kurs "{$a->course}" einschreiben?';
 $string['expiredaction'] = 'Aktion bei Ablauf der Kurseinschreibung';
 $string['expiredaction_help'] = 'Legen Sie fest, was nach dem Ablauf der Einschreibung in einem Kurs passiert. Denken Sie daran, dass bei der Austragung von Nutzer/innen einige Daten nicht mehr verfügbar sind.';
-$string['expirymessageenrollersubject'] = 'In Kürze endet Ihr Kurs';
+$string['expirymessageenrolledbody'] = 'Guten Tag {$a->user},
+
+Sie sind derzeit im Kurs "{$a->course}" eingeschrieben. Die Teilnahmedauer läuft am {$a->timeend} ab. Danach ist ein Zugriff auf den Kurs nicht mehr möglich.
+
+Wenn Sie Fragen haben, wenden Sie sich bitte an {$a->enroller}.
+
+Ihr E-Learning-Team';
+$string['expirymessageenrolledsubject'] = 'In Kürze endet Ihr Kurs';
 $string['expirymessageenrollerbody'] = 'Guten Tag,
 
 im Kurs "{$a->course}" läuft für folgende Nutzer/innen innerhalb der nächsten  {$a->threshold} die Einschreibung ab:
@@ -95,14 +107,7 @@ im Kurs "{$a->course}" läuft für folgende Nutzer/innen innerhalb der nächsten
 Sie können auf der folgenden Seite die Teilnahmedauer indivduell verlängern oder entfristen: {$a->extendurl}
 
 Ihr E-Learning-Team';
-$string['expirymessageenrolledsubject'] = 'In Kürze endet Ihr Kurs';
-$string['expirymessageenrolledbody'] = 'Guten Tag {$a->user},
-
-Sie sind derzeit im Kurs "{$a->course}" eingeschrieben. Die Teilnahmedauer läuft am {$a->timeend} ab. Danach ist ein Zugriff auf den Kurs nicht mehr möglich.
-
-Wenn Sie Fragen haben, wenden Sie sich bitte an {$a->enroller}.
-
-Ihr E-Learning-Team';
+$string['expirymessageenrollersubject'] = 'In Kürze endet Ihr Kurs';
 $string['expirynotifyall'] = 'Trainer/in und eingeschriebene Nutzer/innen';
 $string['expirynotifyenroller'] = 'Nur Trainer/in';
 $string['joinwaitlist'] = 'Warteliste beitreten';
@@ -130,11 +135,6 @@ $string['privacy:metadata'] = 'Das Plugin "Einschreibung nach Kursbereich" speic
 $string['removewaitlistuser'] = 'Nutzer/in von der Warteliste entfernen';
 $string['removewaitlistuserconfirm'] = 'Möchten Sie wirklich "{$a->user}" von der Warteliste des Kurses "{$a->course}" entfernen?';
 $string['role'] = 'Rolle im Kurs';
-$string['bycategory:config'] = 'Instanzen von Einschreibung nach Kursbereich konfigurieren';
-$string['bycategory:enrolself'] = 'Selbsteinschreibung im Kurs';
-$string['bycategory:manage'] = 'Eingeschriebene Nutzer/innen verwalten';
-$string['bycategory:unenrol'] = 'Nutzer/innen aus dem Kurs abmelden';
-$string['bycategory:unenrolself'] = 'Selbst aus dem Kurs abmelden';
 $string['sendcoursewelcomemessage'] = 'Begrüßungstext versenden';
 $string['sendcoursewelcomemessage_help'] = 'Wenn ein Nutzer/innen sich in den Kurs einschreiben, kann ihnen eine Begrüßungsnachricht gesendet werden. Wenn diese vom Kurskontakt geschickt wird (voreingestellt ist Trainer/in) und mehrere Personen diese Rolle haben, wird die E-Mail von der Person versendet, der diese Rolle zuerst zugewiesen wurde.';
 $string['sendexpirynotificationstask'] = 'Systemnachricht zum Ablauf von Selbsteinschreibungen';
@@ -165,11 +165,6 @@ Die Email wird täglich versendet, wenn mindestens ein Platz verfügbar ist.
 Ihre aktuelle Position auf der Warteliste ist: {$a->waitlistposition}.
 Wenn Sie nicht mehr länger warten möchten, nutzen Sie die nachfolgende Schaltfläche um die Warteliste zu verlassen.
 ';
-$string['waitlist_users'] = 'Teilnehmer*innen auf der Warteliste';
-$string['waitlistnotifycount'] = 'Anzahl der Teilnehmer*innen die über einen freien Platz informiert werden.';
-$string['waitlistnotifycount_help'] = 'Bis zu X Teilnehmer*innen werden von der Warteliste werden über einen freien Platz informiert. Die Teilnehmer*in die zuerst reagiert erhält den Platz.';
-$string['waitlistnotifylimit'] = 'Maximale Anzahl an Benachrichtigungen die an eine Teilnehmer*in auf der Warteliste gesendet werden';
-$string['waitlistnotifylimit_help'] = 'Teilnehmer*innen auf der Warteliste erhalten nur eine bestimmte Anzahl an Benachrichtigungen, danach werden die Teilnehmer*innen ignoriert.';
 $string['waitlist_notification_body'] = 'Hallo {$a->userfullname},
 es ist ein Platz im Kurs {$a->coursename} verfügbar.
 
@@ -184,6 +179,11 @@ Wenn sie nicht mehr interessiert sind dem Kurs "{$a->coursename}" beizutreten, k
 $string['waitlist_notification_subject'] = 'Es ist ein Platz in Kurs "{$a->coursename}" verfügbar';
 $string['waitlist_status_info'] = 'Bis zu {$a->notifycount} Teilnehmer von der Warteliste werden am {$a->nextruntime} über einen freien Platz in diesem Kurs informiert.
 Teilnehmer werden nur {$a->notifylimit} Mal informiert. Wenn sie bis dahin nicht reagieren werden sie ignoriert';
+$string['waitlist_users'] = 'Teilnehmer*innen auf der Warteliste';
+$string['waitlistnotifycount'] = 'Anzahl der Teilnehmer*innen die über einen freien Platz informiert werden.';
+$string['waitlistnotifycount_help'] = 'Bis zu X Teilnehmer*innen werden von der Warteliste werden über einen freien Platz informiert. Die Teilnehmer*in die zuerst reagiert erhält den Platz.';
+$string['waitlistnotifylimit'] = 'Maximale Anzahl an Benachrichtigungen die an eine Teilnehmer*in auf der Warteliste gesendet werden';
+$string['waitlistnotifylimit_help'] = 'Teilnehmer*innen auf der Warteliste erhalten nur eine bestimmte Anzahl an Benachrichtigungen, danach werden die Teilnehmer*innen ignoriert.';
 $string['welcometocourse'] = 'Willkommen zu {$a}';
 $string['welcometocoursetext'] = 'Willkommen im Kurs "{$a->coursename}"!
 

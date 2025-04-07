@@ -38,14 +38,14 @@ require_once($CFG->dirroot . '/enrol/bycategory/lib.php');
  * Testcase for enrol_bycategory_waitlist
  * @covers \enrol_bycategory_waitlist
  */
-class waitlist_test extends \advanced_testcase {
+final class waitlist_test extends \advanced_testcase {
 
     /** @var string */
     private $tablename = 'enrol_bycategory_waitlist';
     /** @var int */
     private $instanceid = 1;
 
-    public function test_get_count() {
+    public function test_get_count(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -76,7 +76,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals($waitlist->get_count(), 1);
     }
 
-    public function test_add_user() {
+    public function test_add_user(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -98,7 +98,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertTrue($exits);
     }
 
-    public function test_remove_user() {
+    public function test_remove_user(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -131,7 +131,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals($count, 1);
     }
 
-    public function test_remove_users() {
+    public function test_remove_users(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -176,7 +176,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertTrue($user2exists);
     }
 
-    public function test_is_on_waitlist() {
+    public function test_is_on_waitlist(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -199,7 +199,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertTrue($isonwaitlist);
     }
 
-    public function test_is_on_waitlist_bulk() {
+    public function test_is_on_waitlist_bulk(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -235,7 +235,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals($otheruserids, $result['missing']);
     }
 
-    public function test_get_user_position() {
+    public function test_get_user_position(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -278,7 +278,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals($waitlist->get_user_position($user2id), 1);
     }
 
-    public function test_can_enrol() {
+    public function test_can_enrol(): void {
         global $DB, $CFG, $OUTPUT;
         $this->resetAfterTest();
         $this->preventResetByRollback();
@@ -322,7 +322,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertSame($expectederrorstring, $plugin->can_self_enrol($instance1, true));
     }
 
-    public function test_select_courses_with_available_space() {
+    public function test_select_courses_with_available_space(): void {
 
         global $DB;
         $this->resetAfterTest();
@@ -381,7 +381,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals(0, count($result));
     }
 
-    public function test_select_users_from_waitlist_for_notification() {
+    public function test_select_users_from_waitlist_for_notification(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
 
@@ -456,7 +456,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals($waitlistusers[7]->instanceid, $instance2->id);
     }
 
-    public function test_increase_notified() {
+    public function test_increase_notified(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
         enrol_bycategory_phpunit_util::enable_plugin();
@@ -487,7 +487,7 @@ class waitlist_test extends \advanced_testcase {
         $this->assertEquals(4, $notified2);
     }
 
-    public function test_reset_notification_counter() {
+    public function test_reset_notification_counter(): void {
 
         global $DB, $CFG;
         $this->resetAfterTest();

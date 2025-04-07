@@ -186,14 +186,14 @@ class enrol_bycategory_waitlist {
     /**
      * Checks if user can enrol.
      *
-     * @param stdClass $instance enrolment instance
-     * @param int $userid id of the user trying to enrol
+     * @param stdClass|null $instance enrolment instance
+     * @param int|null $userid id of the user trying to enrol
      * @param bool $ignorewaitlist if true will ignore if users are still on the waiting list.
      *             This is used when a user is trying to enrol from the waiting list.
      *             There should be at least one spot available.
      * @return bool|string true if successful, else error message or false.
      */
-    public function can_enrol(stdClass $instance = null, $userid = null, $ignorewaitlist = false) {
+    public function can_enrol(?stdClass $instance = null, $userid = null, $ignorewaitlist = false) {
         global $CFG, $DB, $USER;
 
         if ($instance === null) {

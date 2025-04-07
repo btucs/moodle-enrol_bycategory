@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Privacy Subsystem implementation for enrol_bycategory.
  *
@@ -40,8 +41,8 @@ class enrol_bycategory_badge_action_icon {
      * @param string|moodle_url $url A string URL or moodel_url
      * @param pix_icon $pixicon
      * @param int $amount
-     * @param component_action $action
-     * @param array $attributes associative array of html link attributes + disabled
+     * @param component_action|null $action
+     * @param array|null $attributes associative array of html link attributes + disabled
      * @param bool $linktext show title next to image in link
      * @return string HTML fragment
      */
@@ -49,8 +50,8 @@ class enrol_bycategory_badge_action_icon {
         $url,
         pix_icon $pixicon,
         $amount,
-        component_action $action = null,
-        array $attributes = null,
+        ?component_action $action = null,
+        ?array $attributes = null,
         $linktext = false
     ) {
         global $OUTPUT;
