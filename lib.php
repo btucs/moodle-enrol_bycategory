@@ -255,7 +255,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @author  2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *
      * @param object $course
-     * @param array $fields instance fields
+     * @param array|null $fields instance fields
      * @return int id of new instance, null if can not be created
      */
     public function add_instance($course, ?array $fields = null) {

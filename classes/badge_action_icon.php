@@ -41,8 +41,8 @@ class enrol_bycategory_badge_action_icon {
      * @param string|moodle_url $url A string URL or moodel_url
      * @param pix_icon $pixicon
      * @param int $amount
-     * @param component_action $action
-     * @param array $attributes associative array of html link attributes + disabled
+     * @param component_action|null $action
+     * @param array|null $attributes associative array of html link attributes + disabled
      * @param bool $linktext show title next to image in link
      * @return string HTML fragment
      */
