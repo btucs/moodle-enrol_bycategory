@@ -72,6 +72,7 @@ final class provider_test extends provider_testcase {
     private $instance2 = null;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest(true);
     }
 
