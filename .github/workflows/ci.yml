@@ -97,7 +97,7 @@ jobs:
 
       - name: Mustache Lint
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci mustache ./plugin
+        run: moodle-plugin-ci mustache --basename=./moodle ./plugin
 
       - name: Grunt
         if: ${{ !cancelled() }}
