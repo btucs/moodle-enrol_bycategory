@@ -42,6 +42,11 @@ $string['bulkenrolusersmissing'] = 'The following users couldn\'t be enroled as 
 {$a}
 
 All other users have been successfully enroled.';
+$string['bycategory:config'] = 'Configure By Category enrol instances';
+$string['bycategory:enrolself'] = 'Self enrol in course';
+$string['bycategory:manage'] = 'Manage enrolled users';
+$string['bycategory:unenrol'] = 'Unenrol users from course';
+$string['bycategory:unenrolself'] = 'Unenrol self from the course';
 $string['canntenrol'] = 'Enrolment is disabled or inactive';
 $string['canntenrolearly'] = 'You cannot enrol yet; enrolment starts on {$a}.';
 $string['canntenrollate'] = 'You cannot enrol any more, since enrolment ended on {$a}.';
@@ -49,7 +54,10 @@ $string['category'] = 'Course completed in Category';
 $string['category_help'] = 'Select the category in which a course has to be completed to be eligible to access this course.
 
 If you select "no category limitation" anyone can enrol.';
+$string['completionperiod'] = 'Timelimit since completion';
+$string['completionperiod_help'] = 'Allowed duration since completing a course in the configured category.';
 $string['confirmbulkdeleteenrolment'] = 'Are you sure you want to delete these user enrolments?';
+$string['courseid'] = 'Course ID';
 $string['customwelcomemessage'] = 'Custom welcome message';
 $string['customwelcomemessage_help'] = 'A custom welcome message may be added as plain text or Moodle-auto format, including HTML tags and multi-lang tags.
 
@@ -59,9 +67,6 @@ The following placeholders may be included in the message:
 * Link to user\'s profile page {$a->profileurl}
 * User email {$a->email}
 * User fullname {$a->fullname}';
-$string['completionperiod'] = 'Timelimit since completion';
-$string['completionperiod_help'] = 'Allowed duration since completing a course in the configured category.';
-$string['courseid'] = 'Course ID';
 $string['defaultrole'] = 'Default role assignment';
 $string['defaultrole_desc'] = 'Select role which should be assigned to users during self enrolment.';
 $string['deleteselectedusers'] = 'Delete selected user enrolments';
@@ -78,26 +83,26 @@ $string['enrolperiod_desc'] = 'Default length of time that the enrolment is vali
 $string['enrolperiod_help'] = 'Length of time that the enrolment is valid, starting with the moment the user enrols themselves. If disabled, the enrolment duration will be unlimited.';
 $string['enrolperiodcountfrom'] = 'Start counting duration from';
 $string['enrolperiodcountfrom_help'] = 'The specified enrolment duration can either start counting from now backwards by the given amount of time or from the time the enrolment of the course was opened. In any case the day is the deciding factor not the time.';
-$string['enrolperiodcountfromnow'] = 'current time';
 $string['enrolperiodcountfromenrollstart'] = 'enrol start date';
+$string['enrolperiodcountfromnow'] = 'current time';
 $string['enrolstartdate'] = 'Start date';
 $string['enrolstartdate_help'] = 'If enabled, users can enrol themselves from this date onward only.';
 $string['enrolwaitlistuser'] = 'Enrol "{$a->user}" into "{$a->course}"';
 $string['enrolwaitlistuserconfirm'] = 'Do you really want to manually enrol "{$a->user}" into "{$a->course}"?';
 $string['expiredaction'] = 'Enrolment expiry action';
 $string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';
-$string['expirymessageenrollersubject'] = 'By Category enrolment expiry notification';
-$string['expirymessageenrollerbody'] = 'By Category enrolment in the course "{$a->course}" will expire within the next {$a->threshold} for the following users:
-
-{$a->users}
-
-To extend their enrolment, go to {$a->extendurl}';
-$string['expirymessageenrolledsubject'] = 'Enrolment expiry notification';
 $string['expirymessageenrolledbody'] = 'Dear {$a->user},
 
 This is a notification that your enrolment in the course "{$a->course}" is due to expire on {$a->timeend}.
 
 If you need help, please contact {$a->enroller}.';
+$string['expirymessageenrolledsubject'] = 'Enrolment expiry notification';
+$string['expirymessageenrollerbody'] = 'By Category enrolment in the course "{$a->course}" will expire within the next {$a->threshold} for the following users:
+
+{$a->users}
+
+To extend their enrolment, go to {$a->extendurl}';
+$string['expirymessageenrollersubject'] = 'By Category enrolment expiry notification';
 $string['expirynotifyall'] = 'Teacher and enrolled user';
 $string['expirynotifyenroller'] = 'Teacher only';
 $string['joinwaitlist'] = 'Join waiting list';
@@ -125,11 +130,6 @@ $string['privacy:metadata'] = 'The By Category enrolment plugin does not store a
 $string['removewaitlistuser'] = 'Remove user from waiting list';
 $string['removewaitlistuserconfirm'] = 'Do you really want to remove "{$a->user}" from the waiting list of "{$a->course}"?';
 $string['role'] = 'Default assigned role';
-$string['bycategory:config'] = 'Configure By Category enrol instances';
-$string['bycategory:enrolself'] = 'Self enrol in course';
-$string['bycategory:manage'] = 'Manage enrolled users';
-$string['bycategory:unenrol'] = 'Unenrol users from course';
-$string['bycategory:unenrolself'] = 'Unenrol self from the course';
 $string['sendcoursewelcomemessage'] = 'Send course welcome message';
 $string['sendcoursewelcomemessage_help'] = 'When a user enrols in the course, they may be sent a welcome message email. If sent from the course contact (by default the teacher), and more than one user has this role, the email is sent from the first user to be assigned the role.';
 $string['sendexpirynotificationstask'] = "By Category enrolment send expiry notifications task";
@@ -160,11 +160,6 @@ The e-mail is sent daily, if at least one slot is available.
 Your current position on the waiting list is: {$a->waitlistposition}.
 If you don\'t like to wait any longer, you can use the following button to leave the waiting list.
 ';
-$string['waitlist_users'] = 'Users on waiting list';
-$string['waitlistnotifycount'] = 'Number of users to notify about an available slot';
-$string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';
-$string['waitlistnotifylimit'] = 'Amount of times a user is being notified at most';
-$string['waitlistnotifylimit_help'] = 'Users are on a specific waiting list are only notified a specific amount of times until they are ignored.';
 $string['waitlist_notification_body'] = 'Hello {$a->userfullname},
 a spot in course {$a->coursename} is available.
 
@@ -179,6 +174,11 @@ If you are not interested to join course "{$a->coursename}" anymore, click the f
 $string['waitlist_notification_subject'] = 'There\'s a spot available in course "{$a->coursename}"';
 $string['waitlist_status_info'] = 'Up to {$a->notifycount} Users from the waitinglist are informed about a free spot in this course {$a->nextruntime}.
 Users are only informed {$a->notifylimit} times without reaction until they are ignored.';
+$string['waitlist_users'] = 'Users on waiting list';
+$string['waitlistnotifycount'] = 'Number of users to notify about an available slot';
+$string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';
+$string['waitlistnotifylimit'] = 'Amount of times a user is being notified at most';
+$string['waitlistnotifylimit_help'] = 'Users are on a specific waiting list are only notified a specific amount of times until they are ignored.';
 $string['welcometocourse'] = 'Welcome to {$a}';
 $string['welcometocoursetext'] = 'Welcome to {$a->coursename}!
 

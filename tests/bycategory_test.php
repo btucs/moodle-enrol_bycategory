@@ -40,7 +40,7 @@ require_once(__DIR__ . '/util.php');
  * Testcase for enrol_bycategory_plugin
  * @covers \enrol_bycategory_plugin
  */
-class bycategory_test extends \advanced_testcase {
+final class bycategory_test extends \advanced_testcase {
     public function test_basics() {
         $this->assertFalse(enrol_is_enabled('bycategory'));
         $plugin = enrol_get_plugin('bycategory');
@@ -49,7 +49,7 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(ENROL_EXT_REMOVED_KEEP, get_config('enrol_bycategory', 'expiredaction'));
     }
 
-    public function test_sync_nothing() {
+    public function test_sync_nothing(): void {
         global $SITE;
 
         $plugin = enrol_get_plugin('bycategory');
@@ -61,7 +61,7 @@ class bycategory_test extends \advanced_testcase {
         $plugin->sync($trace, $SITE->id);
     }
 
-    public function test_longtimenosee() {
+    public function test_longtimenosee(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
 
@@ -192,7 +192,7 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(2, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
     }
 
-    public function test_expired() {
+    public function test_expired(): void {
         global $DB;
         $this->resetAfterTest();
 
@@ -316,7 +316,7 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(1, $DB->count_records('role_assignments', ['roleid' => $teacherrole->id]));
     }
 
-    public function test_send_expiry_notifications() {
+    public function test_send_expiry_notifications(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
@@ -493,7 +493,7 @@ class bycategory_test extends \advanced_testcase {
         $this->assertEquals(6, $sink->count());
     }
 
-    public function test_send_waitlist_notifications() {
+    public function test_send_waitlist_notifications(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
@@ -581,7 +581,7 @@ class bycategory_test extends \advanced_testcase {
         $sink->clear();
     }
 
-    public function test_show_enrolme_link() {
+    public function test_show_enrolme_link(): void {
         global $DB, $CFG;
         $this->resetAfterTest();
         $this->preventResetByRollback(); // Messaging does not like transactions...
@@ -764,7 +764,7 @@ class bycategory_test extends \advanced_testcase {
     /**
      * This will check user enrolment only, rest has been tested in test_show_enrolme_link.
      */
-    public function test_can_self_enrol() {
+    public function test_can_self_enrol(): void {
         global $DB, $CFG, $OUTPUT;
         $this->resetAfterTest();
         $this->preventResetByRollback();
@@ -815,7 +815,7 @@ class bycategory_test extends \advanced_testcase {
     /**
      * Test get_welcome_email_contact().
      */
-    public function test_get_welcome_email_contact() {
+    public function test_get_welcome_email_contact(): void {
         global $DB;
         self::resetAfterTest(true);
 
@@ -871,7 +871,7 @@ class bycategory_test extends \advanced_testcase {
     /**
      * Test for getting user enrolment actions.
      */
-    public function test_get_user_enrolment_actions() {
+    public function test_get_user_enrolment_actions(): void {
         global $CFG, $DB, $PAGE;
         $this->resetAfterTest();
 
@@ -918,7 +918,7 @@ class bycategory_test extends \advanced_testcase {
     /**
      * Test for making users automatically join a group
      */
-    public function test_autojoin_group() {
+    public function test_autojoin_group(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -956,7 +956,7 @@ class bycategory_test extends \advanced_testcase {
     /**
      * Test Users should not be able to join multiple waitlists on the same course
      */
-    public function test_waitlist_multi_join() {
+    public function test_waitlist_multi_join(): void {
         global $DB;
 
         $this->resetAfterTest();
