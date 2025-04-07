@@ -50,8 +50,8 @@ class enrol_bycategory_badge_action_icon {
         $url,
         pix_icon $pixicon,
         $amount,
-        component_action $action = null,
-        array $attributes = null,
+        ?component_action $action = null,
+        ?array $attributes = null,
         $linktext = false
     ) {
         global $OUTPUT;

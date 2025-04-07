@@ -193,7 +193,7 @@ class enrol_bycategory_waitlist {
      *             There should be at least one spot available.
      * @return bool|string true if successful, else error message or false.
      */
-    public function can_enrol(stdClass $instance = null, $userid = null, $ignorewaitlist = false) {
+    public function can_enrol(?stdClass $instance = null, $userid = null, $ignorewaitlist = false) {
         global $CFG, $DB, $USER;
 
         if ($instance === null) {
