@@ -45,7 +45,7 @@ final class waitlist_test extends \advanced_testcase {
     /** @var int */
     private $instanceid = 1;
 
-    public function test_get_count() {
+    public function test_get_count(): void {
         global $DB;
 
         $this->resetAfterTest();

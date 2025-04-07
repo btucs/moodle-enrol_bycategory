@@ -47,7 +47,7 @@ global $CFG;
   * Testcasse for privacy provider
   * @covers \enrol_bycategory\privacy\provider
   */
-class provider_test extends provider_testcase {
+final class provider_test extends provider_testcase {
 
     /** @var stdClass */
     private $user1 = null;

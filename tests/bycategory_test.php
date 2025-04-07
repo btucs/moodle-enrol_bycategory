@@ -41,7 +41,7 @@ require_once(__DIR__ . '/util.php');
  * @covers \enrol_bycategory_plugin
  */
 final class bycategory_test extends \advanced_testcase {
-    public function test_basics() {
+    public function test_basics(): void {
         $this->assertFalse(enrol_is_enabled('bycategory'));
         $plugin = enrol_get_plugin('bycategory');
         $this->assertInstanceOf('enrol_bycategory_plugin', $plugin);
