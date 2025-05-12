@@ -149,14 +149,14 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $cohorts = [0 => get_string('no')];
         $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
-        if ($instance->customint5 && !isset($allcohorts[$instance->customint5])) {
+        if ($instance->customdec2 && !isset($allcohorts[$instance->customdec2])) {
             $c = $DB->get_record('cohort',
-                                ['id' => $instance->customint5],
+                                ['id' => (int) $instance->customdec2],
                                 'id, name, idnumber, contextid, visible',
                                 IGNORE_MISSING);
             if ($c) {
                 // Current cohort was not found because current user can not see it. Still keep it.
-                $allcohorts[$instance->customint5] = $c;
+                $allcohorts[$instance->customdec2] = $c;
             }
         }
         foreach ($allcohorts as $c) {
