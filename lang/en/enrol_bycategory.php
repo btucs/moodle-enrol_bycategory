@@ -105,8 +105,14 @@ To extend their enrolment, go to {$a->extendurl}';
 $string['expirymessageenrollersubject'] = 'By Category enrolment expiry notification';
 $string['expirynotifyall'] = 'Teacher and enrolled user';
 $string['expirynotifyenroller'] = 'Teacher only';
+$string['groupkey'] = 'Use group enrolment keys';
+$string['groupkey_desc'] = 'Use group enrolment keys by default.';
+$string['groupkey_help'] = 'In addition to restricting access to the course to only those who know the key, use of group enrolment keys means users are automatically added to groups when they enrol in the course.
+
+Note: An enrolment key for the course must be specified in the self enrolment settings as well as group enrolment keys in the group settings.';
 $string['joinwaitlist'] = 'Join waiting list';
 $string['joinwaitlistmessage'] = 'You can join the waiting list and will be informed every day when a slot becomes available.';
+$string['keyholder'] = 'You should have received this enrolment key from:';
 $string['leavewaitlist'] = 'Leave waiting list';
 $string['longtimenosee'] = 'Unenrol inactive after';
 $string['longtimenosee_help'] = 'If users haven\'t accessed a course for a long time, then they are automatically unenrolled. This parameter specifies that time limit.';
@@ -122,8 +128,15 @@ $string['nocategory'] = 'no category limitation';
 $string['nocourseincategory'] = 'To be able to enrol you have to complete a course from the "{$a}" category';
 $string['nocourseincategorysince'] = 'To be able to enrol you have to complete a course from the "{$a}" category or your last course completion in that category is too much in the past.';
 $string['nogroup'] = 'No group limit';
+$string['nopassword'] = 'No enrolment key required.';
 $string['notifiedcount'] = 'Notified without reaction';
 $string['onwaitlistsince'] = 'On waiting list since';
+$string['password'] = 'Enrolment key';
+$string['password_help'] = 'An enrolment key enables access to the course to be restricted to only those who know the key.';
+$string['passwordinvalid'] = 'Incorrect enrolment key, please try again';
+$string['passwordinvalidhint'] = 'That enrolment key was incorrect, please try again<br />
+(Here\'s a hint - it starts with \'{$a}\')';
+$string['passwordmatchesgroupkey'] = 'This enrolment key is already used as a group enrolment key.';
 $string['pluginname'] = 'Enrol by Category';
 $string['pluginname_desc'] = 'The By Category enrolment plugin allows users participate in a course which may require an ealier successful participation in a course in a specific category. Additionally the plugin offers waiting list functionality. Internally the enrolment is done via the manual enrolment plugin which has to be enabled in the same course.';
 $string['privacy:metadata'] = 'The By Category enrolment plugin does not store any personal data.';
