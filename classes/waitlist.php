@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ require_once("$CFG->dirroot/cohort/lib.php");
+
  /**
   * Waiting list implementation
   */
@@ -218,7 +220,6 @@ class enrol_bycategory_waitlist {
         }
 
         if ($instance->customint8) {
-            require_once("$CFG->dirroot/cohort/lib.php");
             if (!cohort_is_member((int)$instance->customint8, $USER->id)) {
                 $cohort = $DB->get_record('cohort', ['id' => (int)$instance->customint8]);
                 if (!$cohort) {

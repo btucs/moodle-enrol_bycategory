@@ -26,6 +26,7 @@
 
 use core\message\message;
 require_once($CFG->dirroot.'/group/lib.php');
+require_once($CFG->dirroot.'/cohort/lib.php');
 
 /**
  * Extend fontawesome mapping list for custom key
@@ -144,8 +145,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addElement('text', 'customint3', get_string('maxenrolled', 'enrol_bycategory'));
         $mform->addHelpButton('customint3', 'maxenrolled', 'enrol_bycategory');
         $mform->setType('customint3', PARAM_INT);
-
-        require_once($CFG->dirroot.'/cohort/lib.php');
 
         $cohorts = [0 => get_string('no')];
         $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
