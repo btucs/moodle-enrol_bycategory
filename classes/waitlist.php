@@ -217,10 +217,10 @@ class enrol_bycategory_waitlist {
             return get_string('canntenrolearly', 'enrol_bycategory', userdate($instance->enrolstartdate));
         }
 
-        if ($instance->customdec2) {
+        if ($instance->customint8) {
             require_once("$CFG->dirroot/cohort/lib.php");
-            if (!cohort_is_member((int)$instance->customdec2, $USER->id)) {
-                $cohort = $DB->get_record('cohort', ['id' => (int)$instance->customdec2]);
+            if (!cohort_is_member((int)$instance->customint8, $USER->id)) {
+                $cohort = $DB->get_record('cohort', ['id' => (int)$instance->customint8]);
                 if (!$cohort) {
                     return null;
                 }

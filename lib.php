@@ -149,14 +149,14 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $cohorts = [0 => get_string('no')];
         $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
-        if ($instance->customdec2 && !isset($allcohorts[$instance->customdec2])) {
+        if ($instance->customint8 && !isset($allcohorts[$instance->customint8])) {
             $c = $DB->get_record('cohort',
-                                ['id' => (int) $instance->customdec2],
+                                ['id' => (int) $instance->customint8],
                                 'id, name, idnumber, contextid, visible',
                                 IGNORE_MISSING);
             if ($c) {
                 // Current cohort was not found because current user can not see it. Still keep it.
-                $allcohorts[$instance->customdec2] = $c;
+                $allcohorts[$instance->customint8] = $c;
             }
         }
         foreach ($allcohorts as $c) {
@@ -165,17 +165,17 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $cohorts[$c->id] .= ' ['.s($c->idnumber).']';
             }
         }
-        if ($instance->customdec2 && !isset($allcohorts[$instance->customdec2])) {
+        if ($instance->customint8 && !isset($allcohorts[$instance->customint8])) {
             // Somebody deleted a cohort, better keep the wrong value so that random ppl can not enrol.
-            $cohorts[$instance->customdec2] = get_string('unknowncohort', 'cohort', $instance->customdec2);
+            $cohorts[$instance->customint8] = get_string('unknowncohort', 'cohort', $instance->customint8);
         }
         if (count($cohorts) > 1) {
-            $mform->addElement('select', 'customdec2', get_string('cohortonly', 'enrol_bycategory'), $cohorts);
-            $mform->addHelpButton('customdec2', 'cohortonly', 'enrol_bycategory');
+            $mform->addElement('select', 'customint8', get_string('cohortonly', 'enrol_bycategory'), $cohorts);
+            $mform->addHelpButton('customint8', 'cohortonly', 'enrol_bycategory');
         } else {
-            $mform->addElement('hidden', 'customdec2');
-            $mform->setType('customdec2', PARAM_INT);
-            $mform->setConstant('customdec2', 0);
+            $mform->addElement('hidden', 'customint8');
+            $mform->setType('customint8', PARAM_INT);
+            $mform->setConstant('customint8', 0);
         }
 
         $options = $this->get_enablewaitlist_options();
@@ -250,7 +250,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint7' => PARAM_INT,
             'customchar1' => $validperiodstarts,
             'customchar2' => $validwaitlist,
-            'customdec2' => PARAM_INT,
+            'customint8' => PARAM_INT,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,
