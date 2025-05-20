@@ -178,7 +178,7 @@ function enrol_bycategory_waitlist_show_status_info() {
  * Checks if a given key is a valid group enrolment key for the specified course.
  *
  * @param int $courseid The course ID to check
- * @param string $key The enrolment key to check
+ * @param string $enrolpassword The enrolment key to check
  * @return int|bool The group ID if key is valid, false otherwise
  */
 function enrol_bycategory_check_group_enrolment_key($courseid, $enrolpassword) {
