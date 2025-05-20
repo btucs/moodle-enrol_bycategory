@@ -224,7 +224,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                         $errors['password'] = $errmsg;
                     }
                 }
-                if ($data['customdec1'] && enrol_self_check_group_enrolment_key($instance->courseid, $data['password'])) {
+                if ($data['customdec1'] && enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['password'])) {
                     $errors['password'] = get_string('passwordmatchesgroupkey', 'enrol_bycategory');
                 }
             }
@@ -237,7 +237,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
 
         if ($data['expirynotify'] > 0 && $data['expirythreshold'] < 86400) {
-            $errors['expirythreshold'] = get_string('errorthresholdlow', 'core_enrol');
+        $errors['expirythreshold'] = get_string('errorthresholdlow', 'core_enrol');
         }
 
         // Now these ones are checked by quickforms, but we may be called by the upload enrolments tool, or a webservive.
@@ -1289,5 +1289,47 @@ class enrol_bycategory_plugin extends enrol_plugin {
     protected function get_groupkey_options() {
         $options = [0 => get_string('no'), 1 => get_string('yes')];
         return $options;
+    }
+
+        /**
+     * Check if data is valid for a given enrolment plugin
+     *
+     * @param array $enrolmentdata enrolment data to validate.
+     * @param int|null $courseid Course ID.
+     * @return array Errors
+     */
+    public function validate_enrol_plugin_data(array $enrolmentdata, ?int $courseid = null): array {
+        global $CFG, $DB;
+
+        $errors = [];
+
+        $plugin = $this->get_name();
+        if (!enrol_is_enabled($plugin)) {
+            $pluginname = get_string('pluginname', 'enrol_' . $plugin);
+            $errors['plugindisabled'] = new lang_string('plugindisabled', 'enrol', $pluginname);
+
+        }
+
+        $policy = $this->get_config('usepasswordpolicy');
+        if (!empty($enrolmentdata['password'])) {
+            if ($policy) {
+                $errarray = get_password_policy_errors($enrolmentdata['password']);
+                foreach ($errarray as $i => $err) {
+                    $errors['enrol_bycategory' . $i] = $err;
+                }
+            }
+
+            if ($courseid) {
+                // This is bad - no way to identify which instance it is.
+                // So if any instance in course uses group key we should error.
+                $usegroupenrolmentkeys =
+                    $DB->count_records('enrol', ['courseid' => $courseid, 'enrol' => 'bycategory', 'customdec1' => 1]);
+                if ($usegroupenrolmentkeys && enrol_bycategory_check_group_enrolment_key($courseid, $enrolmentdata['password'])) {
+                    $errors['errorpasswordmatchesgroupkey'] =
+                        new lang_string('passwordmatchesgroupkey', 'enrol_bycategory', $enrolmentdata['password']);
+                }
+            }
+        }
+        return $errors;
     }
 }

@@ -30,6 +30,12 @@ if ($ADMIN->fulltree) {
     // General Settings.
     $settings->add(new admin_setting_heading('enrol_bycategory_settings', '', get_string('pluginname_desc', 'enrol_bycategory')));
 
+    $settings->add(new admin_setting_configcheckbox('enrol_bycategory/requirepassword',
+        get_string('requirepassword', 'enrol_bycategory'), get_string('requirepassword_desc', 'enrol_bycategory'), 0));
+
+    $settings->add(new admin_setting_configcheckbox('enrol_bycategory/usepasswordpolicy',
+        get_string('usepasswordpolicy', 'enrol_bycategory'), get_string('usepasswordpolicy_desc', 'enrol_bycategory'), 0));
+
     /* Note: let's reuse the ext sync constants and strings here, internally it is very similar,
              it describes what should happend when users are not supposed to be enerolled any more.
     */

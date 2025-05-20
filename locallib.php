@@ -173,3 +173,28 @@ function enrol_bycategory_waitlist_show_status_info() {
 
     return text_to_html(get_string('waitlist_status_info', 'enrol_bycategory', $statusdata), false, false, true);
 }
+
+/**
+ * Checks if a given key is a valid group enrolment key for the specified course.
+ *
+ * @param int $courseid The course ID to check
+ * @param string $key The enrolment key to check
+ * @return int|bool The group ID if key is valid, false otherwise
+ */
+function enrol_bycategory_check_group_enrolment_key($courseid, $enrolpassword) {
+    global $DB;
+
+    $found = false;
+    $groups = $DB->get_records('groups', array('courseid' => $courseid), 'id ASC', 'id, enrolmentkey');
+
+    foreach ($groups as $group) {
+        if (empty($group->enrolmentkey)) {
+            continue;
+        }
+        if ($group->enrolmentkey === $enrolpassword) {
+            $found = true;
+            break;
+        }
+    }
+    return $found;
+}
