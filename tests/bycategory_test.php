@@ -1037,14 +1037,14 @@ final class bycategory_test extends \advanced_testcase {
         $this->assertEquals(get_string('errorminpasswordlength', 'auth', $CFG->minpasswordlength), $errors['enrol_bycategory0']);
         $this->assertEquals(get_string('errorminpassworddigits', 'auth', $CFG->minpassworddigits), $errors['enrol_bycategory1']);
         $this->assertEquals(get_string('errorminpasswordupper', 'auth', $CFG->minpasswordupper), $errors['enrol_bycategory2']);
-        $this->assertEquals(get_string('errorminpasswordnonalphanum', 'auth', $CFG->minpasswordnonalphanum), $errors['enrol_bycategory3']);
+        $this->assertEquals(get_string('errorminpasswordnonalphanum', 'auth', $CFG->minpasswordnonalphanum),
+            $errors['enrol_bycategory3']);
 
         $enrolmentdata = ['password' => 'Testingtest123@'];
         $errors = $plugin->validate_enrol_plugin_data($enrolmentdata);
         $this->assertEmpty($errors);
 
         $this->getDataGenerator()->create_group(['courseid' => $course->id, 'enrolmentkey' => 'Abirvalg123@']);
-        // $instance = $plugin->find_instance([], $course->id);
         $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $instance->customdec1 = 1;
         $plugin->update_instance($instance, $instance);
@@ -1124,15 +1124,15 @@ final class bycategory_test extends \advanced_testcase {
      * Test the check_group_enrolment_key function
      */
 
-     public function test_enrol_self_check_group_enrolment_key(): void {
+    public function test_enrol_self_check_group_enrolment_key(): void {
         global $DB;
         self::resetAfterTest(true);
 
         // Test in course with groups.
-        $course = self::getDataGenerator()->create_course(array('groupmode' => SEPARATEGROUPS, 'groupmodeforce' => 1));
+        $course = self::getDataGenerator()->create_course(['groupmode' => SEPARATEGROUPS, 'groupmodeforce' => 1]);
 
-        $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
-        $group2 = $this->getDataGenerator()->create_group(array('courseid' => $course->id, 'enrolmentkey' => 'thepassword'));
+        $group1 = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+        $group2 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'enrolmentkey' => 'thepassword']);
 
         $result = enrol_bycategory_check_group_enrolment_key($course->id, 'invalidpassword');
         $this->assertFalse($result);

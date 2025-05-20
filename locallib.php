@@ -185,7 +185,7 @@ function enrol_bycategory_check_group_enrolment_key($courseid, $enrolpassword) {
     global $DB;
 
     $found = false;
-    $groups = $DB->get_records('groups', array('courseid' => $courseid), 'id ASC', 'id, enrolmentkey');
+    $groups = $DB->get_records('groups', ['courseid' => $courseid], 'id ASC', 'id, enrolmentkey');
 
     foreach ($groups as $group) {
         if (empty($group->enrolmentkey)) {

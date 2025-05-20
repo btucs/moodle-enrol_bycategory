@@ -237,7 +237,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
 
         if ($data['expirynotify'] > 0 && $data['expirythreshold'] < 86400) {
-        $errors['expirythreshold'] = get_string('errorthresholdlow', 'core_enrol');
+            $errors['expirythreshold'] = get_string('errorthresholdlow', 'core_enrol');
         }
 
         // Now these ones are checked by quickforms, but we may be called by the upload enrolments tool, or a webservive.
@@ -1292,12 +1292,12 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
         /**
-     * Check if data is valid for a given enrolment plugin
-     *
-     * @param array $enrolmentdata enrolment data to validate.
-     * @param int|null $courseid Course ID.
-     * @return array Errors
-     */
+         * Check if data is valid for a given enrolment plugin
+         *
+         * @param array $enrolmentdata enrolment data to validate.
+         * @param int|null $courseid Course ID.
+         * @return array Errors
+         */
     public function validate_enrol_plugin_data(array $enrolmentdata, ?int $courseid = null): array {
         global $CFG, $DB;
 

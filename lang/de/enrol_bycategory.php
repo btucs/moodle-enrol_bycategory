@@ -166,7 +166,6 @@ $string['unenrolusers'] = 'Nutzer/innen abmelden';
 $string['usepasswordpolicy'] = 'Kennwortrichtlinie verwenden';
 $string['usepasswordpolicy_desc'] = 'Standardmäßige Kennwortrichtlinie für Einschreibeschlüssel verwenden.';
 $string['usernotonwaitlist'] = 'Sie sind nicht auf der Warteliste dieses Kurses.';
-$string['usernotonwaitlist'] = 'Sie sind nicht auf der Warteliste dieses Kurses.';
 $string['waitlist'] = 'Warteliste';
 $string['waitlist_active'] = '{$a} Teilnehmer auf der Warteliste';
 $string['waitlist_blocked_message'] = 'Sie wurden bereits 5 Mal, ohne Reaktion, über einen freien Platz informiert.
