@@ -1313,7 +1313,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $policy = $this->get_config('usepasswordpolicy');
         if (!empty($enrolmentdata['password'])) {
             if ($policy) {
-                $errarray = \get_password_policy_errors($enrolmentdata['password']);
+                $errarray = get_password_policy_errors($enrolmentdata['password']);
                 foreach ($errarray as $i => $err) {
                     $errors['enrol_bycategory' . $i] = $err;
                 }
@@ -1331,20 +1331,5 @@ class enrol_bycategory_plugin extends enrol_plugin {
             }
         }
         return $errors;
-    }
-
-        /**
-         * Updates enrol plugin instance with provided data.
-         * @param int $courseid Course ID.
-         * @param array $enrolmentdata enrolment data.
-         * @param stdClass $instance Instance to update.
-         *
-         * @return stdClass updated instance
-         */
-    public function update_enrol_plugin_data(int $courseid, array $enrolmentdata, stdClass $instance): stdClass {
-        if (!empty($enrolmentdata['password'])) {
-            $instance->password = $enrolmentdata['password'];
-        }
-        return parent::update_enrol_plugin_data($courseid, $enrolmentdata, $instance);
     }
 }
