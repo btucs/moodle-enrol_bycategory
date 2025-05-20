@@ -1334,13 +1334,13 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
         /**
-     * Updates enrol plugin instance with provided data.
-     * @param int $courseid Course ID.
-     * @param array $enrolmentdata enrolment data.
-     * @param stdClass $instance Instance to update.
-     *
-     * @return stdClass updated instance
-     */
+         * Updates enrol plugin instance with provided data.
+         * @param int $courseid Course ID.
+         * @param array $enrolmentdata enrolment data.
+         * @param stdClass $instance Instance to update.
+         *
+         * @return stdClass updated instance
+         */
     public function update_enrol_plugin_data(int $courseid, array $enrolmentdata, stdClass $instance): stdClass {
         if (!empty($enrolmentdata['password'])) {
             $instance->password = $enrolmentdata['password'];
