@@ -1079,13 +1079,14 @@ final class bycategory_test extends \advanced_testcase {
         $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
 
         $expectedinstance = $instance;
-        $modifiedinstance = $DB->update_record('enrol', $instance);
-
+        $DB->update_record('enrol', $instance);
+        $modifiedinstance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $this->assertEquals($expectedinstance, $modifiedinstance);
 
         $enrolmentdata['password'] = 'test';
         $expectedinstance->password = 'test';
-        $modifiedinstance = $DB->update_record('enrol', $expectedinstance);
+        $DB->update_record('enrol', $instance);
+        $modifiedinstance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
         $this->assertEquals($expectedinstance, $modifiedinstance);
     }
 
