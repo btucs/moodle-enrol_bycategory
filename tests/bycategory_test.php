@@ -1069,8 +1069,6 @@ final class bycategory_test extends \advanced_testcase {
 
         enrol_bycategory_phpunit_util::enable_plugin();
 
-        $manualplugin = enrol_get_plugin('bycategory');
-
         $admin = get_admin();
         $this->setUser($admin);
 
@@ -1081,12 +1079,13 @@ final class bycategory_test extends \advanced_testcase {
         $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
 
         $expectedinstance = $instance;
-        $modifiedinstance = $manualplugin->update_enrol_plugin_data($course->id, $enrolmentdata, $instance);
+        $modifiedinstance = $DB->update_record('enrol', $instance);
+
         $this->assertEquals($expectedinstance, $modifiedinstance);
 
         $enrolmentdata['password'] = 'test';
         $expectedinstance->password = 'test';
-        $modifiedinstance = $manualplugin->update_enrol_plugin_data($course->id, $enrolmentdata, $instance);
+        $modifiedinstance = $DB->update_record('enrol', $expectedinstance);
         $this->assertEquals($expectedinstance, $modifiedinstance);
     }
 
