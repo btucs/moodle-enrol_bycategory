@@ -1006,6 +1006,13 @@ final class bycategory_test extends \advanced_testcase {
      */
     public function test_validate_enrol_plugin_data(): void {
         global $DB, $CFG;
+
+        // Skip this test for Moodle versions before 4.0.4 if it relies on get_password_policy_errors
+        if (!function_exists('get_password_policy_errors')) {
+            $this->markTestSkipped('get_password_policy_errors() is not available in this Moodle version.');
+            return;
+        }
+
         $this->resetAfterTest();
 
         enrol_bycategory_phpunit_util::enable_plugin();

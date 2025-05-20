@@ -1332,29 +1332,4 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
         return $errors;
     }
-
-    /**
-     * Validate password according to policy
-     *
-     * @param string $password
-     * @return bool
-     */
-    protected function validate_password($password) {
-        global $CFG;
-
-        if (function_exists('get_password_policy_errors')) {
-            // For Moodle 4.0.4 and newer
-            $errors = get_password_policy_errors($password);
-            return empty($errors);
-        } else {
-            // For Moodle 4.0.3 and older
-            if (!empty($CFG->passwordpolicy)) {
-                require_once($CFG->libdir.'/passwordlib.php');
-                if (!check_password_policy($password, $error)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
 }
