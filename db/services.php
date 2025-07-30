@@ -17,9 +17,9 @@
 /**
  * Webservices of enrol bycategory plugin
  *
- * @package    enrol_bycategory
- * @copyright  2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   enrol_bycategory
+ * @copyright 2022 Matthias Tylkowski <matthias.tylkowski@b-tu.de>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
@@ -34,5 +34,21 @@ $functions = [
         // Moodle 3.9.
         'classpath' => 'enrol/bycategory/external/get_enrolment_methods.php',
         'methodname' => 'execute',
+    ],
+    'enrol_bycategory_get_instance_info' => [
+        'classname'   => '\enrol_bycategory\external\get_instance_info',
+        'methodname'  => 'execute',
+        'classpath'   => 'enrol/bycategory/classes/external/get_instance_info.php',
+        'description' => 'enrol_bycategory instance information.',
+        'type'        => 'read',
+        'services'    => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'enrol_bycategory_enrol_user' => [
+        'classname'   => '\enrol_bycategory\external\enrol_user',
+        'methodname'  => 'execute',
+        'classpath'   => 'enrol/bycategory/classes/external/enrol_user.php',
+        'description' => 'bycategory enrol the current user in the given course.',
+        'type'        => 'write',
+        'services'    => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
 ];

@@ -60,6 +60,36 @@ class enrol_bycategory_enrol_form extends moodleform {
         $heading = $plugin->get_instance_name($instance);
         $mform->addElement('header', 'selfheader', $heading);
 
+        if ($instance->password) {
+            // Change the id of self enrolment key input as there can be multiple self enrolment methods.
+            $mform->addElement('password', 'enrolpassword', get_string('password', 'enrol_bycategory'),
+                    ['id' => 'enrolpassword_'.$instance->id]);
+            $context = context_course::instance($this->instance->courseid);
+            $userfieldsapi = \core_user\fields::for_userpic();
+            $ufields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
+            $keyholders = get_users_by_capability($context, 'enrol/self:holdkey', $ufields);
+            $keyholdercount = 0;
+            foreach ($keyholders as $keyholder) {
+                $keyholdercount++;
+                if ($keyholdercount === 1) {
+                    $mform->addElement('static', 'keyholder', '', get_string('keyholder', 'enrol_bycategory'));
+                }
+                $keyholdercontext = context_user::instance($keyholder->id);
+                if ($USER->id == $keyholder->id || has_capability('moodle/user:viewdetails', context_system::instance()) ||
+                        has_coursecontact_role($keyholder->id)) {
+                    $profilelink = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $keyholder->id . '&amp;course=' .
+                    $this->instance->courseid . '">' . fullname($keyholder) . '</a>';
+                } else {
+                    $profilelink = fullname($keyholder);
+                }
+                $profilepic = $OUTPUT->user_picture($keyholder, ['size' => 35, 'courseid' => $this->instance->courseid]);
+                $mform->addElement('static', 'keyholder'.$keyholdercount, '', $profilepic . $profilelink);
+            }
+
+        } else {
+            $mform->addElement('static', 'nokey', '', get_string('nopassword', 'enrol_bycategory'));
+        }
+
         $this->add_action_buttons(false, get_string('enrolme', 'enrol_bycategory'));
 
         $mform->addElement('hidden', 'id');
@@ -92,6 +122,27 @@ class enrol_bycategory_enrol_form extends moodleform {
         if ($this->toomany) {
             $errors['notice'] = get_string('error');
             return $errors;
+        }
+
+        if ($instance->password) {
+            if ($data['enrolpassword'] !== $instance->password) {
+                if ($instance->customint1) {
+                    // Check group enrolment key.
+                    if (!enrol_self_check_group_enrolment_key($instance->courseid, $data['enrolpassword'])) {
+                        // We can not hint because there are probably multiple passwords.
+                        $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_bycategory');
+                    }
+
+                } else {
+                    $plugin = enrol_get_plugin('bycategory');
+                    if ($plugin->get_config('showhint')) {
+                        $hint = core_text::substr($instance->password, 0, 1);
+                        $errors['enrolpassword'] = get_string('passwordinvalidhint', 'enrol_bycategory', $hint);
+                    } else {
+                        $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_bycategory');
+                    }
+                }
+            }
         }
 
         return $errors;

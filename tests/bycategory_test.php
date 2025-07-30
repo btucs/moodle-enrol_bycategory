@@ -1030,4 +1030,168 @@ final class bycategory_test extends \advanced_testcase {
         $this->expectExceptionMessage('redirect');
         $plugin->enrol_page_hook($instance1);
     }
+
+    /**
+     * Test validation of password against password policy.
+     */
+    public function test_validate_enrol_plugin_data(): void {
+        global $DB, $CFG;
+
+        // Skip this test for Moodle versions before 4.0.4 if it relies on get_password_policy_errors.
+        if (!function_exists('get_password_policy_errors')) {
+            $this->markTestSkipped('get_password_policy_errors() is not available in this Moodle version.');
+            return;
+        }
+
+        $this->resetAfterTest();
+
+        enrol_bycategory_phpunit_util::enable_plugin();
+        $plugin = enrol_get_plugin('bycategory');
+
+        $course = self::getDataGenerator()->create_course(['groupmode' => SEPARATEGROUPS, 'groupmodeforce' => 1]);
+
+        $plugin->set_config('usepasswordpolicy', false);
+        $enrolmentdata = [];
+        $errors = $plugin->validate_enrol_plugin_data($enrolmentdata);
+        $this->assertEmpty($errors);
+
+        // Now enable some controls, and check that the policy responds with policy text.
+        $plugin->set_config('usepasswordpolicy', true);
+        $CFG->minpasswordlength = 8;
+        $CFG->minpassworddigits = 1;
+        $CFG->minpasswordlower = 1;
+        $CFG->minpasswordupper = 1;
+        $CFG->minpasswordnonalphanum = 1;
+        $CFG->maxconsecutiveidentchars = 1;
+        $errors = $plugin->validate_enrol_plugin_data($enrolmentdata);
+        // If password is omitted it will be autocreated so nothing to validate.
+        $this->assertEmpty($errors);
+
+        $enrolmentdata = ['password' => 'test'];
+        $errors = $plugin->validate_enrol_plugin_data($enrolmentdata);
+        $this->assertCount(4, $errors);
+
+        $this->assertEquals(get_string('errorminpasswordlength', 'auth', $CFG->minpasswordlength), $errors['enrol_bycategory0']);
+        $this->assertEquals(get_string('errorminpassworddigits', 'auth', $CFG->minpassworddigits), $errors['enrol_bycategory1']);
+        $this->assertEquals(get_string('errorminpasswordupper', 'auth', $CFG->minpasswordupper), $errors['enrol_bycategory2']);
+        $this->assertEquals(get_string('errorminpasswordnonalphanum', 'auth', $CFG->minpasswordnonalphanum),
+            $errors['enrol_bycategory3']);
+
+        $enrolmentdata = ['password' => 'Testingtest123@'];
+        $errors = $plugin->validate_enrol_plugin_data($enrolmentdata);
+        $this->assertEmpty($errors);
+
+        $this->getDataGenerator()->create_group(['courseid' => $course->id, 'enrolmentkey' => 'Abirvalg123@']);
+        $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+        $instance->customdec1 = 1;
+        $plugin->update_instance($instance, $instance);
+        $enrolmentdata = ['password' => 'Abirvalg123@'];
+        $errors = $plugin->validate_enrol_plugin_data($enrolmentdata, $course->id);
+        $this->assertArrayHasKey('errorpasswordmatchesgroupkey', $errors);
+    }
+
+    /**
+     * Test update of plugin instance data, specifically the password field.
+     */
+    public function test_update_enrol_plugin_data(): void {
+        global $DB;
+        $this->resetAfterTest();
+
+        enrol_bycategory_phpunit_util::enable_plugin();
+
+        $admin = get_admin();
+        $this->setUser($admin);
+
+        $enrolmentdata = [];
+
+        $cat = $this->getDataGenerator()->create_category();
+        $course = $this->getDataGenerator()->create_course(['category' => $cat->id, 'shortname' => 'ANON']);
+        $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+
+        $expectedinstance = $instance;
+        $DB->update_record('enrol', $instance);
+        $modifiedinstance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+        $this->assertEquals($expectedinstance, $modifiedinstance);
+
+        $enrolmentdata['password'] = 'test';
+        $expectedinstance->password = 'test';
+        $DB->update_record('enrol', $instance);
+        $modifiedinstance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
+        $this->assertEquals($expectedinstance, $modifiedinstance);
+    }
+
+    /**
+     * Test group enrolment key validation
+     */
+    public function test_edit_instance_validation_group_enrolment_key(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        enrol_bycategory_phpunit_util::enable_plugin();
+
+        $course = $this->getDataGenerator()->create_course();
+        $context = \context_course::instance($course->id);
+
+        $plugin = enrol_get_plugin('bycategory');
+
+        $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => $plugin->get_name()], '*', MUST_EXIST);
+
+        // Enable group enrolment keys.
+        $errors = $plugin->edit_instance_validation([
+            'customdec1' => 1,
+            'password' => 'cat',
+        ] + (array) $instance, [], $instance, $context);
+
+        $this->assertEmpty($errors);
+
+        // Now create a group with the same enrolment key we want to use.
+        $this->getDataGenerator()->create_group(['courseid' => $course->id, 'enrolmentkey' => 'cat']);
+
+        $errors = $plugin->edit_instance_validation([
+            'customdec1' => 1,
+            'password' => 'cat',
+        ] + (array) $instance, [], $instance, $context);
+
+        $this->assertArrayHasKey('password', $errors);
+        $this->assertEquals('This enrolment key is already used as a group enrolment key.', $errors['password']);
+    }
+
+    /**
+     * Test the check_group_enrolment_key function
+     */
+
+    public function test_enrol_self_check_group_enrolment_key(): void {
+        global $DB;
+        self::resetAfterTest(true);
+
+        // Test in course with groups.
+        $course = self::getDataGenerator()->create_course(['groupmode' => SEPARATEGROUPS, 'groupmodeforce' => 1]);
+
+        $group1 = $this->getDataGenerator()->create_group(['courseid' => $course->id]);
+        $group2 = $this->getDataGenerator()->create_group(['courseid' => $course->id, 'enrolmentkey' => 'thepassword']);
+
+        $result = enrol_bycategory_check_group_enrolment_key($course->id, 'invalidpassword');
+        $this->assertFalse($result);
+
+        $result = enrol_bycategory_check_group_enrolment_key($course->id, 'thepassword');
+        $this->assertTrue($result);
+
+        // Test disabling group options.
+        $course->groupmode = NOGROUPS;
+        $course->groupmodeforce = 0;
+        $DB->update_record('course', $course);
+
+        $result = enrol_bycategory_check_group_enrolment_key($course->id, 'invalidpassword');
+        $this->assertFalse($result);
+
+        $result = enrol_bycategory_check_group_enrolment_key($course->id, 'thepassword');
+        $this->assertTrue($result);
+
+        // Test without groups.
+        $othercourse = self::getDataGenerator()->create_course();
+        $result = enrol_bycategory_check_group_enrolment_key($othercourse->id, 'thepassword');
+        $this->assertFalse($result);
+
+    }
 }
