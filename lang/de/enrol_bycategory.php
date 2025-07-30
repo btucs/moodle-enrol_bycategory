@@ -54,6 +54,9 @@ $string['category'] = 'abgeschlossener Kurs in Kursbereich';
 $string['category_help'] = 'Wählen Sie einen Kursbereich aus in dem ein Kurs abgeschlossen sein muss, um Zugang zu diesem Kurs zu erhalten.
 
 Wenn Sie "Keine Einschränkung" auswählen kann sich jeder Einschreiben.';
+$string['cohortnonmemberinfo'] = 'Nur Mitglieder der globalen Gruppe \'{$a}\' können sich selbst per Kategorie einschreiben.';
+$string['cohortonly'] = 'Nur Mitglieder der globalen Gruppe';
+$string['cohortonly_help'] = 'Die Einschreibung nach Kategorie kann auf Mitglieder einer bestimmten Kohorte beschränkt werden. Beachten Sie, dass Änderungen an dieser Einstellung keine Auswirkungen auf bestehende Einschreibungen haben.';
 $string['completionperiod'] = 'Zeitraum seit Abschluss';
 $string['completionperiod_help'] = 'Der erlaubte maximale Zeitraum seit Abschluss eines Kurses aus dem eingestellten Kursbereich.';
 $string['confirmbulkdeleteenrolment'] = 'Möchten Sie die Einschreibungen dieser Nutzer/innen wirklich löschen?';

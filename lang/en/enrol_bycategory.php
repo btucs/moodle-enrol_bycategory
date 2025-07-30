@@ -54,6 +54,9 @@ $string['category'] = 'Course completed in Category';
 $string['category_help'] = 'Select the category in which a course has to be completed to be eligible to access this course.
 
 If you select "no category limitation" anyone can enrol.';
+$string['cohortnonmemberinfo'] = 'Only members of cohort \'{$a}\' can self-enrol by category.';
+$string['cohortonly'] = 'Only cohort members';
+$string['cohortonly_help'] = 'Enrolment by category may be restricted to members of a specified cohort only. Note that changing this setting has no effect on existing enrolments.';
 $string['completionperiod'] = 'Timelimit since completion';
 $string['completionperiod_help'] = 'Allowed duration since completing a course in the configured category.';
 $string['confirmbulkdeleteenrolment'] = 'Are you sure you want to delete these user enrolments?';

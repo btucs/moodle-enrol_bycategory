@@ -26,6 +26,7 @@
 
 use core\message\message;
 require_once($CFG->dirroot.'/group/lib.php');
+require_once($CFG->dirroot.'/cohort/lib.php');
 
 /**
  * Extend fontawesome mapping list for custom key
@@ -157,6 +158,37 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $mform->addHelpButton('customint3', 'maxenrolled', 'enrol_bycategory');
         $mform->setType('customint3', PARAM_INT);
 
+        $cohorts = [0 => get_string('no')];
+        $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
+        if ($instance->customint8 && !isset($allcohorts[$instance->customint8])) {
+            $c = $DB->get_record('cohort',
+                                ['id' => (int) $instance->customint8],
+                                'id, name, idnumber, contextid, visible',
+                                IGNORE_MISSING);
+            if ($c) {
+                // Current cohort was not found because current user can not see it. Still keep it.
+                $allcohorts[$instance->customint8] = $c;
+            }
+        }
+        foreach ($allcohorts as $c) {
+            $cohorts[$c->id] = format_string($c->name, true, ['context' => context::instance_by_id($c->contextid)]);
+            if ($c->idnumber) {
+                $cohorts[$c->id] .= ' ['.s($c->idnumber).']';
+            }
+        }
+        if ($instance->customint8 && !isset($allcohorts[$instance->customint8])) {
+            // Somebody deleted a cohort, better keep the wrong value so that random ppl can not enrol.
+            $cohorts[$instance->customint8] = get_string('unknowncohort', 'cohort', $instance->customint8);
+        }
+        if (count($cohorts) > 1) {
+            $mform->addElement('select', 'customint8', get_string('cohortonly', 'enrol_bycategory'), $cohorts);
+            $mform->addHelpButton('customint8', 'cohortonly', 'enrol_bycategory');
+        } else {
+            $mform->addElement('hidden', 'customint8');
+            $mform->setType('customint8', PARAM_INT);
+            $mform->setConstant('customint8', 0);
+        }
+
         $options = $this->get_enablewaitlist_options();
         $mform->addElement('select', 'customchar2', get_string('enablewaitlist', 'enrol_bycategory'), $options);
         $mform->setDefault('customchar2', 0);
@@ -269,6 +301,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customchar1' => $validperiodstarts,
             'customchar2' => $validwaitlist,
             'customdec1' => PARAM_INT,
+            'customint8' => PARAM_INT,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
             'expirynotify' => $validexpirynotify,

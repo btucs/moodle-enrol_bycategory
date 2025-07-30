@@ -34,7 +34,9 @@ global $CFG;
 require_once($CFG->dirroot.'/lib/setuplib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/lib.php');
 require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
+require_once($CFG->dirroot.'/cohort/lib.php');
 require_once(__DIR__ . '/util.php');
+
 
 /**
  * Testcase for enrol_bycategory_plugin
@@ -609,6 +611,8 @@ final class bycategory_test extends \advanced_testcase {
         $course11 = $this->getDataGenerator()->create_course();
         $course12 = $this->getDataGenerator()->create_course();
         $course13 = $this->getDataGenerator()->create_course();
+        $course14 = $this->getDataGenerator()->create_course();
+        $course15 = $this->getDataGenerator()->create_course();
 
         // New enrolments are allowed and enrolment instance is enabled.
         $instance1 = $DB->get_record('enrol', ['courseid' => $course1->id, 'enrol' => 'bycategory'], '*', MUST_EXIST);
@@ -759,6 +763,32 @@ final class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance5);
         // User can't enrol, because counting starts from now.
         $this->assertFalse($plugin->show_enrolme_link($instance5));
+
+        // Cohort member test.
+        $cohort1 = $this->getDataGenerator()->create_cohort();
+        $cohort2 = $this->getDataGenerator()->create_cohort();
+
+        $id1 = $plugin->add_instance($course14, $plugin->get_instance_defaults());
+        $instance15 = $DB->get_record('enrol', ['id' => $id1], '*', MUST_EXIST);
+
+        $instance15->customint8 = $cohort1->id;
+        $DB->update_record('enrol', $instance15);
+        $plugin->update_status($instance15, ENROL_INSTANCE_ENABLED);
+
+        $id2 = $plugin->add_instance($course15, $plugin->get_instance_defaults());
+        $instance16 = $DB->get_record('enrol', ['id' => $id2], '*', MUST_EXIST);
+
+        $instance16->customint8 = $cohort2->id;
+        $DB->update_record('enrol', $instance16);
+        $plugin->update_status($instance16, ENROL_INSTANCE_ENABLED);
+
+        cohort_add_member($cohort1->id, $user1->id);
+
+        // User is cohort member and can enrol.
+        $this->assertTrue($plugin->show_enrolme_link($instance15));
+
+        // User is not cohort member and can't enrol.
+        $this->assertFalse($plugin->show_enrolme_link($instance16));
     }
 
     /**
