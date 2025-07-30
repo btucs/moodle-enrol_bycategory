@@ -27,6 +27,7 @@
 use core\message\message;
 require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
+require_once($CFG->dirroot . '/enrol/bycategory/locallib.php');
 
 /**
  * Extend fontawesome mapping list for custom key
