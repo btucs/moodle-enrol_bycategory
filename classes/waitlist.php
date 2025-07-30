@@ -22,6 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+require_once("$CFG->dirroot/cohort/lib.php");
+
  /**
   * Waiting list implementation
   */
@@ -215,6 +218,18 @@ class enrol_bycategory_waitlist {
 
         if ($instance->enrolstartdate != 0 && $instance->enrolstartdate > time()) {
             return get_string('canntenrolearly', 'enrol_bycategory', userdate($instance->enrolstartdate));
+        }
+
+        if ($instance->customint8) {
+            require_once("$CFG->dirroot/cohort/lib.php");
+            if (!cohort_is_member((int)$instance->customint8, $USER->id)) {
+                $cohort = $DB->get_record('cohort', ['id' => (int)$instance->customint8]);
+                if (!$cohort) {
+                    return null;
+                }
+                $a = format_string($cohort->name, true, ['context' => context::instance_by_id($cohort->contextid)]);
+                return markdown_to_html(get_string('cohortnonmemberinfo', 'enrol_bycategory', $a));
+            }
         }
 
         /*
