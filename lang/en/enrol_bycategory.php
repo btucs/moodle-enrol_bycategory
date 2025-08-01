@@ -44,7 +44,7 @@ $string['bulkenrolusersmissing'] = 'The following users couldn\'t be enroled as 
 All other users have been successfully enroled.';
 $string['bycategory:config'] = 'Configure By Category enrol instances';
 $string['bycategory:enrolself'] = 'Self enrol in course';
-$string['bycategory:holdkey'] = 'Appear as the self enrolment key holder';
+$string['bycategory:holdkey'] = 'Appear as the bycategory enrolment key holder';
 $string['bycategory:manage'] = 'Manage enrolled users';
 $string['bycategory:unenrol'] = 'Unenrol users from course';
 $string['bycategory:unenrolself'] = 'Unenrol self from the course';
