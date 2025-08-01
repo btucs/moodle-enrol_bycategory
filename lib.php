@@ -1036,6 +1036,29 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
+     * Get the "from" contact which the message will be sent from.
+     *
+     * @param int $sendoption send email from constant ENROL_SEND_EMAIL_FROM_*
+     * @param context $context where the user will be fetched from.
+     * @return null|stdClass the contact user object.
+     */
+    public function get_welcome_message_contact(int $sendoption, context $context): ?stdClass   {
+        $contact = parent::get_welcome_message_contact($sendoption, $context);
+
+        // The parent method only handles enrol/self:holdkey.
+        if ($contact === null && $sendoption === ENROL_SEND_EMAIL_FROM_KEY_HOLDER) {
+            // Send as the first user with enrol/bycategory:holdkey capability assigned in the course.
+            [$sort] = users_order_by_sql('u');
+            $keyholders = get_users_by_capability($context, 'enrol/bycategory:holdkey', 'u.*', $sort);
+            if (!empty($keyholders)) {
+                $contact = array_values($keyholders)[0];
+            }
+        }
+
+        return $contact;
+    }
+
+    /**
      * Send welcome email to specified user.
      * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
      *

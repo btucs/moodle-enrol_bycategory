@@ -947,9 +947,13 @@ final class bycategory_test extends \advanced_testcase {
         $DB->update_record('enrol', $instance1);
         $plugin->update_status($instance1, ENROL_INSTANCE_ENABLED);
 
-        // We do not have a teacher enrolled at this point, so it should send as no reply user.
+        // This should return null.
+        $contact = $plugin->get_welcome_message_contact(ENROL_DO_NOT_SEND_EMAIL, $context);
+        $this->assertNull($contact);
+
+        // We do not have a teacher enrolled at this point, so it should return null.
         $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
-        $this->assertEquals($noreplyuser, $contact);
+        $this->assertNull($contact);
 
         // By default, course contact is assigned to teacher role.
         // Enrol a teacher, now it should send emails from teacher email's address.
