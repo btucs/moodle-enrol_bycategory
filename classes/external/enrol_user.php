@@ -139,9 +139,9 @@ class enrol_user extends external_api {
 
                     // Check if we are using group enrolment keys.
                     if ($instance->customint1) {
-                        require_once($CFG->dirroot . "/enrol/self/locallib.php");
+                        require_once($CFG->dirroot . "/enrol/bycategory/locallib.php");
 
-                        if (!enrol_self_check_group_enrolment_key($course->id, $params['password'])) {
+                        if (!enrol_bycategory_check_group_enrolment_key($course->id, $params['password'])) {
                             $warnings[] = [
                                 'item' => 'instance',
                                 'itemid' => $instance->id,

@@ -100,7 +100,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         }
         $mform->addRule('password', get_string('maximumchars', '', 50), 'maxlength', 50, 'server');
 
-        $options = $this->get_groupkey_options();
+        $options = $this->get_usegroupkey_options();
         $mform->addElement('select', 'customdec1', get_string('groupkey', 'enrol_bycategory'), $options);
         $mform->addHelpButton('customdec1', 'groupkey', 'enrol_bycategory');
 
@@ -238,7 +238,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             }
 
             // Check the password if we are enabling group enrolment keys.
-            if (!$instance->customdec1 && $data['customdec1']) {
+            if (!intval($instance->customdec1, 10) && $data['customdec1']) {
                 $checkpassword = true;
             }
         } else {
@@ -288,6 +288,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $validexpirynotify = array_keys($this->get_expirynotify_options());
         $validlongtimenosee = array_keys($this->get_longtimenosee_options());
         $validwaitlist = array_keys($this->get_enablewaitlist_options());
+        $validusegroupkeyoptions = array_keys($this->get_usegroupkey_options());
         $tovalidate = [
             'enrolstartdate' => PARAM_INT,
             'enrolenddate' => PARAM_INT,
@@ -301,7 +302,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
             'customint7' => PARAM_INT,
             'customchar1' => $validperiodstarts,
             'customchar2' => $validwaitlist,
-            'customdec1' => PARAM_INT,
+            'customdec1' => $validusegroupkeyoptions,
             'customint8' => PARAM_INT,
             'status' => $validstatus,
             'enrolperiod' => PARAM_INT,
@@ -1190,6 +1191,15 @@ class enrol_bycategory_plugin extends enrol_plugin {
     }
 
     /**
+     * Return an array of valid options for the usegroupkey (customdec1) property
+     * @return array
+     */
+    protected function get_usegroupkey_options() {
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
+        return $options;
+    }
+
+    /**
      * Return an array of valid options for customchar1 (counting start time for enrolment period) property
      *
      * @return array
@@ -1315,23 +1325,14 @@ class enrol_bycategory_plugin extends enrol_plugin {
         return [0 => get_string('nogroup', 'enrol_bycategory')] + array_combine(array_keys($groups), $values);
     }
 
-        /**
-         * Return an array of valid options for the groupkey property.
-         *
-         * @return array
-         */
-    protected function get_groupkey_options() {
-        $options = [0 => get_string('no'), 1 => get_string('yes')];
-        return $options;
-    }
-
-        /**
-         * Check if data is valid for a given enrolment plugin
-         *
-         * @param array $enrolmentdata enrolment data to validate.
-         * @param int|null $courseid Course ID.
-         * @return array Errors
-         */
+    /**
+     * Check if data is valid for a given enrolment plugin
+     *
+     * @author 2010 Petr Skoda  {@link http://skodak.org} enrol_self
+     * @param array $enrolmentdata enrolment data to validate.
+     * @param int|null $courseid Course ID.
+     * @return array Errors
+     */
     public function validate_enrol_plugin_data(array $enrolmentdata, ?int $courseid = null): array {
         global $CFG, $DB;
 

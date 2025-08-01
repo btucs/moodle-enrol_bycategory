@@ -1161,7 +1161,7 @@ final class bycategory_test extends \advanced_testcase {
      * Test the check_group_enrolment_key function
      */
 
-    public function test_enrol_self_check_group_enrolment_key(): void {
+    public function test_enrol_bycategory_check_group_enrolment_key(): void {
         global $DB;
         self::resetAfterTest(true);
 

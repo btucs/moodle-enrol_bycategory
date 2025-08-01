@@ -126,9 +126,9 @@ class enrol_bycategory_enrol_form extends moodleform {
 
         if ($instance->password) {
             if ($data['enrolpassword'] !== $instance->password) {
-                if ($instance->customint1) {
+                if (intval($instance->customdec1, 10) > 0) {
                     // Check group enrolment key.
-                    if (!enrol_self_check_group_enrolment_key($instance->courseid, $data['enrolpassword'])) {
+                    if (!enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['enrolpassword'])) {
                         // We can not hint because there are probably multiple passwords.
                         $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_bycategory');
                     }
