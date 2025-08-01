@@ -901,7 +901,7 @@ final class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user($instance1, $user3->id, $managerrole->id);
 
         // Give manager role holdkey capability.
-        assign_capability('enrol/self:holdkey', CAP_ALLOW, $managerrole->id, $context);
+        assign_capability('enrol/bycategory:holdkey', CAP_ALLOW, $managerrole->id, $context);
 
         // We should get the manager email contact.
         $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_KEY_HOLDER, $context);

@@ -44,6 +44,7 @@ $string['bulkenrolusersmissing'] = 'Die folgenden Personen konnten nicht eingesc
 Alle anderen Personen wurden erfolgreich eingeschrieben.';
 $string['bycategory:config'] = 'Instanzen von Einschreibung nach Kursbereich konfigurieren';
 $string['bycategory:enrolself'] = 'Selbsteinschreibung im Kurs';
+$string['bycategory:holdkey'] = 'Erscheinen als Inhaber/in des Selbsteinschreibungsschlüssels';
 $string['bycategory:manage'] = 'Eingeschriebene Nutzer/innen verwalten';
 $string['bycategory:unenrol'] = 'Nutzer/innen aus dem Kurs abmelden';
 $string['bycategory:unenrolself'] = 'Selbst aus dem Kurs abmelden';

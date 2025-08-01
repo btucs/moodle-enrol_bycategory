@@ -49,6 +49,12 @@ $capabilities = [
         ],
     ],
 
+    'enrol/bycategory:holdkey' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+    ),
+
     /* Voluntarily unenrol self from course - watch out for data loss. */
     'enrol/bycategory:unenrolself' => [
         'captype' => 'write',

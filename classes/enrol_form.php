@@ -67,7 +67,7 @@ class enrol_bycategory_enrol_form extends moodleform {
             $context = context_course::instance($this->instance->courseid);
             $userfieldsapi = \core_user\fields::for_userpic();
             $ufields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
-            $keyholders = get_users_by_capability($context, 'enrol/self:holdkey', $ufields);
+            $keyholders = get_users_by_capability($context, 'enrol/bycategory:holdkey', $ufields);
             $keyholdercount = 0;
             foreach ($keyholders as $keyholder) {
                 $keyholdercount++;
