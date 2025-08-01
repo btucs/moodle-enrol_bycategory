@@ -843,9 +843,11 @@ final class bycategory_test extends \advanced_testcase {
     }
 
     /**
-     * Test get_welcome_email_contact().
+     * Test get_welcome_message_contact().
+     *
+     * @covers \enrol_plugin::get_welcome_message_contact
      */
-    public function test_get_welcome_email_contact(): void {
+    public function test_get_welcome_message_contact(): void {
         global $DB;
         self::resetAfterTest(true);
 
@@ -873,7 +875,7 @@ final class bycategory_test extends \advanced_testcase {
         $plugin->update_status($instance1, ENROL_INSTANCE_ENABLED);
 
         // We do not have a teacher enrolled at this point, so it should send as no reply user.
-        $contact = $plugin->get_welcome_email_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
+        $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
         $this->assertEquals($noreplyuser, $contact);
 
         // By default, course contact is assigned to teacher role.
@@ -881,21 +883,46 @@ final class bycategory_test extends \advanced_testcase {
         $plugin->enrol_user($instance1, $user1->id, $editingteacherrole->id);
 
         // We should get the teacher email.
-        $contact = $plugin->get_welcome_email_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
+        $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
         $this->assertEquals($user1->username, $contact->username);
         $this->assertEquals($user1->email, $contact->email);
 
         // Now let's enrol another teacher.
         $plugin->enrol_user($instance1, $user2->id, $editingteacherrole->id);
-        $contact = $plugin->get_welcome_email_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
+        $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_COURSE_CONTACT, $context);
         $this->assertEquals($user1->username, $contact->username);
         $this->assertEquals($user1->email, $contact->email);
+
+        // Get manager role, and enrol user as manager.
+        $managerrole = $DB->get_record('role', ['shortname' => 'manager']);
+        $this->assertNotEmpty($managerrole);
+        $instance1->customint4 = ENROL_SEND_EMAIL_FROM_KEY_HOLDER;
+        $DB->update_record('enrol', $instance1);
+        $plugin->enrol_user($instance1, $user3->id, $managerrole->id);
+
+        // Give manager role holdkey capability.
+        assign_capability('enrol/self:holdkey', CAP_ALLOW, $managerrole->id, $context);
+
+        // We should get the manager email contact.
+        $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_KEY_HOLDER, $context);
+        $this->assertEquals($user3->username, $contact->username);
+        $this->assertEquals($user3->email, $contact->email);
+
+        // Now let's enrol another manager.
+        $plugin->enrol_user($instance1, $user4->id, $managerrole->id);
+        $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_KEY_HOLDER, $context);
+        $this->assertEquals($user3->username, $contact->username);
+        $this->assertEquals($user3->email, $contact->email);
 
         $instance1->customint4 = ENROL_SEND_EMAIL_FROM_NOREPLY;
         $DB->update_record('enrol', $instance1);
 
-        $contact = $plugin->get_welcome_email_contact(ENROL_SEND_EMAIL_FROM_NOREPLY, $context);
+        $contact = $plugin->get_welcome_message_contact(ENROL_SEND_EMAIL_FROM_NOREPLY, $context);
         $this->assertEquals($noreplyuser, $contact);
+
+        $this->expectException(\moodle_exception::class);
+        $this->expectExceptionMessage('Invalid send option');
+        $contact = $plugin->get_welcome_message_contact(10, $context);
     }
 
     /**
