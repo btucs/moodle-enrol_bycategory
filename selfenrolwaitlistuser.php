@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/enrol/bycategory/locallib.php');
 defined('MOODLE_INTERNAL') || die();
 
 require_login();
-$token = required_param('token', PARAM_TEXT);
+$token = required_param('token', PARAM_ALPHANUM);
 $dashboardurl = new moodle_url('/my');
 $tokentablename = 'enrol_bycategory_token';
 
