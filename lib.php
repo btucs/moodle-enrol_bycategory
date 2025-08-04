@@ -607,6 +607,21 @@ class enrol_bycategory_plugin extends enrol_plugin {
             $this->email_welcome_message($instance, $USER);
         }
 
+        // Test whether the password is also used as a group key.
+        if ($instance->password && $instance->customdec1) {
+            $groups = $DB->get_records('groups', array('courseid'=>$instance->courseid), 'id', 'id, enrolmentkey');
+            foreach ($groups as $group) {
+                if (empty($group->enrolmentkey)) {
+                    continue;
+                }
+                if ($group->enrolmentkey === $data->enrolpassword) {
+                    // Add user to group.
+                    groups_add_member($group->id, $USER->id, 'enrol_bycategory', $instance->id);
+                    break;
+                }
+            }
+        }
+
         return $enrolresult;
     }
 
