@@ -257,7 +257,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                         $errors['password'] = $errmsg;
                     }
                 }
-                if ($data['customdec1'] && enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['password'])) {
+                if ($data['customdec1'] && enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['password']) !== false) {
                     $errors['password'] = get_string('passwordmatchesgroupkey', 'enrol_bycategory');
                 }
             }
@@ -402,8 +402,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $fields['customint5'] = 0; // Max time since completing last course in target category.
         $fields['customint6'] = $this->get_config('newenrols');
         $fields['customint7'] = 0; // By default there is no group selected, maybe even existent.
+        $fields['customint8'] = 0; // By default there is no cohorts are selected, maybe even existent.
         $fields['customchar1'] = 0; // Count completion from 0: now or 1: enrol start time.
         $fields['customchar2'] = $this->get_config('enablewaitlist'); // Enable waiting list 0: disabled, 1: enabled.
+        $fields['customdec1'] = 0; // By default group enrolment keys are not used.
 
         return $fields;
     }
@@ -454,7 +456,15 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 // ... $instance->id is string
                 if ($instance->id == $instanceid) {
                     if ($data = $form->get_data()) {
-                        $waitlist->add_user($data->user);
+                        $groupid = 0;
+                        if($instance->password && intval($instance->customdec1, 10) === 1) {
+                            $groupid = enrol_bycategory_check_group_enrolment_key($instance->courseid, $data->enrolpassword);
+                            if($groupid === false) {
+                                $groupid = 0;
+                            }
+                        }
+
+                        $waitlist->add_user($data->user, $groupid);
                         redirect($waitlisturl);
                     }
                 }
@@ -607,21 +617,6 @@ class enrol_bycategory_plugin extends enrol_plugin {
             $this->email_welcome_message($instance, $USER);
         }
 
-        // Test whether the password is also used as a group key.
-        if ($instance->password && $instance->customdec1) {
-            $groups = $DB->get_records('groups', array('courseid'=>$instance->courseid), 'id', 'id, enrolmentkey');
-            foreach ($groups as $group) {
-                if (empty($group->enrolmentkey)) {
-                    continue;
-                }
-                if ($group->enrolmentkey === $data->enrolpassword) {
-                    // Add user to group.
-                    groups_add_member($group->id, $USER->id, 'enrol_bycategory', $instance->id);
-                    break;
-                }
-            }
-        }
-
         return $enrolresult;
     }
 
@@ -629,9 +624,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * enrol a user to course
      * @param stdClass $instance enrolment instance
      * @param int $userid
+     * @param int $groupid optional group id to add user to, in case of enroling from waiting list
      * @return bool|array true if enroled else error code and message
      */
-    public function enrol_user_manually(stdClass $instance, $userid) {
+    public function enrol_user_manually(stdClass $instance, $userid, $groupid = 0) {
         $timestart = time();
         if ($instance->enrolperiod) {
             $timeend = $timestart + $instance->enrolperiod;
@@ -641,6 +637,24 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $this->enrol_user($instance, $userid, $instance->roleid, $timestart, $timeend);
 
+        // If the user is enroled from the waiting list, this bypasses the enrolment key check and searching the groupid.
+        if ($groupid > 0) {
+            // Add user to group.
+            groups_add_member($groupid, $userid, 'enrol_bycategory', $instance->id);
+            return true;
+        }
+
+        // If the user enroled via group enrolment key, this bypasses the automatically adding to a specific group based on the enrolment method settings.
+        if ($instance->password && $instance->customdec1) {
+           $groupid = enrol_bycategory_check_group_enrolment_key($instance->courseid, $data->enrolpassword);
+            if ($groupid !== false) {
+                // Add user to group.
+                groups_add_member($groupid, $userid, 'enrol_bycategory', $instance->id);
+                return true;
+            }
+        }
+
+        // Automatically add user to group based on enrolment method settings.
         if ($instance->customint7 > 0) {
             groups_add_member($instance->customint7, $userid, 'enrol_bycategory', $instance->id);
         }
@@ -1363,7 +1377,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 // So if any instance in course uses group key we should error.
                 $usegroupenrolmentkeys =
                     $DB->count_records('enrol', ['courseid' => $courseid, 'enrol' => 'bycategory', 'customdec1' => 1]);
-                if ($usegroupenrolmentkeys && enrol_bycategory_check_group_enrolment_key($courseid, $enrolmentdata['password'])) {
+                if ($usegroupenrolmentkeys && enrol_bycategory_check_group_enrolment_key($courseid, $enrolmentdata['password']) !== false) {
                     $errors['errorpasswordmatchesgroupkey'] =
                         new lang_string('passwordmatchesgroupkey', 'enrol_bycategory', $enrolmentdata['password']);
                 }

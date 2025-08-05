@@ -23,7 +23,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once("$CFG->dirroot/cohort/lib.php");
 
  /**
   * Waiting list implementation
@@ -98,9 +97,10 @@ class enrol_bycategory_waitlist {
     /**
      * Add a user to the waiting list
      * @param int $userid
+     * @param int $groupid
      * @return int Id of the created record
      */
-    public function add_user($userid) {
+    public function add_user($userid, $groupid = 0) {
         global $DB, $USER;
 
         $now = time();
@@ -109,8 +109,13 @@ class enrol_bycategory_waitlist {
             throw new coding_exception('$userid is empty');
         }
 
+        if (empty($groupid)) {
+            $groupid = 0;
+        }
+
         return $DB->insert_record($this->tablename, [
             'userid' => $userid,
+            'groupid' => $groupid,
             'instanceid' => $this->instanceid,
             'usermodified' => $USER->id,
             'timecreated' => $now,

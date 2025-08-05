@@ -72,6 +72,11 @@ class enrol_bycategory_waitlist_form extends moodleform {
 EOD;
         $mform->addElement('html', $message);
 
+        if($instance->password) {
+            $mform->addElement('password', 'enrolpassword', get_string('password', 'enrol_bycategory'),
+                    ['id' => 'enrolpassword_'.$instance->id]);
+        }
+
         $this->add_action_buttons(false, get_string('joinwaitlist', 'enrol_bycategory'));
 
         $mform->addElement('hidden', 'id');
@@ -85,5 +90,35 @@ EOD;
         $mform->addElement('hidden', 'user');
         $mform->setType('user', PARAM_INT);
         $mform->setDefault('user', $USER->id);
+    }
+
+    public function validation($data, $files) {
+        global $DB, $CFG;
+
+        $errors = parent::validation($data, $files);
+        $instance = $this->instance;
+
+        if ($instance->password) {
+            if ($data['enrolpassword'] !== $instance->password) {
+                if (intval($instance->customdec1, 10) > 0) {
+                    // Check group enrolment key.
+                    if (!enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['enrolpassword'])) {
+                        // We can not hint because there are probably multiple passwords.
+                        $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_bycategory');
+                    }
+
+                } else {
+                    $plugin = enrol_get_plugin('bycategory');
+                    if ($plugin->get_config('showhint')) {
+                        $hint = core_text::substr($instance->password, 0, 1);
+                        $errors['enrolpassword'] = get_string('passwordinvalidhint', 'enrol_bycategory', $hint);
+                    } else {
+                        $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_bycategory');
+                    }
+                }
+            }
+        }
+
+        return $errors;
     }
 }

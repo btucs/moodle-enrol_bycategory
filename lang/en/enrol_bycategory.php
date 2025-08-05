@@ -174,6 +174,7 @@ You will not receive any more notifications.
 If you are still interested in joining this course, please leave the waiting list and join again.
 This will allow you to receive notifications again, but will also place you at the end of the waiting list.';
 $string['waitlist_deactivated'] = 'Waiting list is not active';
+$string['waitlist_group_enrolement_key'] = 'Enrolment key for group';
 $string['waitlist_info_message'] = 'If a slot becomes available you will be informed via e-mail and will be able to enrol into this course.
 Be aware that other persons may be informed as well, so be quick.
 The e-mail is sent daily, if at least one slot is available.
@@ -194,7 +195,9 @@ If you are not interested to join course "{$a->coursename}" anymore, click the f
 ';
 $string['waitlist_notification_subject'] = 'There\'s a spot available in course "{$a->coursename}"';
 $string['waitlist_status_info'] = 'Up to {$a->notifycount} Users from the waitinglist are informed about a free spot in this course {$a->nextruntime}.
-Users are only informed {$a->notifylimit} times without reaction until they are ignored.';
+Users are only informed {$a->notifylimit} times without reaction until they are ignored.
+Users that used a group enrolment key are automatically added to the designated group. If you enrol the users into a different course, they won\'t be added to a group, unless configured in the other enrolment method, even if it has the same name.
+';
 $string['waitlist_users'] = 'Users on waiting list';
 $string['waitlistnotifycount'] = 'Number of users to notify about an available slot';
 $string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';

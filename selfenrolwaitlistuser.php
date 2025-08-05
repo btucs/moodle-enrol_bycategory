@@ -37,6 +37,7 @@ $tokentablename = 'enrol_bycategory_token';
 $tokenrecord = $DB->get_record($tokentablename, ['token' => $token], '*', MUST_EXIST);
 $waitlistrecord = $DB->get_record('enrol_bycategory_waitlist', ['id' => $tokenrecord->waitlistid], '*', MUST_EXIST);
 $userid = $waitlistrecord->userid;
+$groupid = $waitlistrecord->groupid;
 $instanceid = $waitlistrecord->instanceid;
 $waitlisturl = new moodle_url('/enrol/bycategory/waitlist.php', ['enrolid' => $instanceid]);
 $waitlist = new enrol_bycategory_waitlist($instanceid);
@@ -64,6 +65,7 @@ $course = get_course($instance->courseid);
 $courseurl = new moodle_url('/course/view.php', ['id' => $course->id]);
 $context = context_course::instance($course->id, MUST_EXIST);
 $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
+$group = $groupid > 0 ? groups_get_group($groupid, 'id', MUST_EXIST) : null;
 
 $PAGE->set_url('/enrol/bycategory/selfenrolwaitlistuser.php', ['token' => $token]);
 
@@ -95,7 +97,7 @@ if ($bycategoryinstance === null) {
     redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
 }
 
-$enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id);
+$enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id, $group ? $group->id : 0);
 if ($enrolresult === true) {
     $waitlist->remove_user($user->id);
     $DB->delete_records($tokentablename, ['id' => $tokenrecord->id]);

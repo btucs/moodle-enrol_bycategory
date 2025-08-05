@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $userids = required_param_array('userids', PARAM_INT);
+$userids_groups = optional_param_array('groups', [], PARAM_ALPHANUMEXT); // Format: [userid]-[groupid].
 $targetcourseid = required_param('targetcourseid', PARAM_INT);
 $targetenrolid = required_param('targetenrolid', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
@@ -71,9 +72,23 @@ if ($confirm && confirm_sesskey()) {
     }
 
     $enrol = enrol_get_plugin($targetenrolinstance->enrol);
+    $groups = array_reduce($userids_groups, function ($carry, $item) {
+        list($userid, $groupid) = explode('-', $item);
+        if (!empty($userid) && !empty($groupid)) {
+            $carry[$userid] = $groupid;
+        }
+        return $carry;
+    }, []);
+
     if ($enrol instanceof enrol_bycategory_plugin) {
         foreach ($onwaitlistuserids as $userid) {
-            $enrolresult = $enrol->enrol_user_manually($targetenrolinstance, $userid);
+            $groupid = 0;
+            // Only set the groupid if the target enrolment instance is the one where the user is on the waiting list.
+            if($targetenrolid == $instance->id && count($groups) > 0 && isset($groups[$userid]) && $groups[$userid] > 0) {
+                $groupid = $groups[$userid];
+            }
+
+            $enrolresult = $enrol->enrol_user_manually($targetenrolinstance, $userid, $groupid);
             if ($enrolresult === true) {
                 $waitlist->remove_user($userid);
             }
@@ -98,6 +113,7 @@ if ($confirm && confirm_sesskey()) {
 }
 
 $users = enrol_bycategory_get_users_by_id($userids);
+$groups = enrol_bycategory_get_waitlist_user_groups($userids, $instance->id);
 
 $enrolinstance = $DB->get_record('enrol', ['id' => $targetenrolid], '*', MUST_EXIST);
 $enrolmentname = empty($enrolinstance->name) ? get_string('pluginname', 'enrol_' . $enrolinstance->enrol) : $enrolinstance->name;
@@ -119,6 +135,7 @@ $params = [
 
 for ($i = 0; $i < count($userids); $i++) {
     $params["userids[{$i}]"] = $userids[$i];
+    $params["groups[{$i}]"] = $userids[$i] . '-' . (isset($groups[$userids[$i]]) ? $groups[$userids[$i]]->groupid : 0);
 }
 
 $yesurl = new moodle_url($PAGE->url, $params);

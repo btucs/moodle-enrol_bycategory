@@ -45,7 +45,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
 
         $this->course = $course;
 
-        $columns = ['select', 'firstname', 'lastname', 'email', 'timecreated', 'notified', 'actions'];
+        $columns = ['select', 'firstname', 'lastname', 'email', 'groupid', 'timecreated', 'notified', 'actions'];
         $this->define_columns($columns);
 
         $checkboxattrs = [
@@ -59,6 +59,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
             get_string('firstname'),
             get_string('lastname'),
             get_string('email'),
+            get_string('waitlist_group_enrolement_key', 'enrol_bycategory'),
             get_string('onwaitlistsince', 'enrol_bycategory'),
             get_string('notifiedcount', 'enrol_bycategory'),
             '',
@@ -100,7 +101,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
 
         $sql = "SELECT u.id, u.firstname, u.lastname, u.email, u.firstnamephonetic,
                    u.lastnamephonetic, u.middlename, u.alternatename, ebw.timecreated,
-                   ebw.notified
+                   ebw.notified, ebw.groupid
               FROM {enrol_bycategory_waitlist} ebw
               JOIN {user} u ON u.id = ebw.userid
               {$where}
@@ -112,6 +113,24 @@ class enrol_bycategory_waitlist_table extends table_sql {
         } else {
             $this->rawdata = $DB->get_records_sql($sql, $this->sql->params);
         }
+    }
+
+    /**
+     * The groupid column.
+     *
+     * @param stdClass $row the row data.
+     * @return string;
+     * @throws \moodle_exception
+     * @throws \coding_exception
+     */
+    public function col_groupid($row) {
+        global $DB;
+
+        if ($row->groupid) {
+            $group = $DB->get_record('groups', ['id' => $row->groupid], 'name');
+            return format_string($group->name);
+        }
+        return '';
     }
 
     /**
@@ -159,6 +178,7 @@ class enrol_bycategory_waitlist_table extends table_sql {
         $url = new moodle_url('/enrol/bycategory/enrolwaitlistuser.php', [
             'enrolid' => $this->sql->params['instanceid'],
             'uid' => $row->id,
+            'groupid' => $row->groupid,
         ]);
 
         $actions[] = $OUTPUT->action_icon(

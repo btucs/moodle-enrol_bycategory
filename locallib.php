@@ -43,6 +43,29 @@ function enrol_bycategory_get_users_by_id($userids) {
 }
 
 /**
+ * Get groups of users based on user ids and instance id.
+ *
+ * @param array $userids list of user ids
+ * @param int $instanceid instance id
+ * @return array list of groups with user ids
+ */
+function enrol_bycategory_get_waitlist_user_groups($userids, $instanceid) {
+    global $DB;
+
+    list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
+    $params = ['instanceid' => $instanceid] + $inparams;
+    $entries = $DB->get_records_select(
+        'enrol_bycategory_waitlist',
+        "userid {$insql} AND instanceid = :instanceid",
+        $params,
+        '',
+        'userid, groupid'
+    );
+
+    return $entries;
+}
+
+/**
  * display management view for teachers
  * @param enrol_bycategory_waitlist $waitlist
  * @param stdClass $course
@@ -192,7 +215,7 @@ function enrol_bycategory_check_group_enrolment_key($courseid, $enrolpassword) {
             continue;
         }
         if ($group->enrolmentkey === $enrolpassword) {
-            $found = true;
+            $found = $group->id;
             break;
         }
     }

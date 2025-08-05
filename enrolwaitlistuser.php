@@ -29,13 +29,15 @@ defined('MOODLE_INTERNAL') || die();
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $userid = required_param('uid', PARAM_INT);
+$groupid = optional_param('groupid', 0, PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
 
 $instance = $DB->get_record('enrol', ['id' => $enrolid, 'enrol' => 'bycategory'], '*', MUST_EXIST);
 $course = get_course($instance->courseid);
 $context = context_course::instance($course->id, MUST_EXIST);
 
-$user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
+$user = $DB->get_record('user', ['id' => $userid], 'id', MUST_EXIST);
+$group = $groupid > 0 ? groups_get_group($groupid, 'id', MUST_EXIST) : null;
 
 $PAGE->set_url('/enrol/bycategory/enrolwaitlistuser.php', ['enrolid' => $enrolid, 'uid' => $user->id]);
 require_login($course);
@@ -65,7 +67,7 @@ if ($confirm && confirm_sesskey()) {
             redirect($waitlisturl, get_string('enrolmentmissing', 'enrol_bycategory'), null, notification::NOTIFY_ERROR);
         }
 
-        $enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id);
+        $enrolresult = $enrol->enrol_user_manually($bycategoryinstance, $user->id, $group ? $group->id : 0);
         if ($enrolresult === true) {
             $waitlist->remove_user($user->id);
         }

@@ -896,7 +896,7 @@ final class bycategory_test extends \advanced_testcase {
         $this->assertFalse($result);
 
         $result = enrol_bycategory_check_group_enrolment_key($course->id, 'thepassword');
-        $this->assertTrue($result);
+        $this->assertEquals($group2->id, $result);
 
         // Test disabling group options.
         $course->groupmode = NOGROUPS;
@@ -907,7 +907,7 @@ final class bycategory_test extends \advanced_testcase {
         $this->assertFalse($result);
 
         $result = enrol_bycategory_check_group_enrolment_key($course->id, 'thepassword');
-        $this->assertTrue($result);
+        $this->assertEquals($group2->id, $result);
 
         // Test without groups.
         $othercourse = self::getDataGenerator()->create_course();

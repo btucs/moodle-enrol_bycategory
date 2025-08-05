@@ -179,6 +179,7 @@ Sie werden keine weiteren Benachrichtigungen erhalten.
 Wenn Sie immernoch interessiert sind sich in diesen Kurs einzuschreiben, verlassen Sie bitte die Warteliste und schreiben Sie sich erneut ein.
 Sie werden dadurch wieder Benachrichtigungen erhalten, werden aber auch an das Ende der Warteliste gesetzt.';
 $string['waitlist_deactivated'] = 'Warteliste ist nicht aktiv';
+$string['waitlist_group_enrolement_key'] = 'Einschreibeschlüssel für Gruppe';
 $string['waitlist_info_message'] = 'Sie werden per Email benachrichtigt, sobald ein Platz verfügbar wird und erhalten dann die Möglichkeit, sich in den Kurs einzuschreiben.
 Bitte beachten Sie, dass weitere Teilnehmer*innen ebenfalls informiert werden, also seien Sie schnell.
 Die Email wird täglich versendet, wenn mindestens ein Platz verfügbar ist.
@@ -198,8 +199,10 @@ Wenn sie nicht mehr interessiert sind dem Kurs "{$a->coursename}" beizutreten, k
 {$a->leavewaitlisturl}
 ';
 $string['waitlist_notification_subject'] = 'Es ist ein Platz in Kurs "{$a->coursename}" verfügbar';
-$string['waitlist_status_info'] = 'Bis zu {$a->notifycount} Teilnehmer von der Warteliste werden am {$a->nextruntime} über einen freien Platz in diesem Kurs informiert.
-Teilnehmer werden nur {$a->notifylimit} Mal informiert. Wenn sie bis dahin nicht reagieren werden sie ignoriert';
+$string['waitlist_status_info'] = 'Bis zu {$a->notifycount} Teilnehmer*innen von der Warteliste werden am {$a->nextruntime} über einen freien Platz in diesem Kurs informiert.
+Teilnehmer*innen werden nur {$a->notifylimit} Mal informiert. Wenn sie bis dahin nicht reagieren werden sie ignoriert
+Teilnehmer*innen, die einen Gruppeneinschreibeschlüssel verwendet haben, werden automatisch der vorgesehenen Gruppe hinzugefügt. Wenn Sie die Teilnehmer*innen in einen anderen Kurs einschreiben, werden sie nicht in eine Gruppe aufgenommen, es sei denn, dies ist in der anderen Einschreibemethode konfiguriert, auch wenn sie denselben Namen hat.
+';
 $string['waitlist_users'] = 'Teilnehmer*innen auf der Warteliste';
 $string['waitlistnotifycount'] = 'Anzahl der Teilnehmer*innen die über einen freien Platz informiert werden.';
 $string['waitlistnotifycount_help'] = 'Bis zu X Teilnehmer*innen werden von der Warteliste werden über einen freien Platz informiert. Die Teilnehmer*in die zuerst reagiert erhält den Platz.';
