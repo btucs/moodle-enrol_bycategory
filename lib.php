@@ -257,7 +257,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
                         $errors['password'] = $errmsg;
                     }
                 }
-                if ($data['customdec1'] && enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['password']) !== false) {
+                if (
+                    $data['customdec1']
+                    && enrol_bycategory_check_group_enrolment_key($instance->courseid, $data['password']) !== false
+                ) {
                     $errors['password'] = get_string('passwordmatchesgroupkey', 'enrol_bycategory');
                 }
             }
@@ -457,9 +460,9 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 if ($instance->id == $instanceid) {
                     if ($data = $form->get_data()) {
                         $groupid = 0;
-                        if($instance->password && intval($instance->customdec1, 10) === 1) {
+                        if ($instance->password && intval($instance->customdec1, 10) === 1) {
                             $groupid = enrol_bycategory_check_group_enrolment_key($instance->courseid, $data->enrolpassword);
-                            if($groupid === false) {
+                            if ($groupid === false) {
                                 $groupid = 0;
                             }
                         }
@@ -644,9 +647,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
             return true;
         }
 
-        // If the user enroled via group enrolment key, this bypasses the automatically adding to a specific group based on the enrolment method settings.
+        // If the user enroled via group enrolment key, this bypasses the automatically adding to a
+        // ... specific group based on the enrolment method settings.
         if ($instance->password && $instance->customdec1) {
-           $groupid = enrol_bycategory_check_group_enrolment_key($instance->courseid, $data->enrolpassword);
+            $groupid = enrol_bycategory_check_group_enrolment_key($instance->courseid, $data->enrolpassword);
             if ($groupid !== false) {
                 // Add user to group.
                 groups_add_member($groupid, $userid, 'enrol_bycategory', $instance->id);
@@ -1071,7 +1075,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
      * @param context $context where the user will be fetched from.
      * @return null|stdClass the contact user object.
      */
-    public function get_welcome_message_contact(int $sendoption, context $context): ?stdClass   {
+    public function get_welcome_message_contact(int $sendoption, context $context): ?stdClass {
         $contact = parent::get_welcome_message_contact($sendoption, $context);
 
         // The parent method only handles enrol/self:holdkey.
@@ -1377,7 +1381,10 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 // So if any instance in course uses group key we should error.
                 $usegroupenrolmentkeys =
                     $DB->count_records('enrol', ['courseid' => $courseid, 'enrol' => 'bycategory', 'customdec1' => 1]);
-                if ($usegroupenrolmentkeys && enrol_bycategory_check_group_enrolment_key($courseid, $enrolmentdata['password']) !== false) {
+                if (
+                    $usegroupenrolmentkeys
+                    && enrol_bycategory_check_group_enrolment_key($courseid, $enrolmentdata['password']) !== false
+                ) {
                     $errors['errorpasswordmatchesgroupkey'] =
                         new lang_string('passwordmatchesgroupkey', 'enrol_bycategory', $enrolmentdata['password']);
                 }

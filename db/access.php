@@ -29,7 +29,6 @@ $capabilities = [
 
     /* Add or edit enrol-bycategory instance in course. */
     'enrol/bycategory:config' => [
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -40,7 +39,6 @@ $capabilities = [
 
     /* Manage user bycategory-enrolments. */
     'enrol/bycategory:manage' => [
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
@@ -49,11 +47,10 @@ $capabilities = [
         ],
     ],
 
-    'enrol/bycategory:holdkey' => array(
-
+    'enrol/bycategory:holdkey' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-    ),
+    ],
 
     /* Voluntarily unenrol self from course - watch out for data loss. */
     'enrol/bycategory:unenrolself' => [

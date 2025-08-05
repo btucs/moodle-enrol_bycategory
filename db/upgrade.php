@@ -118,7 +118,7 @@ function xmldb_enrol_bycategory_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2023051200, 'enrol', 'bycategory');
     }
 
-    if($oldversion < 2025080100) {
+    if ($oldversion < 2025080100) {
         // Define field groupid to be added to enrol_bycategory_waitlist.
         $table = new xmldb_table('enrol_bycategory_waitlist');
         $field = new xmldb_field('groupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'instanceid');

@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $enrolid = required_param('enrolid', PARAM_INT);
 $userids = required_param_array('userids', PARAM_INT);
-$userids_groups = optional_param_array('groups', [], PARAM_ALPHANUMEXT); // Format: [userid]-[groupid].
+$useridsgroups = optional_param_array('groups', [], PARAM_ALPHANUMEXT); // Format: [userid]-[groupid].
 $targetcourseid = required_param('targetcourseid', PARAM_INT);
 $targetenrolid = required_param('targetenrolid', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
@@ -72,7 +72,7 @@ if ($confirm && confirm_sesskey()) {
     }
 
     $enrol = enrol_get_plugin($targetenrolinstance->enrol);
-    $groups = array_reduce($userids_groups, function ($carry, $item) {
+    $groups = array_reduce($useridsgroups, function ($carry, $item) {
         list($userid, $groupid) = explode('-', $item);
         if (!empty($userid) && !empty($groupid)) {
             $carry[$userid] = $groupid;
@@ -84,7 +84,7 @@ if ($confirm && confirm_sesskey()) {
         foreach ($onwaitlistuserids as $userid) {
             $groupid = 0;
             // Only set the groupid if the target enrolment instance is the one where the user is on the waiting list.
-            if($targetenrolid == $instance->id && count($groups) > 0 && isset($groups[$userid]) && $groups[$userid] > 0) {
+            if ($targetenrolid == $instance->id && count($groups) > 0 && isset($groups[$userid]) && $groups[$userid] > 0) {
                 $groupid = $groups[$userid];
             }
 

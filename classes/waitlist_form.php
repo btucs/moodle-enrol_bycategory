@@ -72,7 +72,7 @@ class enrol_bycategory_waitlist_form extends moodleform {
 EOD;
         $mform->addElement('html', $message);
 
-        if($instance->password) {
+        if ($instance->password) {
             $mform->addElement('password', 'enrolpassword', get_string('password', 'enrol_bycategory'),
                     ['id' => 'enrolpassword_'.$instance->id]);
         }
@@ -92,6 +92,12 @@ EOD;
         $mform->setDefault('user', $USER->id);
     }
 
+    /**
+     * Validate form data
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
     public function validation($data, $files) {
         global $DB, $CFG;
 
