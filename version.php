@@ -27,5 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'enrol_bycategory';
 $plugin->release = '1.4.0';
 $plugin->version = 2025080100;
-$plugin->requires = 2022041912; // Moodle 4.0.
+$plugin->requires = 2024042200; // Moodle 4.4.
 $plugin->maturity = MATURITY_STABLE;
