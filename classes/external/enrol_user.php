@@ -80,7 +80,7 @@ class enrol_user extends external_api {
      * @return array Contains status (boolean) and any warnings
      */
     public static function execute($courseid, $password = '', $instanceid = 0) {
-        global $CFG;
+        global $CFG, $USER;
 
         require_once($CFG->libdir . '/enrollib.php');
 
@@ -175,6 +175,25 @@ class enrol_user extends external_api {
 
                 // Do the enrolment.
                 $data = ['enrolpassword' => $params['password']];
+
+                if ($instance->customchar2) {
+                    $waitlist = new \enrol_bycategory_waitlist($instance->id);
+
+                    $waitlistcount = $waitlist->get_count();
+                    $userwaitlistcanenrol = $waitlist->enrol_has_open_slots() && $waitlistcount == 0;
+
+                    if ($userwaitlistcanenrol) {
+                        $enrol->enrol_self($instance, (object) $data);
+                        $enrolled = true;
+                    } else {
+                        if (!$waitlist->is_on_waitlist($USER->id)) {
+                            $waitlist->add_user($USER->id);
+                        }
+                        $enrolled = true;
+
+                    }
+                    break;
+                }
 
                 $enrol->enrol_self($instance, (object) $data);
                 $enrolled = true;

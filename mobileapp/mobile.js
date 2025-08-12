@@ -37,18 +37,19 @@ const invalidateEnrolmentInfo = (id) => {
     return site.invalidateWsCacheForKey(getEnrolmentInfoCacheKey(id));
 };
 
-const selfEnrol = (courseId, password, instanceId) => {
+const selfEnrol = async (courseId, password, instanceId, info) => {
     const site = this.CoreSitesProvider.getCurrentSite();
 
     const params = {
         courseid: courseId,
-        password: password,
+        password: password || '',
     };
     if (instanceId) {
         params.instanceid = instanceId;
     }
 
-    return site.write('enrol_bycategory_enrol_user', params).then(response => {
+    return site.write('enrol_bycategory_enrol_user', params).then(async response => {
+
         if (response.status) {
             return true;
         }
@@ -69,64 +70,143 @@ const selfEnrol = (courseId, password, instanceId) => {
     });
 };
 
-const validatePassword = (method, password) => {
-
+const validatePassword = async (method, info) => {
     return this.CoreDomUtilsProvider.showModalLoading('core.loading', true).then(modal => {
         const result = {
-            password: password || '',
+            password: info.password || '',
         };
 
-        return selfEnrol(method.courseid, password, method.id).then(enroled => {
-            result.validated = enroled;
+        const waitlistActive = info.waitlist;
+        const canEnrol = info.waitlistcanenrol;
 
-            return result;
-        }).catch(error => {
-            if (error && error.errorcode === this.CoreCoursesProvider.ENROL_INVALID_KEY) {
-                result.validated = false;
-                result.error = error.message;
+        if (waitlistActive && !canEnrol) {
+
+            let confirmWaitlist = Promise.resolve();
+
+            confirmWaitlist = this.CoreDomUtilsProvider.showConfirm(
+                    this.TranslateService.instant('plugin.enrol_bycategory.joinwaitlistmessage'),
+                    this.TranslateService.instant('plugin.enrol_bycategory.waitlist'),
+                    this.TranslateService.instant('plugin.enrol_bycategory.joinwaitlist'),
+            );
+
+            return confirmWaitlist.then(() => {
+
+                return selfEnrol(method.courseid, info.password, method.id, info).then(enroled => {
+
+                    let alert = Promise.resolve();
+                    alert = this.CoreDomUtilsProvider.showAlert(this.TranslateService.instant('plugin.enrol_bycategory.waitlist'),
+                        this.TranslateService.instant('plugin.enrol_bycategory.waitlistadded'));
+
+                    alert.then(() => {
+                        result.waitlistadded = true
+                        result.validated = false;
+
+                        return result;
+                    });
+
+                }).catch(error => {
+                    if (error && error.errorcode === this.CoreCoursesProvider.ENROL_INVALID_KEY) {
+                        result.validated = false;
+                        result.error = error.message;
+
+                        return result;
+                    }
+
+                    this.CoreDomUtilsProvider.showErrorModalDefault(error, 'plugin.enrol_bycategory.errorselfenrol', true);
+
+                    throw error;
+                }).finally(() => {
+                    modal.dismiss();
+                });
+
+            }).catch((error) => {
+                    result.validated = false;
+                    result.canceled = true;
+                    modal.dismiss();
+                    return result;
+            });
+
+
+        } else {
+           return selfEnrol(method.courseid, info.password, method.id, info).then(enroled => {
+
+                result.validated = enroled;
 
                 return result;
-            }
 
-            this.CoreDomUtilsProvider.showErrorModalDefault(error, 'plugin.enrol_bycategory.errorselfenrol', true);
+            }).catch(async error => {
+                if (error && error.errorcode === this.CoreCoursesProvider.ENROL_INVALID_KEY) {
+                    result.validated = false;
+                    result.error = error.message;
 
-            throw error;
-        }).finally(() => {
-            modal.dismiss();
-        });
+                    return result;
+                }
+
+                this.CoreDomUtilsProvider.showErrorModalDefault(error, 'plugin.enrol_bycategory.errorselfenrol', true);
+
+                throw error;
+            }).finally(() => {
+                modal.dismiss();
+            });
+        }
     });
 };
 
-const performEnrol = (method) => {
+const performEnrol = (method, info) => {
+
+    if (info.userwaitliststatus) {
+        return false;
+    }
     // Try to enrol without password.
-    return validatePassword(method).then(response => {
-        if (response.validated) {
-            return true;
-        }
+    return validatePassword(method, info).then(response => {
+
+            if (response.validated) {
+                return true;
+            }
+
+            if (response.waitlistadded) {
+                return false;
+            }
+
+            if (response.canceled) {
+                return false;
+            }
 
         // Ask for password.
-        return this.CoreDomUtilsProvider.promptPassword({
-            title: method.name,
-            validator: (password) => validatePassword(method, password),
-            placeholder: 'plugin.enrol_bycategory.password',
-            submit: 'core.courses.enrolme',
-        }).then(response => {
-            return response.validated;
-        });
+        if (info.enrolpassword) {
+            return this.CoreDomUtilsProvider.promptPassword({
+                title: method.name,
+                validator: (password) => {
+
+                    info.password = password;
+
+                    return validatePassword(method, info);
+                },
+                placeholder: 'plugin.enrol_bycategory.password',
+                submit: 'core.courses.enrolme',
+            }).then(response => {
+                return response.validated;
+            });
+        } else {
+            return false;
+        }
+
     }).catch(() => {
         return false;
     });
 };
 
 var result = {
-    getInfoIcons: (courseId) => {
-        return this.CoreEnrolService.getSupportedCourseEnrolmentMethods(courseId, 'bycategory').then(enrolments => {
+    getInfoIcons: async (courseId) => {
+
+        return this.CoreEnrolService.getSupportedCourseEnrolmentMethods(courseId, 'bycategory').then(async enrolments => {
+
             if (!enrolments.length) {
                 return [];
             }
 
-            // Since this code is for testing purposes just use the first one.
             return getEnrolmentInfo(enrolments[0].id).then(info => {
+
                 if (!info.enrolpassword) {
                     return [{
                         label: 'plugin.enrol_bycategory.pluginname',
@@ -145,26 +225,42 @@ var result = {
         return getEnrolmentInfo(method.id).then(info => {
             let promise = Promise.resolve();
 
-            if (!info.enrolpassword) {
-                promise = this.CoreDomUtilsProvider.showConfirm(
-                    this.TranslateService.instant('plugin.enrol_bycategory.confirmselfenrol') + '<br>' +
-                    this.TranslateService.instant('plugin.enrol_bycategory.nopassword'),
-                    method.name,
-                );
+            let waitlistActive = info.waitlist;
+            let userWaitlistStatus = info.userwaitliststatus;
+            let canEnrol = info.waitlistcanenrol;
+
+            let message = this.TranslateService.instant('plugin.enrol_bycategory.confirmselfenrol');
+
+            if (waitlistActive) {
+                if (userWaitlistStatus) {
+                    message = this.TranslateService.instant('plugin.enrol_bycategory.youareonthewaitlist');
+                } else if (!canEnrol) {
+                    message += '<br>' + this.TranslateService.instant('plugin.enrol_bycategory.waitlistmessage');
+                }
             }
 
+            if (!info.enrolpassword) {
+                message += '<br>' +
+                    this.TranslateService.instant('plugin.enrol_bycategory.nopassword');
+            }
+
+            promise = this.CoreDomUtilsProvider.showConfirm(
+                    message,
+                    method.name
+                );
+
             return promise.then(() => {
-                return performEnrol(method);
+
+                return performEnrol(method, info);
             }).catch(() => {
                 return false;
             });
         });
     },
-    invalidate: (method) => {
+    invalidate: async(method) => {
+
         return invalidateEnrolmentInfo(method.id);
     },
 };
-
-console.error(this);
 
 result;
