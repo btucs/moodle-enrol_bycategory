@@ -61,6 +61,7 @@ $string['cohortonly_help'] = 'Die Einschreibung nach Kategorie kann auf Mitglied
 $string['completionperiod'] = 'Zeitraum seit Abschluss';
 $string['completionperiod_help'] = 'Der erlaubte maximale Zeitraum seit Abschluss eines Kurses aus dem eingestellten Kursbereich.';
 $string['confirmbulkdeleteenrolment'] = 'Möchten Sie die Einschreibungen dieser Nutzer/innen wirklich löschen?';
+$string['confirmselfenrol'] = 'Sind Sie sicher, dass Sie sich in diesen Kurs einschreiben möchten?';
 $string['customwelcomemessage'] = 'Begrüßungstext';
 $string['customwelcomemessage_help'] = 'Ein Begrüßungstext kann ein einfacher Text sein oder im Moodle-Auto-Format auch HTML-Tags und MultiLang-Tags enthalten.
 

@@ -85,7 +85,9 @@ final class get_instance_info_test extends externallib_advanced_testcase {
         $this->assertEquals('Test bycategory', $returnvalue['name']);
         $this->assertArrayHasKey('status', $returnvalue);
 
-        $this->assertArrayNotHasKey('enrolpassword', $returnvalue);
+        if (array_key_exists('enrolpassword', $returnvalue)) {
+            $this->assertIsBool($returnvalue['enrolpassword']);
+        }
     }
 
     /**

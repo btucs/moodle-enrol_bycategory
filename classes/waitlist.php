@@ -25,7 +25,6 @@
   * Waiting list implementation
   */
 class enrol_bycategory_waitlist {
-
     /** @var string */
     private $tablename = 'enrol_bycategory_waitlist';
     /** @var int */
@@ -82,10 +81,11 @@ class enrol_bycategory_waitlist {
             return;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($userids);
+        [$insql, $inparams] = $DB->get_in_or_equal($userids);
         array_push($inparams, $this->instanceid);
 
-        $DB->delete_records_select($this->tablename,
+        $DB->delete_records_select(
+            $this->tablename,
             "userid {$insql} and instanceid = ?",
             $inparams
         );
@@ -143,7 +143,7 @@ class enrol_bycategory_waitlist {
     public function is_on_waitlist_bulk($userids) {
         global $DB;
 
-        list ($insql, $inparams) = $DB->get_in_or_equal($userids);
+         [$insql, $inparams] = $DB->get_in_or_equal($userids);
         array_push($inparams, $this->instanceid);
 
         $sql = "SELECT userid FROM {{$this->tablename}} WHERE userid $insql AND instanceid = ?";
@@ -239,7 +239,6 @@ class enrol_bycategory_waitlist {
          * or enrolment is not allowed.
          */
         if ($ignorewaitlist === false) {
-
             if ($instance->enrolenddate != 0 && $instance->enrolenddate < time()) {
                 return get_string('canntenrollate', 'enrol_bycategory', userdate($instance->enrolenddate));
             }
@@ -309,6 +308,12 @@ class enrol_bycategory_waitlist {
             $count = $DB->count_records('user_enrolments', ['enrolid' => $instance->id]);
             if ($count >= $instance->customint3) {
                 // Bad luck, no more self enrolments here.
+
+                if (!empty($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MoodleMobile') !== false) {
+                    // If the user is using the Moodle Mobile app, we do not show the error message.
+                    return true;
+                }
+
                 return get_string('maxenrolledreached', 'enrol_bycategory');
             }
 
@@ -317,6 +322,10 @@ class enrol_bycategory_waitlist {
                 $waitlist = new enrol_bycategory_waitlist($instance->id);
                 $waitlistcount = $waitlist->get_count();
                 if ($waitlistcount > 0) {
+                    if (!empty($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MoodleMobile') !== false) {
+                        // If the user is using the Moodle Mobile app, we do not show the error message.
+                        return true;
+                    }
                     // Users on the waiting list have to be enroled first before self enrolment becomes available again.
                     return get_string('maxenrolledreached', 'enrol_bycategory');
                 }
@@ -399,7 +408,7 @@ class enrol_bycategory_waitlist {
             $usernotifylimit = 5;
         }
 
-        list($insql, $inparams) = $DB->get_in_or_equal($enrolids, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($enrolids, SQL_PARAMS_NAMED);
         $sql = "WITH waitlist_window as (
                     SELECT *, ROW_NUMBER() OVER (
                         PARTITION BY instanceid ORDER BY timecreated ASC
@@ -427,7 +436,7 @@ class enrol_bycategory_waitlist {
     public static function increase_notified($waitlistids) {
         global $DB;
 
-        list($insql, $inparams) = $DB->get_in_or_equal($waitlistids, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($waitlistids, SQL_PARAMS_NAMED);
         $sql = "UPDATE {enrol_bycategory_waitlist}
                    SET notified = notified + 1, timemodified = :now
                  WHERE id $insql";
@@ -450,5 +459,25 @@ class enrol_bycategory_waitlist {
         $startofday->setTime(0, 0, 0, 0);
 
         return $startofday->getTimestamp();
+    }
+
+    /**
+     * Check if the enrolment instance has open slots for enrolment
+     *
+     * @return bool Returns true if open enrolment slots are available, false otherwise
+     */
+    public function enrol_has_open_slots() {
+        global $DB;
+
+        $instance = $DB->get_record('enrol', ['id' => $this->instanceid], '*', MUST_EXIST);
+
+        $count = $DB->count_records('user_enrolments', ['enrolid' => $instance->id]);
+
+        if ($instance->customint3 != 0 && $count >= $instance->customint3) {
+            // No more open enrolment slots.
+            return false;
+        }
+
+        return true;
     }
 }

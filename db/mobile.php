@@ -38,7 +38,16 @@ $addons = [
             ['bycategory:enrolself', 'enrol_bycategory'],
             ['canntenrol', 'enrol_bycategory'],
             ['nopassword', 'enrol_bycategory'],
+            ['confirmselfenrol', 'enrol_bycategory'],
             ['password', 'enrol_bycategory'],
+            ['waitlist', 'enrol_bycategory'],
+            ['joinwaitlist', 'enrol_bycategory'],
+            ['joinwaitlistmessage', 'enrol_bycategory'],
+            ['waitlistmessage', 'enrol_bycategory'],
+            ['maxenrolledreached', 'enrol_bycategory'],
+            ['youareonthewaitlist', 'enrol_bycategory'],
+            ['waitlistadded', 'enrol_bycategory'],
+
         ],
     ],
 ];

@@ -161,7 +161,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
 
         $cohorts = [0 => get_string('no')];
         $allcohorts = cohort_get_available_cohorts($context, 0, 0, 0);
-        if ($instance->customint8 && !isset($allcohorts[$instance->customint8])) {
+        if (!empty($instance->customint8) && !isset($allcohorts[$instance->customint8])) {
             $c = $DB->get_record('cohort',
                                 ['id' => (int) $instance->customint8],
                                 'id, name, idnumber, contextid, visible',
@@ -177,7 +177,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
                 $cohorts[$c->id] .= ' ['.s($c->idnumber).']';
             }
         }
-        if ($instance->customint8 && !isset($allcohorts[$instance->customint8])) {
+        if (!empty($instance->customint8) && !isset($allcohorts[$instance->customint8])) {
             // Somebody deleted a cohort, better keep the wrong value so that random ppl can not enrol.
             $cohorts[$instance->customint8] = get_string('unknowncohort', 'cohort', $instance->customint8);
         }
@@ -1109,7 +1109,7 @@ class enrol_bycategory_plugin extends enrol_plugin {
         $a->coursename = format_string($course->fullname, true, ['context' => $context]);
         $a->profileurl = "$CFG->wwwroot/user/view.php?id=$user->id&course=$course->id";
 
-        if (trim($instance->customtext1) !== '') {
+        if (!empty($instance->customtext1) &&trim($instance->customtext1) !== '') {
             $message = $instance->customtext1;
             $key = ['{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}'];
             $value = [$a->coursename, $a->profileurl, fullname($user), $user->email];
