@@ -68,6 +68,24 @@ class get_instance_info extends external_api {
                 'name' => new external_value(PARAM_RAW, 'name of enrolment plugin'),
                 'status' => new external_value(PARAM_RAW, 'status of enrolment plugin'),
                 'enrolpassword' => new external_value(PARAM_RAW, 'password required for enrolment', VALUE_OPTIONAL),
+                'waitlist' => new external_value(
+                    PARAM_BOOL,
+                    'whether waitlist is enabled for this instance',
+                    VALUE_DEFAULT,
+                    false
+                ),
+                'userwaitliststatus' => new external_value(
+                    PARAM_BOOL,
+                    'whether user is on waitlist for this instance',
+                    VALUE_DEFAULT,
+                    false
+                ),
+                'waitlistcanenrol' => new external_value(
+                    PARAM_BOOL,
+                    'whether user is on waitlist for this instance',
+                    VALUE_DEFAULT,
+                    false
+                ),
             ]
         );
     }
@@ -79,7 +97,7 @@ class get_instance_info extends external_api {
      * @return array Information about the enrollment instance
      */
     public static function execute($instanceid) {
-        global $DB, $CFG;
+        global $DB, $CFG, $USER;
 
         require_once($CFG->libdir . '/enrollib.php');
 
@@ -100,10 +118,20 @@ class get_instance_info extends external_api {
         }
 
         $instanceinfo = (array) $enrolplugin->get_enrol_info($enrolinstance);
-        if (isset($instanceinfo['requiredparam']->enrolpassword)) {
-            $instanceinfo['enrolpassword'] = $instanceinfo['requiredparam']->enrolpassword;
+        if (!empty($enrolinstance->password)) {
+            $instanceinfo['enrolpassword'] = true;
         }
-        unset($instanceinfo->requiredparam);
+
+        $waitlist = new \enrol_bycategory_waitlist($instanceid);
+        $userwaitliststatus = $waitlist->is_on_waitlist($USER->id);
+
+        $waitlistcount = $waitlist->get_count();
+
+        $userwaitlistcanenrol = $waitlist->enrol_has_open_slots() && $waitlistcount == 0;
+
+        $instanceinfo['waitlist'] = (int) $enrolinstance->customchar2;
+        $instanceinfo['userwaitliststatus'] = $userwaitliststatus;
+        $instanceinfo['waitlistcanenrol'] = $userwaitlistcanenrol;
 
         return $instanceinfo;
     }

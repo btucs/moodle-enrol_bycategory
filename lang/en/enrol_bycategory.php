@@ -61,6 +61,7 @@ $string['cohortonly_help'] = 'Enrolment by category may be restricted to members
 $string['completionperiod'] = 'Timelimit since completion';
 $string['completionperiod_help'] = 'Allowed duration since completing a course in the configured category.';
 $string['confirmbulkdeleteenrolment'] = 'Are you sure you want to delete these user enrolments?';
+$string['confirmselfenrol'] = 'Are you sure you want to enrol yourself in this course?';
 $string['courseid'] = 'Course ID';
 $string['customwelcomemessage'] = 'Custom welcome message';
 $string['customwelcomemessage_help'] = 'A custom welcome message may be added as plain text or Moodle-auto format, including HTML tags and multi-lang tags.
@@ -123,8 +124,8 @@ $string['longtimenosee_help'] = 'If users haven\'t accessed a course for a long 
 $string['maxenrolled'] = 'Max enrolled users';
 $string['maxenrolled_help'] = 'Specifies the maximum number of users that can self enrol. 0 means no limit.';
 $string['maxenrolledreached'] = 'Maximum number of users allowed to self-enrol was already reached.';
-$string['messageprovider:expiry_notification'] = 'By Category enrolment expiry notifications';
-$string['messageprovider:waitlist_notification'] = 'By Category enrolment waiting list notifications';
+$string['message_provider:expiry_notification'] = 'By Category enrolment expiry notifications';
+$string['message_provider:waitlist_notification'] = 'By Category enrolment waiting list notifications';
 $string['newenrols'] = 'Allow new enrolments';
 $string['newenrols_desc'] = 'Allow users to self enrol into new courses by default.';
 $string['newenrols_help'] = 'This setting determines whether a user can enrol into this course.';
@@ -199,6 +200,8 @@ Users are only informed {$a->notifylimit} times without reaction until they are 
 Users that used a group enrolment key are automatically added to the designated group. If you enrol the users into a different course, they won\'t be added to a group, unless configured in the other enrolment method, even if it has the same name.
 ';
 $string['waitlist_users'] = 'Users on waiting list';
+$string['waitlistadded'] = 'You have been added to the waiting list.';
+$string['waitlistmessage'] = 'There is a waiting list for this course.';
 $string['waitlistnotifycount'] = 'Number of users to notify about an available slot';
 $string['waitlistnotifycount_help'] = 'Notify up to x users on the waiting list when a slot becomes available. The first user to react can enrol into the course.';
 $string['waitlistnotifylimit'] = 'Amount of times a user is being notified at most';
